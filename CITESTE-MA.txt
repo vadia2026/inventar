@@ -1,0 +1,63 @@
+INVENTAR RULMENȚI - versiunea offline
+
+Fișierele din arhivă (toate se urcă împreună, fără subfoldere):
+  index.html             aplicația (cu modulul Excel și fonturile incluse)
+  sw.js                  face aplicația să meargă fără internet
+  manifest.webmanifest   numele și iconița pentru ecranul principal
+  icon-192.png, icon-512.png, apple-touch-icon.png   iconițe
+  LICENTE.txt, CITESTE-MA.txt                        informații
+
+================================================================
+INSTALARE DOAR DE PE TELEFON (GitHub Pages, gratuit, permanent)
+================================================================
+A. Dezarhivează
+   Android: Files by Google -> atinge arhiva .zip -> „Extrage”.
+   iPhone:  aplicația Fișiere -> atinge arhiva .zip -> se creează un folder.
+
+B. Cont GitHub
+   În browser deschide github.com și creează un cont gratuit (Sign up).
+   Dacă pe telefon nu vezi un buton din pașii de mai jos, activează în meniul
+   browserului „Site pentru desktop”.
+
+C. Depozit nou
+   Butonul „+” (sus) -> „New repository”.
+   Nume: inventar  ·  vizibilitate: Public  ·  bifează „Add README” -> „Create repository”.
+
+D. Urcă fișierele
+   În depozit: „Add file” -> „Upload files” -> „choose your files”.
+   Selectează TOATE fișierele din folderul dezarhivat (8 fișiere).
+   Jos: „Commit changes”.
+
+E. Pornește site-ul
+   „Settings” -> „Pages” (în meniul din stânga).
+   La „Build and deployment”: Source = „Deploy from a branch”,
+   Branch = „main”, folder = „/ (root)” -> „Save”.
+   În câteva minute (până la 10) apare linkul: https://NUMELE-TĂU.github.io/inventar/
+
+F. Instalează aplicația
+   Android: deschide linkul în Chrome -> meniul ⋮ -> „Instalează aplicația”.
+   iPhone:  deschide linkul în Safari -> Partajare -> „Adaugă pe ecranul principal”.
+   Deschide aplicația de pe iconiță. Trebuie să scrie „Pregătită pentru lucru fără internet”.
+   Test: modul avion -> deschide aplicația -> trebuie să pornească normal.
+
+================================================================
+VARIANTA CU CALCULATOR (Netlify Drop)
+================================================================
+Pe calculator deschide https://app.netlify.com/drop, trage în pagină folderul dezarhivat,
+apoi revendică site-ul („claim”) cu un cont gratuit. Pe telefon continui de la pasul F.
+
+================================================================
+DE ȘTIUT
+================================================================
+- Datele stau doar în telefonul pe care lucrezi. Nu se sincronizează între telefoane.
+- Exportă Excel des (aplicația îți amintește). Dacă dezinstalezi aplicația sau ștergi
+  datele browserului, stocul neexportat se pierde.
+- „Importă din Excel” (pe ecranul principal) readuce un export salvat anterior.
+- Dictarea folosește microfonul tastaturii telefonului. Fără internet merge doar dacă
+  tastatura ta suportă dictare offline în română. Verifică în modul avion.
+- Linkul e public, dar fiecare telefon își vede doar datele proprii.
+
+ACTUALIZĂRI
+Când primești o versiune nouă: în depozit „Add file” -> „Upload files”, urci din nou
+fișierele (le înlocuiesc pe cele vechi) -> „Commit changes”. Telefonul preia versiunea
+nouă automat, la a doua deschidere cu internet. Datele introduse rămân.

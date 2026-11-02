@@ -1,0 +1,17 @@
+{
+  "name": "Inventar Rulmenți",
+  "short_name": "Rulmenți",
+  "description": "Inventariere stoc de rulmenți prin dictare, cu export Excel. Funcționează fără internet.",
+  "lang": "ro",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#E8ECEF",
+  "theme_color": "#E8ECEF",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
