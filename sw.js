@@ -1,7 +1,7 @@
 // Inventar Rulmenți - lucru fără internet.
 // Păstrează aplicația în memoria telefonului. Când ai internet, descarcă în fundal versiunea nouă,
 // care apare la următoarea deschidere.
-const CACHE = 'inventar-rulmenti-v3';
+const CACHE = 'inventar-rulmenti-v6';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

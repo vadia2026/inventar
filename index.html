@@ -118,9 +118,9 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 
 /* ---------- Field entry (0.5 : 2 : 1 : 0.5) ---------- */
 .field{
-  display:grid;gap:7px;padding-block:8px;
+  display:grid;gap:7px;padding-block:8px;margin-inline:-12px;
   grid-template-areas:"top" "sg" "q" "n" "act";
-  grid-template-rows:minmax(66px,1fr) auto minmax(0,4fr) minmax(0,2fr) minmax(48px,1fr);
+  grid-template-rows:minmax(66px,1fr) auto minmax(0,3.15fr) minmax(0,3.15fr) minmax(44px,.7fr);
 }
 .f-top{grid-area:top;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 1fr;grid-template-areas:"head mic" "in mic";gap:2px 8px;padding:6px 6px 6px 12px;border:2px solid var(--ink);border-radius:12px;background:var(--surface);min-height:0;margin:0}
 .f-top:focus-within{border-color:var(--steel);box-shadow:0 0 0 3px var(--steel-soft)}
@@ -141,30 +141,42 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 .sugg::-webkit-scrollbar{display:none}
 .sugg.hint{font-size:13px;line-height:1.3;color:var(--muted);padding:0 2px}
 .sugg.err{color:var(--err);font-weight:600}
-.sg{flex:none;border:1.5px solid var(--steel);color:var(--steel);background:var(--surface);border-radius:999px;padding:6px 12px;font:700 15px/1 var(--f-mono)}
+.sg{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;flex:none;border:1.5px solid var(--steel);color:var(--steel);background:var(--surface);border-radius:999px;padding:6px 12px;font:700 15px/1 var(--f-mono)}
 .sg:active{background:var(--steel-soft)}
+.sg .dim{opacity:.55;font-weight:500}
+.sg.last{background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
+.sg.last:active{background:var(--signal-press)}
+.sg.last.base{background:transparent;color:var(--ink)}
+.sg.last.base:active{background:var(--signal-ic)}
+.sg.last small{font:700 11px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin-right:6px}
+.sugg .sep{flex:none;width:1px;align-self:stretch;margin:5px 2px;background:var(--line)}
 
-.kbq{grid-area:q;display:grid;grid-template-rows:repeat(4,minmax(0,1fr));gap:6px;padding:6px;border-radius:12px;background:var(--tray);min-height:0}
-.kr{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:5px;min-height:0}
+.kbq{grid-area:q;display:grid;grid-template-rows:repeat(4,minmax(0,1fr));gap:4px;padding:4px 3px;border-radius:12px;background:var(--tray);min-height:0}
+.kr{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:4px;min-height:0}
 .kr .key{grid-column:span 2}
 .r2 .key:first-child{grid-column:2 / span 2}
-.r3 .bs{grid-column:15 / -1}
-.r4 .sp{grid-column:1 / -1}
-.kbn{grid-area:n;display:grid;grid-template-columns:repeat(45,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:6px;padding:6px;border-radius:12px;background:var(--tray);min-height:0}
+.r3 .key:first-child{grid-column:4 / span 2}
+.r4 .sp{grid-column:1 / 15}
+.r4 .bs{grid-column:15 / -1}
+.kbn{grid-area:n;display:grid;grid-template-columns:minmax(0,2.15fr) minmax(0,1fr);gap:10px;padding:4px 3px;border-radius:12px;background:var(--tray);min-height:0}
+.pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:4px;min-height:0}
+.pad .zero{grid-column:span 2}
+.pad.ps{grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpop{position:fixed;z-index:50;pointer-events:none;display:grid;place-items:center;border-radius:12px;background:var(--key);color:var(--ink);font:600 42px/1 var(--f-display);box-shadow:0 8px 22px var(--shadow),0 0 0 1px var(--line)}
+.kpop.sym{font:700 38px/1 var(--f-mono);color:var(--steel)}
 .key{border:0;border-radius:7px;background:var(--key);color:var(--ink);font:600 clamp(18px,5.6vw,26px)/1 var(--f-display);box-shadow:0 1px 0 var(--shadow);padding:0;min-height:0;min-width:0;user-select:none;-webkit-user-select:none;display:grid;place-items:center}
 .key:active{background:var(--key-press)}
-.kbn .key{grid-column:span 9}
 .calc{font:600 15px/1.2 var(--f-mono);color:var(--ink)}
 .calc b{font-size:20px;color:var(--steel)}
-.kbn .key.sym{grid-column:span 5}
 .key.sym{background:var(--key-sym);color:var(--steel);font:700 clamp(18px,5.4vw,24px)/1 var(--f-mono)}
 .key.fn{background:var(--key-sym);color:var(--steel);font-size:15px;letter-spacing:.1em;text-transform:uppercase}
 
 .f-actions{grid-area:act;display:grid;grid-template-columns:1fr 1.7fr;gap:8px;min-height:0}
-.f-actions .btn{min-height:0;height:100%;font-size:24px}
+.f-actions .btn{min-height:0;height:100%;font-size:22px}
 
 .dict-help{grid-area:help;display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:12px;background:var(--steel-soft);font-size:15px;line-height:1.4}
 .dict-help p{margin:0}
+.dict-help .dw{font-size:14px;color:var(--steel)}
 .dict-help .btn{min-height:44px;font-size:16px}
 .field:not(.dict) .dict-help{display:none}
 .field.dict{grid-template-areas:"top" "sg" "act" "help" ".";grid-template-rows:auto auto auto auto 1fr}
@@ -188,7 +200,8 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 .card .c-val.empty{color:var(--muted);font:italic 500 15px/1.25 var(--f-body)}
 .rv-cards.pick .card{border-color:var(--signal);border-style:dashed}
 .rv-cards.pick .card:active{background:var(--signal-ic)}
-.dup{margin:0;padding:10px 12px;border-radius:10px;background:var(--warn-soft);color:var(--warn);font-size:14px;line-height:1.35}
+.dup{margin:0;padding:10px 12px;border-radius:10px;background:var(--warn-soft);color:var(--warn);font-size:14px;line-height:1.35;display:flex;flex-direction:column;gap:8px}
+.dup .btn{min-height:48px;font-size:18px}
 .dup b{font-family:var(--f-mono)}
 .rv-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .rv-actions .wide{grid-column:1 / -1;min-height:66px;font-size:28px}
@@ -224,6 +237,9 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 .modal-act{display:flex;flex-direction:column;gap:8px}
 .toast{position:fixed;z-index:40;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:528px;margin:0 auto;background:var(--ink);color:var(--bg);padding:12px 14px;border-radius:10px;font-weight:600;box-shadow:0 8px 24px var(--shadow)}
 .toast.err{background:var(--err);color:var(--surface)}
+.toast{display:flex;align-items:center;gap:12px}
+.toast.top{top:calc(10px + env(safe-area-inset-top,0px));bottom:auto}
+.toast .tact{margin-left:auto;flex:none;border:0;background:transparent;color:inherit;text-decoration:underline;font:700 16px/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase;padding:8px 4px}
 
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 .shake{animation:shake .32s ease}
@@ -280,6 +296,7 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
       </button>
       <div class="hm-links">
         <button type="button" id="hm-discard" class="link" hidden>Renunță la rândul început</button>
+        <button type="button" id="hm-unhide" class="link" hidden>Reafișează chenarele ascunse</button>
         <button type="button" id="hm-import" class="link">Importă din Excel</button>
       </div>
       <input type="file" id="imp-file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
@@ -316,6 +333,7 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
     </div>
     <div class="dict-help">
       <p><b>Tastatura telefonului e deschisă.</b> Apasă microfonul de pe ea și spune valoarea. Tasta Enter / „Următorul” de pe tastatură trece la caseta următoare, la fel ca OK.</p>
+      <p class="dw" id="dict-words" hidden></p>
       <button type="button" class="btn ghost" id="f-closekb">Închide tastatura telefonului</button>
     </div>
   </section>
@@ -385,6 +403,7 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
     </div>
   </div>
 </div>
+<div id="kpop" class="kpop" aria-hidden="true" hidden></div>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
@@ -420,13 +439,17 @@ const $ = s => document.querySelector(s);
 /* ---------- columns ---------- */
 const FIELDS = [
   {k:'seria', col:'A', label:'Seria rulmentului', type:'code', req:true,
-   hint:'La dictare: „liniuță” -  ·  „punct” .  ·  „slash” /  ·  „paranteză deschisă / închisă” ( )  ·  „două puncte” :  ·  „liniuță jos” _  ·  „plus” +'},
+   hint:'La dictare: „liniuță” -  ·  „punct” .  ·  „slash” /  ·  „paranteză deschisă / închisă” ( )  ·  „liniuță jos” _  ·  „plus” +'},
   {k:'brand', col:'B', label:'Brand', type:'plain', sugg:true, hint:'Spune marca sau alege-o de mai sus.'},
   {k:'buc', col:'C', label:'Nr. bucăți', type:'qty', hint:'Spune numărul sau un calcul: „12 plus 5”, „3 ori 12”, „100 împărțit la 4”.'},
   {k:'loc', col:'D', label:'Localizare', type:'code', sugg:true, hint:'De exemplu „raft A3” sau „palet 2”.'},
   {k:'obs', col:'G', label:'Observații', type:'plain', hint:'Opțional. Dacă nu ai nimic de notat, apasă OK.'},
 ];
 const BRANDS = ['SKF','FAG','INA','NSK','NTN','TIMKEN','KOYO','ZKL','SNR','URB','NACHI','FBJ'];
+const PREFIXES = ['NU','NJ','NUP','N','UC','UCP','UCF','HK','GE'];
+const SUFFIXES = ['-2RS','-2Z','-ZZ','-RS','-Z','-2RSR','-2ZR','/C3','C3','ECP','E','M'];
+const DW_SYM = 'Simboluri la dictare: „liniuță” -  ·  „punct” .  ·  „slash” /  ·  „paranteză deschisă / închisă” ( )  ·  „liniuță jos” _  ·  „plus” +';
+const DW_QTY = 'Calcule la dictare: „plus”, „minus”, „ori”, „împărțit la”. Exemplu: „3 ori 12”.';
 const LS_ROWS = 'inv_rows_v1', LS_DRAFT = 'inv_draft', LS_EXP = 'inv_last_export';
 
 /* ---------- small helpers ---------- */
@@ -455,7 +478,6 @@ function words(s, o){
     if(o.sym){
       if(w === 'PARANTEZA' && (nx === 'DESCHISA' || nx === 'INCHISA')){ out.push(nx === 'DESCHISA' ? '(' : ')'); i++; continue; }
       if(w === 'BARA' && nx === 'OBLICA'){ out.push('/'); i++; continue; }
-      if(w === 'DOUA' && nx === 'PUNCTE'){ out.push(':'); i++; continue; }
       if((w === 'LINIUTA' || w === 'LINIE') && nx === 'JOS'){ out.push('_'); i++; continue; }
       if(has(SYM, w)){ out.push(SYM[w]); continue; }
     }
@@ -586,10 +608,18 @@ function onData(){
   else if(S.screen === 'review') renderReview();
   else if(S.screen === 'field') renderSugg();
 }
-function toast(msg, kind){
+function toast(msg, kind, act){
   const t = $('#toast');
-  t.textContent = msg; t.className = 'toast' + (kind ? ' ' + kind : ''); t.hidden = false;
-  clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 3600);
+  t.textContent = '';
+  const m = document.createElement('span'); m.textContent = msg; t.appendChild(m);
+  if(act){
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'tact'; b.textContent = act.label;
+    b.addEventListener('click', () => { t.hidden = true; act.fn(); });
+    t.appendChild(b);
+  }
+  t.className = 'toast' + (kind ? ' ' + kind : '') + (S.screen === 'field' ? ' top' : '');
+  t.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, act ? 6000 : 3500);
 }
 
 /* ---------- home ---------- */
@@ -605,6 +635,8 @@ function renderHome(){
   $('#hm-start-t').textContent = resume ? 'Continuă rândul' : 'Pornește inventarierea';
   $('#hm-start-s').textContent = resume ? 'Ai un rând început' + (S.draft.seria ? ' (' + S.draft.seria + ')' : '') + '. Continui de unde ai rămas.' : 'Dictezi seria, brandul, bucățile, locul și observațiile';
   $('#hm-discard').hidden = !resume;
+  const hc = hiddenCount(), uh = $('#hm-unhide');
+  uh.hidden = !hc; uh.textContent = 'Reafișează chenarele ascunse (' + hc + ')';
   // backup reminder: the stock exists only on this phone
   const b = $('#hm-backup');
   if(!rows.length){ b.hidden = true; }
@@ -626,16 +658,34 @@ function renderHome(){
 function buildKeys(){
   const key = (c, cls) => `<button type="button" class="key ${cls || ''}" data-k="${esc(c)}">${esc(c)}</button>`;
   const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
+  const bs = cls => `<button type="button" class="key fn ${cls}" data-k="BS" aria-label="Șterge ultimul caracter"><svg width="26" height="20" viewBox="0 0 26 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M8 2h15a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 23 18H8L1.5 10z"/><path d="M12 6.5l7 7M19 6.5l-7 7"/></svg></button>`;
   $('#kb-q').innerHTML =
     '<div class="kr r1">' + [...rows[0]].map(c => key(c)).join('') + '</div>' +
     '<div class="kr r2">' + [...rows[1]].map(c => key(c)).join('') + '</div>' +
-    '<div class="kr r3">' + [...rows[2]].map(c => key(c)).join('') +
-      '<button type="button" class="key fn bs" data-k="BS" aria-label="Șterge ultimul caracter"><svg width="26" height="20" viewBox="0 0 26 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M8 2h15a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 23 18H8L1.5 10z"/><path d="M12 6.5l7 7M19 6.5l-7 7"/></svg></button></div>' +
-    '<div class="kr r4"><button type="button" class="key fn sp" data-k="SP">spațiu</button></div>';
-  $('#kb-n').innerHTML = ['1','2','3','4','5','6','7','8','9','0','-','.','/','(',')',':','_','+','*']
-    .map(c => key(c, /\d/.test(c) ? '' : 'sym')).join('');
+    '<div class="kr r3">' + [...rows[2]].map(c => key(c)).join('') + '</div>' +
+    '<div class="kr r4"><button type="button" class="key fn sp" data-k="SP">spațiu</button>' + bs('bs') + '</div>';
+  // numeric: digits in rows of 3 like a phone keypad, symbols to the right
+  $('#kb-n').innerHTML =
+    '<div class="pad">' + [...'123456789'].map(c => key(c)).join('') + key('0', 'zero') + bs('') + '</div>' +
+    '<div class="pad ps">' + ['-', '.', '/', '_', '(', ')', '+', '*'].map(c => key(c, 'sym')).join('') + '</div>';
 }
 
+/* ---------- key preview above the finger, like the iPhone keyboard ---------- */
+let kpopT = null;
+function keyPreview(btn){
+  const kpop = $('#kpop'), k = btn.dataset.k;
+  clearTimeout(kpopT);
+  if(!k || k === 'BS' || k === 'SP'){ kpop.hidden = true; return; }
+  const r = btn.getBoundingClientRect();
+  const w = Math.min(Math.max(r.width * 1.4, 58), 96), h = Math.min(Math.max(r.height * 1.1, 62), 86);
+  const left = Math.min(Math.max(r.left + r.width / 2 - w / 2, 4), window.innerWidth - w - 4);
+  const top = Math.max(r.top + 10 - h, 4);
+  kpop.textContent = k;
+  kpop.className = 'kpop' + (btn.classList.contains('sym') ? ' sym' : '');
+  kpop.style.cssText = `left:${left}px;top:${top}px;width:${w}px;height:${h}px`;
+  kpop.hidden = false;
+}
+function keyPreviewEnd(){ clearTimeout(kpopT); kpopT = setTimeout(() => { $('#kpop').hidden = true; }, 90); }
 function setDict(on){ S.dict = on; $('#scr-field').classList.toggle('dict', on); }
 function selectAll(){ try{ if(inp.value) inp.setSelectionRange(0, inp.value.length); }catch(e){} }
 function setErr(msg){ S.err = msg; $('#f-form').classList.toggle('bad', !!msg); renderSugg(); }
@@ -644,6 +694,9 @@ function openField(){
   const f = FIELDS[S.fi];
   $('#f-col').textContent = f.col;
   $('#f-label').textContent = f.label;
+  const dw = $('#dict-words');
+  dw.textContent = f.type === 'code' ? DW_SYM : f.type === 'qty' ? DW_QTY : '';
+  dw.hidden = !dw.textContent;
   $('#f-step').textContent = S.ctx === 'new' ? (S.fi + 1) + '/5' : 'modific';
   S.fieldOrig = String(S.draft[f.k] || '');
   inp.value = S.draft[f.k] || '';
@@ -657,6 +710,92 @@ function updateTag(){
   const f = FIELDS[S.fi];
   $('#f-tag').hidden = !(f.k === 'loc' && S.draft.locPrevVal && inp.value === S.draft.locPrevVal);
 }
+/* ---------- quick chips for the series: last series, learned prefixes and suffixes ---------- */
+const SER_RE = /^([A-Z]+ ?)?(\d+(?:\/\d+(?![A-Z]))?)(.*)$/;
+function splitSer(s){
+  const m = SER_RE.exec(up(s).replace(/\s+/g, ' ').trim());
+  return m ? {pre:m[1] || '', core:m[2], suf:(m[3] || '').replace(/\s+$/, '')} : null;
+}
+function rank(list, seeds){
+  const m = new Map();
+  list.forEach((v, i) => {
+    const k = v.trim(); if(!k) return;
+    let e = m.get(k); if(!e){ e = {k, n:0, last:0, vars:new Map()}; m.set(k, e); }
+    e.n++; e.last = i; e.vars.set(v, (e.vars.get(v) || 0) + 1);
+  });
+  const out = [...m.values()].sort((a, b) => b.n - a.n || b.last - a.last)
+    .map(e => ({k:e.k, v:[...e.vars.entries()].sort((a, b) => b[1] - a[1])[0][0]}));
+  seeds.forEach(s => { if(!m.has(s)) out.push({k:s, v:s}); });
+  return out;
+}
+/* chips hidden with a long press (kept on this phone) */
+const LS_HID = 'inv_hidden_chips';
+let hiddenChips = lsGet(LS_HID) || {};
+function isHidden(kind, k){ const a = hiddenChips[kind]; return !!(a && a.indexOf(k) >= 0); }
+function setHidden(kind, k, on){
+  const a = (hiddenChips[kind] || []).filter(x => x !== k);
+  if(on) a.push(k);
+  hiddenChips[kind] = a; lsSet(LS_HID, hiddenChips);
+}
+function hiddenCount(){ return Object.keys(hiddenChips).reduce((n, k) => n + (hiddenChips[k] || []).length, 0); }
+function hideChip(b){
+  const kind = b.dataset.kind, k = b.dataset.key;
+  if(!kind || !k) return;
+  setHidden(kind, k, true);
+  try{ if(navigator.vibrate) navigator.vibrate(15); }catch(e){}
+  renderSugg();
+  const label = kind === 'pre' ? k + '…' : kind === 'suf' ? '…' + k : k;
+  toast(`Am ascuns chenarul „${label}”.`, '', {label:'Anulează', fn:() => { setHidden(kind, k, false); renderSugg(); }});
+}
+let learnCache = null;
+function learnedParts(){
+  const rows = sortedRows();
+  if(learnCache && learnCache.rows === rows) return learnCache;
+  const pre = [], suf = [];
+  rows.forEach(r => { const p = splitSer(r.seria); if(!p) return; if(p.pre) pre.push(p.pre); if(p.suf) suf.push(p.suf); });
+  learnCache = {rows, pre:rank(pre, PREFIXES), suf:rank(suf, SUFFIXES)};
+  return learnCache;
+}
+function withPrefix(cur, p){
+  const s = up(cur).replace(/^\s+/, '');
+  if(!s || /^[A-Z]+ ?$/.test(s)) return p;
+  return p + s.replace(/^[A-Z]+ ?(?=\d)/, '');
+}
+function withSuffix(cur, x){
+  let s = up(cur).replace(/\s+$/, '');
+  if(!s) return x.trim();
+  if(s.endsWith(x.trim())) return s;
+  if(/[-./ ]$/.test(s) && /^[-./ ]/.test(x)) s = s.slice(0, -1);   // "6204-" + "-2RS" -> "6204-2RS"
+  return s + x;
+}
+function lastCore(){
+  const rows = sortedRows();
+  for(let i = rows.length - 1; i >= 0; i--){ const p = splitSer(rows[i].seria); if(p) return p.core; }
+  return '';
+}
+function withCore(cur, core){
+  const s = up(cur).replace(/^\s+/, '');
+  return /^[A-Z]+ ?$/.test(s) ? s + core : core;      // keep a prefix already chosen: "NU " + "210"
+}
+function seriaChips(){
+  const cur = up(inp.value).replace(/\s+/g, ' ').trim();
+  const L = learnedParts(), groups = [];
+  const PRE = L.pre.filter(e => !isHidden('pre', e.k)), SUF = L.suf.filter(e => !isHidden('suf', e.k));
+  const dim = '<span class="dim">…</span>';
+  const chip = (v, act, label, cls, kind, key) => `<button type="button" class="sg${cls ? ' ' + cls : ''}" data-act="${act}" data-v="${esc(v)}"${kind ? ` data-kind="${kind}" data-key="${esc(key)}"` : ''}>${label}</button>`;
+  const preChips = list => list.map(e => chip(e.v, 'pre', esc(e.k) + dim, '', 'pre', e.k)).join('');
+  const cp = cur ? splitSer(cur) : null;
+  if(!cp){
+    // empty box (or only a prefix so far): the base of the last series in yellow, then the prefixes in blue
+    const core = S.ctx === 'new' ? lastCore() : '';
+    if(core) groups.push(chip(core, 'core', '<small>ultima</small>' + esc(core), 'last'));
+    groups.push(preChips((cur ? PRE.filter(e => e.k.startsWith(cur) && e.k !== cur) : PRE).slice(0, 10)));
+  } else {
+    groups.push(SUF.filter(e => !cur.endsWith(e.k)).slice(0, 12).map(e => chip(e.v, 'suf', dim + esc(e.k), '', 'suf', e.k)).join(''));
+    groups.push(preChips(PRE.filter(e => cp.pre.trim() !== e.k).slice(0, 8)));
+  }
+  return groups.filter(Boolean).join('<span class="sep" aria-hidden="true"></span>');
+}
 function renderSugg(){
   if(!S.draft) return;
   const f = FIELDS[S.fi], box = $('#f-sugg');
@@ -667,6 +806,10 @@ function renderSugg(){
     const b = /^\d+$/.test(S.fieldOrig || '') ? S.fieldOrig : '';
     box.textContent = b ? `Acum: ${b} buc. Scrie „+5”, „-2”, „*3” sau „/2” ca să calculezi pornind de la ${b}, ori un număr nou ca să-l înlocuiești.` : f.hint;
     return;
+  }
+  if(f.k === 'seria' && !S.err){
+    const html = seriaChips();
+    if(html){ box.classList.remove('hint', 'err'); box.innerHTML = html; return; }
   }
   let items = [];
   if(f.sugg && !S.err){
@@ -680,12 +823,12 @@ function renderSugg(){
     }
     let list = f.k === 'brand' ? order.slice().sort((a, b) => counts.get(b) - counts.get(a)) : order;
     if(f.k === 'brand') BRANDS.forEach(b => { if(!counts.has(b)) list.push(b); });
-    items = list.filter(v => v !== cur && (!q || compact(v).startsWith(q))).slice(0, 14);
+    items = list.filter(v => v !== cur && !isHidden(f.k, v) && (!q || compact(v).startsWith(q))).slice(0, 14);
   }
   box.classList.toggle('err', !!S.err);
   if(items.length){
     box.classList.remove('hint');
-    box.innerHTML = items.map(v => `<button type="button" class="sg" data-v="${esc(v)}">${esc(v)}</button>`).join('');
+    box.innerHTML = items.map(v => `<button type="button" class="sg" data-v="${esc(v)}" data-kind="${f.k}" data-key="${esc(v)}">${esc(v)}</button>`).join('');
   } else {
     box.classList.add('hint');
     box.textContent = S.err || f.hint;
@@ -768,6 +911,24 @@ function rvStatus(){
   if(saveFailed){ el.textContent = 'Nesalvat!'; el.className = 'chip err'; }
   else { el.textContent = 'Salvat pe telefon'; el.className = 'chip ok'; }
 }
+function mergeRow(){
+  const d = S.draft, cur = d && d.id && getRow(d.id), tgt = S.rv.mergeTarget && getRow(S.rv.mergeTarget);
+  if(!cur || !tgt) return;
+  const strip = r => { const o = Object.assign({}, r); delete o.id; return o; };
+  const tgtBefore = strip(tgt), curBefore = strip(cur);
+  const a = parseInt(tgt.buc, 10) || 0, b = parseInt(cur.buc, 10) || 0;
+  const obs = [tgt.obs, cur.obs].filter(Boolean).filter((v, i, arr) => arr.indexOf(v) === i).join('; ');
+  const merged = Object.assign({}, tgtBefore, {buc:(tgt.buc || cur.buc) ? String(a + b) : '', obs, u:Date.now()});
+  putRow(tgt.id, merged);
+  delRow(cur.id);
+  S.draft = Object.assign({id:tgt.id}, merged);
+  S.rv.modify = false; S.rv.delArm = false;
+  renderReview();
+  toast(b ? `Am adăugat ${b} buc la rândul existent. Acum sunt ${merged.buc} buc.` : 'Am unit rândul cu cel existent.', '', {label:'Anulează', fn:() => {
+    putRow(tgt.id, tgtBefore); putRow(cur.id, curBefore);
+    if(S.screen === 'review' && S.draft && S.draft.id === tgt.id){ S.draft = Object.assign({id:cur.id}, curBefore); renderReview(); }
+  }});
+}
 function renderReview(){
   const d = S.draft; if(!d) return;
   const rows = sortedRows(), n = rows.findIndex(r => r.id === d.id) + 1;
@@ -782,14 +943,28 @@ function renderReview(){
     return `<button type="button" class="card" data-i="${i}"><span class="colbadge">${f.col}</span><span class="c-label">${esc(f.label)}</span>` +
       (v ? `<span class="c-val">${esc(v)}</span>` : '<span class="c-val empty">necompletat</span>') + '</button>';
   }).join('');
-  const key = compact(d.seria);
-  const dups = key ? rows.filter(r => r.id !== d.id && compact(r.seria) === key) : [];
+  // duplicate = same series AND same brand, written identically
+  const same = (a, b) => up(a).replace(/\s+/g, ' ').trim() === up(b).replace(/\s+/g, ' ').trim();
+  const dups = d.seria ? rows.filter(r => r.id !== d.id && same(r.seria, d.seria) && same(r.brand, d.brand)) : [];
   const dup = $('#rv-dup');
+  S.rv.mergeTarget = null;
   if(dups.length){
-    dup.hidden = false;
-    dup.innerHTML = `Seria <b>${esc(d.seria)}</b> mai apare de ${dups.length} ${dups.length === 1 ? 'dată' : 'ori'} în stoc: ` +
-      dups.slice(0, 3).map(r => esc([r.loc || 'fără locație', r.buc ? r.buc + ' buc' : ''].filter(Boolean).join(', '))).join(' · ') +
-      (dups.length > 3 ? ' …' : '');
+    const desc = `<b>${esc(d.seria)}</b> ${d.brand ? 'de la <b>' + esc(d.brand) + '</b>' : 'fără brand'}`;
+    const where = r => esc([r.loc || 'fără locație', r.buc ? r.buc + ' buc' : ''].filter(Boolean).join(', '));
+    const list = a => a.slice(0, 3).map(where).join(' · ') + (a.length > 3 ? ' …' : '');
+    const here = dups.filter(r => same(r.loc, d.loc)), other = dups.filter(r => !same(r.loc, d.loc));
+    let html;
+    if(here.length){
+      // same series, brand AND location: offer to add the pieces to the existing row
+      const t = here[0], a = parseInt(t.buc, 10) || 0, b = parseInt(d.buc, 10) || 0;
+      S.rv.mergeTarget = t.id;
+      html = `<span>${desc} există deja la <b>${esc(d.loc || 'fără locație')}</b>${t.buc ? ', ' + esc(t.buc) + ' buc' : ''}.</span>` +
+        `<button type="button" class="btn primary" id="rv-merge">${b ? `Adaugă la rândul existent: ${a} + ${b} = ${a + b} buc` : 'Unește cu rândul existent'}</button>` +
+        (other.length ? `<span>Mai apare și la: ${list(other)}</span>` : '');
+    } else {
+      html = `<span>${desc} mai apare de ${dups.length} ${dups.length === 1 ? 'dată' : 'ori'} în stoc: ${list(dups)}</span>`;
+    }
+    dup.hidden = false; dup.innerHTML = html;
   } else dup.hidden = true;
   $('#rv-act-new').hidden = sheetMode;
   $('#rv-act-sheet').hidden = !sheetMode;
@@ -933,6 +1108,7 @@ function bind(){
   $('#hm-start').addEventListener('click', startInventory);
   $('#hm-sheet').addEventListener('click', () => go('sheet'));
   $('#hm-export').addEventListener('click', exportXlsx);
+  $('#hm-unhide').addEventListener('click', () => { hiddenChips = {}; lsSet(LS_HID, null); renderHome(); toast('Am reafișat toate chenarele ascunse.'); });
   $('#hm-discard').addEventListener('click', () => { S.draft = null; lsSet(LS_DRAFT, null); renderHome(); toast('Am renunțat la rândul început.'); });
   $('#hm-import').addEventListener('click', () => $('#imp-file').click());
   $('#imp-file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if(f) readImport(f); e.target.value = ''; });
@@ -953,12 +1129,35 @@ function bind(){
   // keep the phone keyboard open while tapping app buttons during dictation
   field.addEventListener('mousedown', e => { if(S.dict && e.target.closest('button') && !e.target.closest('#f-closekb')) e.preventDefault(); });
   $('#kb-q').addEventListener('click', e => { const k = e.target.closest('[data-k]'); if(k) press(k.dataset.k); });
+  ['#kb-q', '#kb-n'].forEach(sel => {
+    const el = $(sel);
+    el.addEventListener('pointerdown', e => { const b = e.target.closest('.key'); if(b) keyPreview(b); });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => el.addEventListener(ev, keyPreviewEnd));
+  });
   $('#kb-n').addEventListener('click', e => { const k = e.target.closest('[data-k]'); if(k) press(k.dataset.k); });
+  let lpFired = false;
   $('#f-sugg').addEventListener('click', e => {
+    if(lpFired){ lpFired = false; return; }
     const b = e.target.closest('[data-v]'); if(!b) return;
-    inp.value = b.dataset.v; onEdit(); keepDict();
+    const v = b.dataset.v, act = b.dataset.act;
+    inp.value = act === 'pre' ? withPrefix(inp.value, v) : act === 'suf' ? withSuffix(inp.value, v) : act === 'core' ? withCore(inp.value, v) : v;
+    onEdit(); keepDict();
   });
   $('#f-clear').addEventListener('click', () => { inp.value = ''; onEdit(); keepDict(); });
+  // long press on a learned chip hides it
+  const sg = $('#f-sugg');
+  let lp = null;
+  const lpCancel = () => { if(lp){ clearTimeout(lp.t); lp = null; } };
+  sg.addEventListener('pointerdown', e => {
+    lpCancel(); lpFired = false;
+    const b = e.target.closest('.sg[data-kind]'); if(!b) return;
+    lp = {x:e.clientX, y:e.clientY, t:setTimeout(() => { lp = null; lpFired = true; hideChip(b); }, 550)};
+  });
+  sg.addEventListener('pointermove', e => { if(lp && (Math.abs(e.clientX - lp.x) > 10 || Math.abs(e.clientY - lp.y) > 10)) lpCancel(); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => sg.addEventListener(ev, lpCancel));
+  sg.addEventListener('scroll', lpCancel, {passive:true});
+  sg.addEventListener('contextmenu', e => { if(e.target.closest('.sg')) e.preventDefault(); });
+  $('#toast').addEventListener('mousedown', e => { if(S.dict) e.preventDefault(); });
   $('#f-mic').addEventListener('click', () => { inp.focus(); selectAll(); });
   $('#f-closekb').addEventListener('click', () => inp.blur());
   $('#f-ok').addEventListener('click', fieldOK);
@@ -995,6 +1194,7 @@ function bind(){
     openField();
   });
   $('#rv-backsheet').addEventListener('click', () => { S.draft = null; go('sheet'); });
+  $('#rv-dup').addEventListener('click', e => { if(e.target.closest('#rv-merge')) mergeRow(); });
   $('#rv-del').addEventListener('click', () => {
     if(!S.rv.delArm){
       S.rv.delArm = true; S.rv.modify = false; renderReview();
