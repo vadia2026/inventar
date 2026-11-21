@@ -26,7 +26,7 @@
 :root{
   --bg:#E8ECEF; --surface:#FFFFFF; --tray:#CFD7DE; --key:#FAFBFC; --key-press:#B9C4CD; --key-sym:#E1E8EF;
   --ink:#121A21; --muted:#56636E; --line:#C2CBD2; --shadow:rgba(18,26,33,.20); --scrim:rgba(8,12,16,.55);
-  --signal:#F2B705; --signal-press:#D9A300; --on-signal:#161100; --signal-ic:rgba(22,17,0,.13);
+  --signal:#F2B705; --signal-press:#D9A300; --on-signal:#161100; --signal-ic:rgba(22,17,0,.13); --signal-soft:#FDF0C4;
   --steel:#2B5B86; --steel-soft:#DCE6F0;
   --ok:#23784A; --ok-soft:#DDF0E4; --warn:#A8520F; --warn-soft:#FBEBD9; --err:#B3261E; --err-soft:#F9DEDC;
   --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
@@ -39,7 +39,7 @@
   :root:not([data-theme="light"]){
     --bg:#0E1317; --surface:#171F26; --tray:#080B0E; --key:#252F38; --key-press:#3A4753; --key-sym:#1C2833;
     --ink:#E6EBEF; --muted:#93A0AB; --line:#2B3640; --shadow:rgba(0,0,0,.55);
-    --signal:#F2B705; --signal-press:#FFC933; --on-signal:#161100; --signal-ic:rgba(22,17,0,.16);
+    --signal:#F2B705; --signal-press:#FFC933; --on-signal:#161100; --signal-ic:rgba(22,17,0,.16); --signal-soft:#3A300C;
     --steel:#86B6E0; --steel-soft:#1C2B3A;
     --ok:#5BC48A; --ok-soft:#14301F; --warn:#F0A15E; --warn-soft:#3A2614; --err:#F28B82; --err-soft:#3B1715;
     color-scheme:dark;
@@ -48,7 +48,7 @@
 :root[data-theme="dark"]{
   --bg:#0E1317; --surface:#171F26; --tray:#080B0E; --key:#252F38; --key-press:#3A4753; --key-sym:#1C2833;
   --ink:#E6EBEF; --muted:#93A0AB; --line:#2B3640; --shadow:rgba(0,0,0,.55);
-  --signal:#F2B705; --signal-press:#FFC933; --on-signal:#161100; --signal-ic:rgba(22,17,0,.16);
+  --signal:#F2B705; --signal-press:#FFC933; --on-signal:#161100; --signal-ic:rgba(22,17,0,.16); --signal-soft:#3A300C;
   --steel:#86B6E0; --steel-soft:#1C2B3A;
   --ok:#5BC48A; --ok-soft:#14301F; --warn:#F0A15E; --warn-soft:#3A2614; --err:#F28B82; --err-soft:#3B1715;
   color-scheme:dark;
@@ -130,8 +130,8 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 .f-tag{font-size:11px;line-height:1;padding:3px 7px;border-radius:999px;background:var(--steel-soft);color:var(--steel);white-space:nowrap}
 .f-step{margin-left:auto;font:500 12px/1 var(--f-mono);color:var(--muted);white-space:nowrap}
 .f-in{grid-area:in;display:flex;align-items:center;gap:4px;min-width:0}
-#f-input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:700 clamp(22px,6.6vw,30px)/1.15 var(--f-mono);text-transform:uppercase;padding:2px 0;outline:none}
-#f-input::placeholder{color:var(--muted);opacity:.6;font:500 16px var(--f-body);text-transform:none}
+#f-input,#q-input,#qy-input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:700 clamp(22px,6.6vw,30px)/1.15 var(--f-mono);text-transform:uppercase;padding:2px 0;outline:none}
+#f-input::placeholder,#q-input::placeholder,#qy-input::placeholder{color:var(--muted);opacity:.6;font:500 16px var(--f-body);text-transform:none}
 .f-clear{width:38px;height:38px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;border-radius:8px;flex:none}
 .f-clear:active{background:var(--key-press)}
 .mic{grid-area:mic;width:74px;border:0;border-radius:9px;background:var(--signal);color:var(--on-signal);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:700 13px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase}
@@ -193,7 +193,7 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 .chip.err{background:var(--err-soft);color:var(--err)}
 .rv-hint{margin:0;padding:10px 12px;border-radius:10px;background:var(--signal);color:var(--on-signal);font-weight:600}
 .rv-cards{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
-.card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 12px;align-items:center;width:100%;text-align:left;padding:10px 12px;border-radius:10px;background:var(--surface);border:2px solid var(--line)}
+.card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:3px 12px;align-items:center;width:100%;text-align:left;padding:10px 12px;border-radius:10px;background:var(--surface);border:2px solid var(--line)}
 .card .colbadge{grid-row:1 / 3}
 .card .c-label{font:600 13px/1 var(--f-display);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 .card .c-val{font:700 20px/1.25 var(--f-mono);overflow-wrap:anywhere}
@@ -228,7 +228,133 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 .sh-table td.num{text-align:right;font-weight:600}
 .sh-table td.obs{min-width:10em;max-width:18em;color:var(--muted)}
 .sh-empty{margin:0;padding:22px 16px;text-align:center;color:var(--muted)}
+/* ---------- Search ---------- */
+.search{display:grid;gap:7px;padding-block:8px;margin-inline:-12px;
+  grid-template-areas:"top" "fl" "st" "res" "q" "n" "act";
+  grid-template-rows:minmax(66px,auto) auto auto minmax(0,1fr) minmax(0,1.3fr) minmax(0,1.3fr) 52px}
+.search.nokb,.search.dict{grid-template-areas:"top" "fl" "st" "res" "act";grid-template-rows:minmax(66px,auto) auto auto minmax(0,1fr) 52px}
+.search.nokb .kbq,.search.nokb .kbn,.search.dict .kbq,.search.dict .kbn,.search.dict .mic{display:none}
+#q-filters{grid-area:fl;display:flex;flex-direction:column;gap:6px;min-width:0}
+.qf-row{display:flex;align-items:center;gap:6px;min-width:0}
+.qf-chips{flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:1px 0}
+.qf-chips::-webkit-scrollbar{display:none}
+.qf-l{flex:none;width:46px;font:600 11px/1 var(--f-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-left:4px}
+.sg.on{background:var(--steel);border-color:var(--steel);color:var(--surface)}
+.q-status{grid-area:st;margin:0;padding:0 4px;font-size:14px;line-height:1.3;color:var(--muted)}
+.q-status.none{color:var(--warn);font-weight:600}
+.q-status.eq{color:var(--ok);font-weight:600}
+.q-res{grid-area:res;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:0 2px 4px}
+.q-actions{grid-area:act;display:grid;grid-template-columns:1fr 1.3fr 1.3fr;gap:8px;min-height:0}
+.q-actions .btn{min-height:0;height:100%;font-size:17px;padding:0 8px}
+.rg{flex:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.rg-h{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;padding:10px 12px;background:var(--signal-soft)}
+.rg-s{font:700 20px/1.2 var(--f-mono);overflow-wrap:anywhere;min-width:0}
+.rg-b{font:700 22px/1 var(--f-display);letter-spacing:.05em;text-transform:uppercase;color:var(--steel)}
+.rg-b.none{color:var(--muted);text-transform:none;letter-spacing:0;font:italic 500 16px/1 var(--f-body)}
+.rg-t{margin-left:auto;padding:6px 10px;border-radius:8px;background:var(--signal);color:var(--on-signal);font:700 22px/1 var(--f-display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rg-t small{font:700 11px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin-right:6px}
+.rl{display:grid;grid-template-columns:auto minmax(0,1fr) auto 16px;align-items:center;gap:10px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:transparent;padding:10px 12px;min-height:46px}
+.rl:active{background:var(--steel-soft)}
+.rl-l{font:700 16px/1.2 var(--f-mono)}
+.rl-l.none{font:italic 500 14px/1.2 var(--f-body);color:var(--muted)}
+.rl-o{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rl-q{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rl svg{color:var(--muted)}
+.q-more{flex:none;margin:0;padding:8px 4px;font-size:14px;color:var(--muted)}
+.eqh{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:var(--ok-soft);color:var(--ok)}
+.eqh div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.eqh b{font:700 18px/1.2 var(--f-display);letter-spacing:.02em;overflow-wrap:anywhere}
+.eqh span{font-size:13px}
+.eqh .btn{min-height:40px;font-size:15px;flex:none;color:var(--ok);border-color:var(--ok)}
+.eqn{flex:none;margin:0;font-size:13px;line-height:1.45;color:var(--muted)}
+.eqs{flex:none;font-size:13px;color:var(--muted)}
+.eqs summary{cursor:pointer;font-weight:600;padding:4px 0}
+.eqs ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.eqs a{color:var(--steel)}
+.dlg{position:fixed;inset:0;z-index:30;background:var(--scrim);display:grid;place-items:end center;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.dlg-box{width:100%;max-width:520px;background:var(--surface);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 40px var(--shadow)}
+.dlg-box h3{margin:0;font:700 26px/1 var(--f-display)}
+.dlg-box p{margin:0;line-height:1.45}
+.dlg-box p b{font-family:var(--f-mono)}
+.dlg-act{display:flex;flex-direction:column;gap:8px}
+.card .c-label,.card .c-val{grid-column:2}
+.card .c-go{grid-column:3;grid-row:1 / 3;color:var(--muted)}
+.rv-hint.soft{background:var(--steel-soft);color:var(--steel)}
+.rv-actions .full{grid-column:1 / -1}
+/* ---------- Quantity: add / subtract ---------- */
+.qty{display:flex;flex-direction:column;gap:10px;padding-block:14px 10px}
+.qy-head h2{margin:4px 0 0;font:700 28px/1.15 var(--f-mono);overflow-wrap:anywhere}
+.qy-ctx{margin:3px 0 0;font-size:15px;color:var(--muted)}
+.qy-now{display:flex;align-items:baseline;gap:8px;padding:10px 14px;border-radius:12px;background:var(--signal-soft)}
+.qy-now span{font-size:15px;color:var(--muted)}
+.qy-now b{font:700 40px/1 var(--f-display);font-variant-numeric:tabular-nums;color:var(--ink)}
+.qy-pick{flex:1;min-height:0;display:grid;grid-template-rows:1fr 1fr;gap:12px}
+.qbtn{border:2px solid;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:14px;font:700 36px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase}
+.qbtn svg{width:42px;height:42px;flex:none}
+.qbtn:active{transform:translateY(1px)}
+.qbtn.add{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.qbtn.sub{background:var(--err-soft);border-color:var(--err);color:var(--err)}
+.qy-amt{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.qy-box{min-height:76px}
+.qty.add .qy-box{border-color:var(--ok)}
+.qty.sub .qy-box{border-color:var(--err)}
+.qy-calc{margin:0;text-align:center;font:600 22px/1.25 var(--f-display);font-variant-numeric:tabular-nums;min-height:28px}
+.qy-calc b{font-size:30px}
+.qy-calc .dim{color:var(--muted)}
+.qy-calc.err{color:var(--err);font:600 15px/1.35 var(--f-body)}
+.qy-pad{flex:1;min-height:0;display:grid;padding:4px 3px;border-radius:12px;background:var(--tray)}
+.qty.dict .qy-pad,.qty.dict .mic{display:none}
+.qy-act{display:flex;gap:8px;height:56px;flex:none}
+.qy-act .btn{flex:1;min-height:0;font-size:22px}
+.qy-act .btn.primary{flex:1.7}
 
+/* ---------- Login & account ---------- */
+.login{display:flex;flex-direction:column;gap:22px;padding-block:28px 16px;overflow-y:auto}
+.lg{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.lg h2{margin:0;font:700 28px/1 var(--f-display)}
+.lg-hint{margin:0;color:var(--muted);font-size:15px;line-height:1.4}
+.lg-f{display:flex;flex-direction:column;gap:6px}
+.lg-f span{font:600 13px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lg-f input{height:52px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:500 18px var(--f-body);padding:0 12px;min-width:0}
+.lg-f input:focus{border-color:var(--steel);outline:none;box-shadow:0 0 0 3px var(--steel-soft)}
+.lg-err{margin:0;padding:10px 12px;border-radius:10px;background:var(--err-soft);color:var(--err);font-size:15px;line-height:1.35}
+.lg .btn{min-height:56px;font-size:22px}
+.lg .link{align-self:center}
+.hm-top{display:flex;align-items:center;gap:12px}
+.hm-top .hm-brand{flex:1;min-width:0}
+.acct{flex:none;max-width:44%;display:flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px 5px 5px;font:600 15px/1.1 var(--f-body)}
+.acct .av{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--steel-soft);color:var(--steel);font:700 15px/1 var(--f-display)}
+.acct .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.dlg-box .who{color:var(--muted)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+/* ---------- History ---------- */
+.hist{display:flex;flex-direction:column;gap:10px;padding-block:12px}
+.hs-tools{display:flex;flex-direction:column;gap:8px}
+.hs-range{display:flex;gap:6px;flex-wrap:wrap}
+.hs-tools .sg{font:600 15px/1 var(--f-body)}
+.hs-sform{display:flex;gap:8px}
+.hs-sform input{flex:1;min-width:0;height:44px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:600 16px var(--f-mono);padding:0 12px;text-transform:uppercase}
+.hs-sform input::placeholder{font:500 15px var(--f-body);text-transform:none;color:var(--muted)}
+.hs-sform .btn{min-height:44px;font-size:16px}
+.hs-list{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-bottom:4px}
+.hs-day{flex:none;margin:6px 2px 0;font:600 13px/1 var(--f-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.he{flex:none;display:flex;flex-direction:column;gap:6px;width:100%;text-align:left;padding:10px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+button.he:active{background:var(--steel-soft)}
+.he-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.he-a{font:700 12px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;border-radius:6px;background:var(--steel-soft);color:var(--steel)}
+.he-a.k-add,.he-a.k-restore{background:var(--ok-soft);color:var(--ok)}
+.he-a.k-del{background:var(--err-soft);color:var(--err)}
+.he-a.k-qty{background:var(--signal-soft);color:var(--ink)}
+.he-a.k-import{background:var(--tray);color:var(--muted)}
+.he-u{font-weight:600}
+.he-t{margin-left:auto;font:500 14px/1 var(--f-mono);color:var(--muted)}
+.he-r{display:block;font-size:15px;color:var(--muted);overflow-wrap:anywhere}
+.he-r b{font:700 17px/1.2 var(--f-mono);color:var(--ink)}
+.he-c{display:flex;flex-direction:column;gap:3px;font-size:15px}
+.he-c span{color:var(--muted)}
+.he-c s{color:var(--muted)}
+.he-n{display:block;font-size:14px;color:var(--muted)}
+.he-x{display:block;font:600 14px/1.2 var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--ok)}
 /* ---------- Import dialog & toast ---------- */
 .modal{position:fixed;inset:0;z-index:30;background:var(--scrim);display:grid;place-items:end center;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .modal-box{width:100%;max-width:520px;background:var(--surface);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 40px var(--shadow)}
@@ -249,7 +375,8 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 <body>
 <div id="app">
   <!-- HOME -->
-  <section id="scr-home" class="screen home">
+  <section id="scr-home" class="screen home" hidden>
+    <div class="hm-top">
     <div class="hm-brand">
       <svg viewBox="0 0 48 48" aria-hidden="true">
         <circle cx="24" cy="24" r="21.5" fill="none" stroke="currentColor" stroke-width="3"/>
@@ -263,6 +390,8 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
         <p class="eyebrow">Inventar stoc</p>
         <h1>Rulmenți</h1>
       </div>
+    </div>
+    <button type="button" class="acct" id="hm-acct" aria-label="Contul tău"><span class="av" id="hm-av"></span><span class="nm" id="hm-nm"></span></button>
     </div>
     <div class="status">
       <span id="sync" class="sync ok">Datele sunt salvate pe telefon</span>
@@ -278,7 +407,17 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
       <p id="hm-install-t">Instalează aplicația pe ecranul principal ca să meargă și fără internet.</p>
       <button type="button" class="btn primary" id="hm-install-btn" hidden>Instalează pe telefon</button>
     </div>
+    <div id="hm-migrate" class="install" hidden>
+      <p id="hm-mig-t"></p>
+      <button type="button" class="btn primary" id="hm-mig-go">Mută-le în stocul comun</button>
+      <button type="button" class="link" id="hm-mig-no">Nu acum</button>
+    </div>
     <div class="hm-actions">
+      <button type="button" id="hm-search" class="big">
+        <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></span>
+        <span class="t">Caută în stoc</span>
+        <span class="s">După serie, brand sau raft</span>
+      </button>
       <button type="button" id="hm-sheet" class="big">
         <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 4v16"/></svg></span>
         <span class="t">Vezi stocul</span>
@@ -294,14 +433,68 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
         <span class="t">Exportă Excel</span>
         <span class="s">Fișier .xlsx cu coloanele A, B, C, D și G</span>
       </button>
+      <button type="button" id="hm-hist" class="big">
+        <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+        <span class="t">Istoric</span>
+        <span class="s">Cine, când și ce a modificat</span>
+      </button>
       <div class="hm-links">
         <button type="button" id="hm-discard" class="link" hidden>Renunță la rândul început</button>
         <button type="button" id="hm-unhide" class="link" hidden>Reafișează chenarele ascunse</button>
         <button type="button" id="hm-import" class="link">Importă din Excel</button>
       </div>
       <input type="file" id="imp-file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
-      <p class="foot">Versiune offline · datele rămân doar pe acest telefon</p>
+      <p class="foot">Stoc comun pentru toată echipa · se sincronizează automat</p>
     </div>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="scr-login" class="screen login">
+    <div class="hm-brand">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="21.5" fill="none" stroke="currentColor" stroke-width="3"/>
+        <circle cx="24" cy="24" r="9" fill="none" stroke="currentColor" stroke-width="3"/>
+        <g fill="var(--signal)" stroke="currentColor" stroke-width="1.2">
+          <circle cx="24" cy="8.8" r="3.6"/><circle cx="34.75" cy="13.25" r="3.6"/><circle cx="39.2" cy="24" r="3.6"/><circle cx="34.75" cy="34.75" r="3.6"/>
+          <circle cx="24" cy="39.2" r="3.6"/><circle cx="13.25" cy="34.75" r="3.6"/><circle cx="8.8" cy="24" r="3.6"/><circle cx="13.25" cy="13.25" r="3.6"/>
+        </g>
+      </svg>
+      <div>
+        <p class="eyebrow">Inventar stoc</p>
+        <h1>Rulmenți</h1>
+      </div>
+    </div>
+    <form id="lg-form" class="lg" novalidate>
+      <h2 id="lg-title">Se pornește…</h2>
+      <p class="lg-hint" id="lg-hint">Pregătesc legătura cu stocul comun.</p>
+      <label class="lg-f" id="lg-f-email" hidden><span>Email</span><input id="lg-email" name="email" type="email" inputmode="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
+      <label class="lg-f" id="lg-f-pass" hidden><span>Parola</span><input id="lg-pass" name="password" type="password" autocomplete="current-password"></label>
+      <label class="lg-f" id="lg-f-name" hidden><span>Numele tău</span><input id="lg-name" name="name" type="text" autocomplete="name" autocapitalize="words" placeholder="de exemplu Ana Popescu"></label>
+      <p class="lg-err" id="lg-err" hidden></p>
+      <button type="submit" class="btn primary" id="lg-go" hidden>Intră</button>
+      <button type="button" class="link" id="lg-forgot" hidden>Am uitat parola</button>
+    </form>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="scr-hist" class="screen hist" hidden>
+    <div class="sh-head">
+      <button type="button" class="iconbtn" id="hs-back" aria-label="Înapoi la pagina principală"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Înapoi</button>
+      <div class="ttl">
+        <h2>Istoric</h2>
+        <p class="sh-sum" id="hs-sum"></p>
+      </div>
+      <button type="button" class="iconbtn primary" id="hs-export">Excel</button>
+    </div>
+    <div class="hs-tools">
+      <div class="hs-range" id="hs-range"></div>
+      <form class="hs-sform" id="hs-sform" autocomplete="off" novalidate>
+        <input id="hs-ser" type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Istoricul unei serii, ex. 6208-2RS" aria-label="Seria exactă">
+        <button type="submit" class="btn">Caută</button>
+      </form>
+      <div class="qf" id="hs-users"></div>
+    </div>
+    <div class="hs-list" id="hs-list"></div>
   </section>
 
   <!-- FIELD ENTRY -->
@@ -356,9 +549,72 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
       <button type="button" class="btn primary wide" id="rv-ok">OK</button>
     </div>
     <div class="rv-actions" id="rv-act-sheet" hidden>
-      <button type="button" class="btn" id="rv-mod2">Modifică</button>
-      <button type="button" class="btn danger" id="rv-del">Șterge rândul</button>
+      <button type="button" class="btn danger full" id="rv-del">Șterge rândul</button>
       <button type="button" class="btn primary wide" id="rv-backsheet">Înapoi la stoc</button>
+    </div>
+  </section>
+
+  <!-- QUANTITY: add / subtract -->
+  <section id="scr-qty" class="screen qty" hidden>
+    <div class="qy-head">
+      <p class="eyebrow">Nr. bucăți</p>
+      <h2 id="qy-ser"></h2>
+      <p class="qy-ctx" id="qy-ctx"></p>
+    </div>
+    <div class="qy-now"><span>În stoc acum</span><b id="qy-cur">0</b><span>buc</span></div>
+    <div class="qy-pick" id="qy-pick">
+      <button type="button" class="qbtn add" id="qy-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Adaugă</button>
+      <button type="button" class="qbtn sub" id="qy-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>Scade</button>
+    </div>
+    <div class="qy-amt" id="qy-amt" hidden>
+      <form id="qy-form" class="f-top qy-box" autocomplete="off" novalidate>
+        <div class="f-head"><span class="f-label" id="qy-q">Câte bucăți adaugi?</span></div>
+        <div class="f-in">
+          <input id="qy-input" name="qy-input" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" placeholder="scrie sau dictează" aria-label="Număr de bucăți">
+          <button type="button" class="f-clear" id="qy-clear" aria-label="Golește caseta">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <button type="button" class="mic" id="qy-mic" aria-label="Dictează">
+          <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M8.5 21h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Dictează</span>
+        </button>
+      </form>
+      <p class="qy-calc" id="qy-calc"></p>
+      <div class="qy-pad" id="kb-qy"></div>
+    </div>
+    <div class="qy-act">
+      <button type="button" class="btn" id="qy-back">Înapoi</button>
+      <button type="button" class="btn primary" id="qy-ok" hidden>OK</button>
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <section id="scr-search" class="screen search" hidden>
+    <form id="q-form" class="f-top" autocomplete="off" novalidate role="search">
+      <div class="f-head">
+        <span class="f-label">Caută în stoc</span>
+      </div>
+      <div class="f-in">
+        <input id="q-input" name="q-input" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="search" placeholder="serie, brand sau raft" aria-label="Caută în stoc">
+        <button type="button" class="f-clear" id="q-clear" aria-label="Golește căutarea">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <button type="button" class="mic" id="q-mic" aria-label="Dictează">
+        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M8.5 21h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Dictează</span>
+      </button>
+    </form>
+    <div class="qf" id="q-filters"></div>
+    <p class="q-status" id="q-status"></p>
+    <div class="q-res" id="q-res"></div>
+    <div class="kbq" id="kb-q2"></div>
+    <div class="kbn" id="kb-n2"></div>
+    <div class="q-actions">
+      <button type="button" class="btn" id="q-back">Înapoi</button>
+      <button type="button" class="btn" id="q-kb">Ascunde tastatura</button>
+      <button type="button" class="btn primary" id="q-go">Caută</button>
     </div>
   </section>
 
@@ -400,6 +656,45 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
       <button type="button" class="btn primary" id="imp-add">Adaugă la stoc</button>
       <button type="button" class="btn danger" id="imp-rep">Înlocuiește stocul</button>
       <button type="button" class="btn ghost" id="imp-cancel">Anulează</button>
+    </div>
+  </div>
+</div>
+<div id="nf" class="dlg" role="dialog" aria-modal="true" aria-labelledby="nf-t" hidden>
+  <div class="dlg-box">
+    <h3 id="nf-t">Nu există în stoc</h3>
+    <p id="nf-msg"></p>
+    <div class="dlg-act">
+      <button type="button" class="btn primary" id="nf-eq">Da, arată echivalentele</button>
+      <button type="button" class="btn ghost" id="nf-close">Nu</button>
+    </div>
+  </div>
+</div>
+<div id="acct" class="dlg" role="dialog" aria-modal="true" aria-labelledby="ac-t" hidden>
+  <div class="dlg-box">
+    <h3 id="ac-t">Contul tău</h3>
+    <p class="who" id="ac-who"></p>
+    <div class="dlg-act" id="ac-main">
+      <button type="button" class="btn" id="ac-name">Schimbă numele</button>
+      <button type="button" class="btn" id="ac-pass">Schimbă parola</button>
+      <button type="button" class="btn danger" id="ac-out">Ieși din cont</button>
+      <button type="button" class="btn ghost" id="ac-close">Închide</button>
+    </div>
+    <form class="dlg-act" id="ac-form" novalidate hidden>
+      <label class="lg-f"><span id="ac-l1"></span><input id="ac-i1" type="text"></label>
+      <label class="lg-f" id="ac-f2"><span id="ac-l2"></span><input id="ac-i2" type="password" autocomplete="new-password"></label>
+      <button type="submit" class="btn primary">Salvează</button>
+      <button type="button" class="btn ghost" id="ac-cancel">Înapoi</button>
+    </form>
+    <p class="lg-err" id="ac-err" hidden></p>
+  </div>
+</div>
+<div id="cf" class="dlg" role="dialog" aria-modal="true" aria-labelledby="cf-t" hidden>
+  <div class="dlg-box">
+    <h3 id="cf-t"></h3>
+    <p id="cf-msg"></p>
+    <div class="dlg-act">
+      <button type="button" class="btn primary" id="cf-ok"></button>
+      <button type="button" class="btn ghost" id="cf-no">Renunță</button>
     </div>
   </div>
 </div>
@@ -548,32 +843,212 @@ function qtyResult(raw, base){
 }
 function shakeBox(){ const box = $('#f-form'); box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake'); }
 
-/* ---------- data on the phone ---------- */
-let rowsMap = lsGet(LS_ROWS) || {};
-let saveFailed = false, sortedCache = null, persistAsked = false;
+/* ---------- shared stock in the cloud (Firebase) ---------- */
+const FB_CONFIG = {
+  apiKey:'AIzaSyAuPZXNFaO41Y3tiqU6pMsDdEs7xHYyj3o',
+  authDomain:'inventar-rulmenti.firebaseapp.com',
+  projectId:'inventar-rulmenti',
+  storageBucket:'inventar-rulmenti.firebasestorage.app',
+  messagingSenderId:'44096790008',
+  appId:'1:44096790008:web:c2106aa9c7b7d3fae5ca0d'
+};
+const FB_VER = '13.4.0';
+const LS_WM = 'fb_wm', LS_PEND = 'fb_pending', LS_MIG = 'fb_migrated';
+const ROW_F = ['seria', 'brand', 'buc', 'loc', 'obs'];
+const FB = window.__FB_ADAPTER || firebaseAdapter();
+const C = {ready:false, user:null, fromCache:true, error:'', pending:+(lsGet(LS_PEND) || 0), unsub:null};
+let docsMap = {}, sortedCache = null;
+
+// thin wrapper over the Firebase SDK (loaded from Google's CDN, kept by the service worker for offline use)
+function firebaseAdapter(){
+  const base = 'https://www.gstatic.com/firebasejs/' + FB_VER + '/';
+  let au = null, fs = null, auth = null, db = null;
+  const data = d => {
+    const x = d.data({serverTimestamps:'estimate'}) || {}, o = Object.assign({}, x);
+    o.suMs = x.su && x.su.toMillis ? x.su.toMillis() : 0;
+    delete o.su; delete o.st;
+    return o;
+  };
+  return {
+    async init(cfg){
+      const mods = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-firestore.js')]);
+      const app = mods[0].initializeApp(cfg);
+      au = mods[1]; fs = mods[2];
+      auth = au.getAuth(app);
+      try{ db = fs.initializeFirestore(app, {localCache:fs.persistentLocalCache({tabManager:fs.persistentMultipleTabManager()})}); }
+      catch(e){ db = fs.getFirestore(app); }
+    },
+    serverTime(){ return fs.serverTimestamp(); },
+    inc(n){ return fs.increment(n); },
+    currentUser(){ return auth ? auth.currentUser : null; },
+    onAuth(cb){ return au.onAuthStateChanged(auth, cb); },
+    signIn(email, pass){ return au.signInWithEmailAndPassword(auth, email, pass); },
+    signOut(){ return au.signOut(auth); },
+    setName(name){ return au.updateProfile(auth.currentUser, {displayName:name}); },
+    async changePassword(cur, nw){
+      const u = auth.currentUser;
+      await au.reauthenticateWithCredential(u, au.EmailAuthProvider.credential(u.email, cur));
+      await au.updatePassword(u, nw);
+    },
+    resetPassword(email){ return au.sendPasswordResetEmail(auth, email); },
+    async cachedRows(){
+      const s = await fs.getDocsFromCache(fs.collection(db, 'rulmenti'));
+      return s.docs.map(d => ({id:d.id, data:data(d)}));
+    },
+    // only documents changed after `since` are downloaded (and counted against the free quota)
+    listenRows(since, onChange, onErr){
+      const q = fs.query(fs.collection(db, 'rulmenti'), fs.where('su', '>', fs.Timestamp.fromMillis(since)), fs.orderBy('su'));
+      return fs.onSnapshot(q, {includeMetadataChanges:true}, s => onChange(
+        s.docChanges().filter(c => c.type !== 'removed').map(c => ({id:c.doc.id, data:data(c.doc), pending:c.doc.metadata.hasPendingWrites})),
+        {fromCache:s.metadata.fromCache}), onErr);
+    },
+    commit(ops){
+      const b = fs.writeBatch(db);
+      ops.forEach(o => {
+        const ref = o.id ? fs.doc(db, o.col, o.id) : fs.doc(fs.collection(db, o.col));
+        if(o.merge) b.set(ref, o.data, {merge:true}); else b.set(ref, o.data);
+      });
+      return b.commit();
+    },
+    waitPending(){ return fs.waitForPendingWrites(db); },
+    async history(o){
+      const col = fs.collection(db, 'istoric');
+      const q = o.seria ? fs.query(col, fs.where('seria', '==', o.seria), fs.limit(o.max))
+        : fs.query(col, ...[fs.where('t', '>=', o.from), fs.orderBy('t', 'desc')].concat(o.after ? [fs.startAfter(o.after)] : [], [fs.limit(o.max)]));
+      const s = await fs.getDocs(q);
+      return {items:s.docs.map(d => Object.assign({id:d.id}, data(d))), last:s.docs.length ? s.docs[s.docs.length - 1] : null, fromCache:s.metadata.fromCache};
+    },
+  };
+}
+
 function invalidate(){ sortedCache = null; }
 function sortedRows(){
-  if(!sortedCache) sortedCache = Object.keys(rowsMap).sort().map(id => Object.assign({id}, rowsMap[id]));
+  if(!sortedCache) sortedCache = Object.keys(docsMap).filter(id => !docsMap[id].del).sort().map(id => Object.assign({id}, docsMap[id]));
   return sortedCache;
 }
-function getRow(id){ return has(rowsMap, id) ? Object.assign({id}, rowsMap[id]) : null; }
+function getRow(id){ const r = docsMap[id]; return r && !r.del ? Object.assign({id}, r) : null; }
 function newId(offset){ return 'r' + String(Date.now() + (offset || 0)).padStart(13, '0') + '-' + Math.random().toString(36).slice(2, 7); }
-function saveRows(){
-  saveFailed = !lsSet(LS_ROWS, rowsMap);
-  if(!persistAsked && navigator.storage && navigator.storage.persist){ persistAsked = true; navigator.storage.persist().catch(() => {}); }
-  syncUI();
+function me(){ const u = C.user; return {em:(u && u.email) || '', nm:(u && u.displayName) || (u && u.email) || ''}; }
+function numOrNull(v){ v = String(v == null ? '' : v).trim(); return /^\d+$/.test(v) ? parseInt(v, 10) : null; }
+function fromDoc(d){
+  return {seria:d.seria || '', brand:d.brand || '', buc:(d.n == null || d.n === '') ? '' : String(d.n), loc:d.loc || '', obs:d.obs || '',
+    t:d.t || 0, u:d.u || 0, del:!!d.del, em:d.em || '', nm:d.nm || ''};
 }
-function putRow(id, data){ rowsMap[id] = data; invalidate(); saveRows(); onData(); }
-function delRow(id){ delete rowsMap[id]; invalidate(); saveRows(); onData(); }
-window.addEventListener('storage', e => {             // another open tab changed the stock
-  if(e.key === LS_ROWS){ rowsMap = lsGet(LS_ROWS) || {}; invalidate(); onData(); }
-});
+function stamp(){ const m = me(); return {em:m.em, nm:m.nm, u:Date.now(), su:FB.serverTime()}; }
+// one history entry: who, when, what changed (old -> new)
+function hist(act, rid, row, ch, note){
+  const m = me(); row = row || {};
+  return {col:'istoric', data:{t:Date.now(), st:FB.serverTime(), em:m.em, nm:m.nm, act, rid:rid || '', seria:row.seria || '', brand:row.brand || '', loc:row.loc || '', ch:ch || [], note:note || ''}};
+}
+function send(ops, undo){
+  C.pending++; lsSet(LS_PEND, C.pending); syncUI();
+  const done = () => { C.pending = Math.max(0, C.pending - 1); lsSet(LS_PEND, C.pending); syncUI(); };
+  FB.commit(ops).then(done, err => {
+    done();
+    if(undo) undo();
+    toast(err && err.code === 'permission-denied' ? 'Modificarea a fost respinsă: contul tău nu are drept de scriere în stoc.' : 'Modificarea nu a putut fi salvată. Încearcă din nou.', 'err');
+  });
+}
+function putRow(id, data, meta){
+  meta = meta || {};
+  const old = docsMap[id], row = {};
+  ROW_F.forEach(k => { row[k] = String(data[k] == null ? '' : data[k]); });
+  let act, ch;
+  if(!old){ act = 'add'; ch = ROW_F.filter(k => row[k]).map(k => ({f:k, o:'', n:row[k]})); }
+  else {
+    ch = ROW_F.filter(k => (old[k] || '') !== row[k]).map(k => ({f:k, o:old[k] || '', n:row[k]}));
+    act = old.del ? 'restore' : 'edit';
+    if(!old.del && !ch.length) return;
+  }
+  if(meta.act) act = meta.act;
+  const prev = old ? Object.assign({}, old) : null, m = me();
+  docsMap[id] = Object.assign({}, old || {}, row, {del:false, t:(old && old.t) || data.t || Date.now(), u:Date.now(), em:m.em, nm:m.nm});
+  invalidate(); onData();
+  const doc = Object.assign({}, stamp(), {del:false});
+  if(!old) Object.assign(doc, {seria:row.seria, brand:row.brand, n:numOrNull(row.buc), loc:row.loc, obs:row.obs, t:docsMap[id].t});
+  else ch.forEach(c => { if(c.f === 'buc') doc.n = numOrNull(row.buc); else doc[c.f] = row[c.f]; });
+  send([{col:'rulmenti', id, data:doc, merge:!!old}, hist(act, id, row, ch, meta.note)],
+    () => { if(prev) docsMap[id] = prev; else delete docsMap[id]; invalidate(); onData(); });
+}
+function delRow(id, meta){
+  meta = meta || {};
+  const old = docsMap[id]; if(!old || old.del) return;
+  const prev = Object.assign({}, old);
+  docsMap[id] = Object.assign({}, old, {del:true}); invalidate(); onData();
+  send([{col:'rulmenti', id, data:Object.assign({del:true}, stamp()), merge:true},
+    hist(meta.act || 'del', id, old, ROW_F.filter(k => old[k]).map(k => ({f:k, o:old[k], n:''})), meta.note)],
+    () => { docsMap[id] = prev; invalidate(); onData(); });
+}
+// add or subtract pieces; the cloud adds them up even if two people change the same row at once
+function addPieces(id, delta, meta){
+  meta = meta || {};
+  const old = docsMap[id]; if(!old || old.del || !delta) return;
+  const before = parseInt(old.buc, 10) || 0, after = before + delta, prev = Object.assign({}, old);
+  docsMap[id] = Object.assign({}, old, {buc:String(after)}); invalidate(); onData();
+  send([{col:'rulmenti', id, data:Object.assign({n:FB.inc(delta)}, stamp()), merge:true},
+    hist('qty', id, old, [{f:'buc', o:String(before), n:String(after)}], (delta > 0 ? '+' : '−') + Math.abs(delta) + ' buc' + (meta.note ? ' · ' + meta.note : ''))],
+    () => { docsMap[id] = prev; invalidate(); onData(); });
+}
+// many rows at once (Excel import, rows moved from this phone); every row gets its own history entry
+function importRows(list, replace, note){
+  const ops = [], m = me(), now = Date.now();
+  if(replace) sortedRows().forEach(r => {
+    docsMap[r.id] = Object.assign({}, docsMap[r.id], {del:true});
+    ops.push({col:'rulmenti', id:r.id, data:Object.assign({del:true}, stamp()), merge:true});
+    ops.push(hist('del', r.id, r, ROW_F.filter(k => r[k]).map(k => ({f:k, o:r[k], n:''})), 'stoc înlocuit la import'));
+  });
+  list.forEach(({id, row}, i) => {
+    const r = {}; ROW_F.forEach(k => { r[k] = String(row[k] == null ? '' : row[k]); });
+    const t = row.t || now + i;
+    docsMap[id] = Object.assign({}, r, {t, u:now, del:false, em:m.em, nm:m.nm});
+    ops.push({col:'rulmenti', id, data:Object.assign({seria:r.seria, brand:r.brand, n:numOrNull(r.buc), loc:r.loc, obs:r.obs, t, del:false}, stamp())});
+    ops.push(hist('import', id, r, ROW_F.filter(k => r[k]).map(k => ({f:k, o:'', n:r[k]})), note));
+  });
+  invalidate(); onData();
+  for(let i = 0; i < ops.length; i += 400) send(ops.slice(i, i + 400));
+}
 
+function syncState(){
+  if(C.error) return {cls:'err', txt:C.error};
+  if(!C.ready) return {cls:'', txt:'Se încarcă stocul comun…'};
+  const off = !navigator.onLine || C.fromCache;
+  if(C.pending > 0) return off
+    ? {cls:'warn', txt:`Fără conexiune · ${C.pending} ${C.pending === 1 ? 'modificare așteaptă' : 'modificări așteaptă'} în telefon`}
+    : {cls:'', txt:'Se trimit modificările…'};
+  if(off) return {cls:'warn', txt:'Fără conexiune · lucrezi pe copia din telefon'};
+  return {cls:'ok', txt:'Sincronizat cu stocul comun'};
+}
 function syncUI(){
-  const el = $('#sync');
-  if(saveFailed){ el.className = 'sync err'; el.textContent = 'Nu am putut salva pe telefon. Exportă Excel acum ca să nu pierzi date.'; }
-  else { el.className = 'sync ok'; el.textContent = 'Datele sunt salvate pe telefon'; }
+  const st = syncState(), el = $('#sync');
+  el.className = 'sync ' + st.cls; el.textContent = st.txt;
   if(S.screen === 'review') rvStatus();
+}
+window.addEventListener('online', () => syncUI());
+window.addEventListener('offline', () => syncUI());
+
+function stopRows(){ if(C.unsub){ try{ C.unsub(); }catch(e){} C.unsub = null; } C.ready = false; }
+async function startRows(){
+  if(C.unsub) return;
+  C.unsub = () => {};
+  try{ (await FB.cachedRows()).forEach(({id, data}) => { docsMap[id] = fromDoc(data); }); }catch(e){}
+  let wm = +(lsGet(LS_WM) || 0);
+  if(!Object.keys(docsMap).length) wm = 0;                 // nothing on this phone yet: download the whole stock once
+  invalidate(); onData();
+  try{ C.unsub = FB.listenRows(Math.max(0, wm - 60000), (changes, meta) => {
+    let max = +(lsGet(LS_WM) || 0);
+    changes.forEach(({id, data, pending}) => { docsMap[id] = fromDoc(data); if(!pending && data.suMs > max) max = data.suMs; });
+    lsSet(LS_WM, max);
+    C.fromCache = meta.fromCache; C.error = ''; C.ready = true;
+    invalidate(); onData(); syncUI();
+  }, err => {
+    C.ready = true;
+    C.error = err && err.code === 'permission-denied'
+      ? 'Contul tău nu are acces la stoc. Cere să-ți fie adăugat emailul în regulile bazei de date.'
+      : 'Nu pot citi stocul comun' + (err && err.code ? ' (' + err.code + ')' : '') + '.';
+    syncUI();
+  }); }
+  catch(e){ C.unsub = null; C.ready = true; C.error = 'Nu pot citi stocul comun. Închide și redeschide aplicația.'; syncUI(); }
+  if(C.pending > 0) FB.waitPending().then(() => { C.pending = 0; lsSet(LS_PEND, 0); syncUI(); }).catch(() => {});
 }
 
 /* ---------- UI state ---------- */
@@ -600,11 +1075,16 @@ function go(name){
   S.screen = name;
   if(name === 'home'){ renderHome(); wakeOff(); }
   if(name === 'sheet'){ renderSheet(); wakeOff(); }
+  if(name === 'search'){ renderFilters(); renderSearch(); wakeOff(); }
+  if(name === 'hist'){ renderHist(); wakeOff(); }
   syncUI();
 }
 function onData(){
   if(S.screen === 'home') renderHome();
   else if(S.screen === 'sheet') renderSheet();
+  else if(S.screen === 'search'){ renderFilters(); renderSearch(); }
+  else if(S.screen === 'qty') qyRefresh();
+  else if(S.screen === 'hist') renderHist();
   else if(S.screen === 'review') renderReview();
   else if(S.screen === 'field') renderSugg();
 }
@@ -617,7 +1097,7 @@ function toast(msg, kind, act){
     b.addEventListener('click', () => { t.hidden = true; act.fn(); });
     t.appendChild(b);
   }
-  t.className = 'toast' + (kind ? ' ' + kind : '') + (S.screen === 'field' ? ' top' : '');
+  t.className = 'toast' + (kind ? ' ' + kind : '') + ((S.screen === 'field' || S.screen === 'search') ? ' top' : '');
   t.hidden = false;
   clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, act ? 6000 : 3500);
 }
@@ -637,21 +1117,10 @@ function renderHome(){
   $('#hm-discard').hidden = !resume;
   const hc = hiddenCount(), uh = $('#hm-unhide');
   uh.hidden = !hc; uh.textContent = 'Reafișează chenarele ascunse (' + hc + ')';
-  // backup reminder: the stock exists only on this phone
-  const b = $('#hm-backup');
-  if(!rows.length){ b.hidden = true; }
-  else {
-    b.hidden = false;
-    const t = lsGet(LS_EXP);
-    if(!t){ b.className = 'sync warn'; b.textContent = 'Nu ai exportat încă stocul. Exportă Excel ca rezervă.'; }
-    else {
-      const d = new Date(t), now = new Date();
-      const days = Math.floor((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5);
-      const hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-      if(days <= 0){ b.className = 'sync ok'; b.textContent = 'Ultimul export Excel: azi, ' + hm; }
-      else { b.className = 'sync warn'; b.textContent = 'Ultimul export Excel: ' + (days === 1 ? 'ieri' : 'acum ' + days + ' zile') + '. Fă un export de rezervă.'; }
-    }
-  }
+  const m = me();
+  $('#hm-nm').textContent = m.nm || m.em;
+  $('#hm-av').textContent = (m.nm || m.em || '?').trim().charAt(0).toUpperCase();
+  renderMigrate();
 }
 
 /* ---------- field entry ---------- */
@@ -659,13 +1128,14 @@ function buildKeys(){
   const key = (c, cls) => `<button type="button" class="key ${cls || ''}" data-k="${esc(c)}">${esc(c)}</button>`;
   const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
   const bs = cls => `<button type="button" class="key fn ${cls}" data-k="BS" aria-label="Șterge ultimul caracter"><svg width="26" height="20" viewBox="0 0 26 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M8 2h15a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 23 18H8L1.5 10z"/><path d="M12 6.5l7 7M19 6.5l-7 7"/></svg></button>`;
-  $('#kb-q').innerHTML =
+  $('#kb-q').innerHTML = $('#kb-q2').innerHTML =
     '<div class="kr r1">' + [...rows[0]].map(c => key(c)).join('') + '</div>' +
     '<div class="kr r2">' + [...rows[1]].map(c => key(c)).join('') + '</div>' +
     '<div class="kr r3">' + [...rows[2]].map(c => key(c)).join('') + '</div>' +
     '<div class="kr r4"><button type="button" class="key fn sp" data-k="SP">spațiu</button>' + bs('bs') + '</div>';
   // numeric: digits in rows of 3 like a phone keypad, symbols to the right
-  $('#kb-n').innerHTML =
+  $('#kb-qy').innerHTML = '<div class="pad">' + [...'123456789'].map(c => key(c)).join('') + key('0', 'zero') + bs('') + '</div>';
+  $('#kb-n').innerHTML = $('#kb-n2').innerHTML =
     '<div class="pad">' + [...'123456789'].map(c => key(c)).join('') + key('0', 'zero') + bs('') + '</div>' +
     '<div class="pad ps">' + ['-', '.', '/', '_', '(', ')', '+', '*'].map(c => key(c, 'sym')).join('') + '</div>';
 }
@@ -906,10 +1376,11 @@ function startInventory(){
 
 /* ---------- review ---------- */
 function showReview(){ renderReview(); go('review'); }
+function rvBack(){ return S.rv.from === 'search' || S.rv.from === 'hist' ? S.rv.from : 'sheet'; }
 function rvStatus(){
-  const el = $('#rv-status');
-  if(saveFailed){ el.textContent = 'Nesalvat!'; el.className = 'chip err'; }
-  else { el.textContent = 'Salvat pe telefon'; el.className = 'chip ok'; }
+  const el = $('#rv-status'), off = syncState().cls === 'warn';
+  el.textContent = C.pending > 0 ? (off ? 'În așteptare în telefon' : 'Se trimite…') : (off ? 'Salvat în telefon' : 'Salvat');
+  el.className = 'chip ' + (C.pending > 0 && off ? 'warn' : 'ok');
 }
 function mergeRow(){
   const d = S.draft, cur = d && d.id && getRow(d.id), tgt = S.rv.mergeTarget && getRow(S.rv.mergeTarget);
@@ -919,29 +1390,32 @@ function mergeRow(){
   const a = parseInt(tgt.buc, 10) || 0, b = parseInt(cur.buc, 10) || 0;
   const obs = [tgt.obs, cur.obs].filter(Boolean).filter((v, i, arr) => arr.indexOf(v) === i).join('; ');
   const merged = Object.assign({}, tgtBefore, {buc:(tgt.buc || cur.buc) ? String(a + b) : '', obs, u:Date.now()});
-  putRow(tgt.id, merged);
-  delRow(cur.id);
+  putRow(tgt.id, merged, {act:'merge', note:b ? `+${b} buc din rândul unit` : 'rând unit'});
+  delRow(cur.id, {act:'merge', note:'unit cu rândul existent'});
   S.draft = Object.assign({id:tgt.id}, merged);
   S.rv.modify = false; S.rv.delArm = false;
   renderReview();
   toast(b ? `Am adăugat ${b} buc la rândul existent. Acum sunt ${merged.buc} buc.` : 'Am unit rândul cu cel existent.', '', {label:'Anulează', fn:() => {
-    putRow(tgt.id, tgtBefore); putRow(cur.id, curBefore);
+    putRow(tgt.id, tgtBefore, {note:'anulare unire'}); putRow(cur.id, curBefore, {note:'anulare unire'});
     if(S.screen === 'review' && S.draft && S.draft.id === tgt.id){ S.draft = Object.assign({id:cur.id}, curBefore); renderReview(); }
   }});
 }
 function renderReview(){
   const d = S.draft; if(!d) return;
   const rows = sortedRows(), n = rows.findIndex(r => r.id === d.id) + 1;
-  const sheetMode = S.rv.mode === 'sheet';
-  $('#rv-eyebrow').textContent = sheetMode ? 'Rând din stoc' : 'Rulment înregistrat';
+  const rowMode = S.rv.mode === 'row';
+  $('#rv-eyebrow').textContent = rowMode ? 'Rând din stoc' : 'Rulment înregistrat';
   $('#rv-title').textContent = n ? 'Rândul ' + n : 'Rând nou';
-  $('#rv-hint').hidden = !S.rv.modify;
+  const hint = $('#rv-hint');
+  hint.hidden = !(rowMode || S.rv.modify);
+  hint.textContent = rowMode ? 'Atinge căsuța pe care vrei s-o modifici.' : 'Ce vrei să modifici? Atinge caseta.';
+  hint.classList.toggle('soft', rowMode);
   const cards = $('#rv-cards');
   cards.classList.toggle('pick', S.rv.modify);
   cards.innerHTML = FIELDS.map((f, i) => {
     const v = d[f.k];
     return `<button type="button" class="card" data-i="${i}"><span class="colbadge">${f.col}</span><span class="c-label">${esc(f.label)}</span>` +
-      (v ? `<span class="c-val">${esc(v)}</span>` : '<span class="c-val empty">necompletat</span>') + '</button>';
+      (v ? `<span class="c-val">${esc(v)}</span>` : '<span class="c-val empty">necompletat</span>') + (rowMode ? '<svg class="c-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>' : '') + '</button>';
   }).join('');
   // duplicate = same series AND same brand, written identically
   const same = (a, b) => up(a).replace(/\s+/g, ' ').trim() === up(b).replace(/\s+/g, ' ').trim();
@@ -966,9 +1440,10 @@ function renderReview(){
     }
     dup.hidden = false; dup.innerHTML = html;
   } else dup.hidden = true;
-  $('#rv-act-new').hidden = sheetMode;
-  $('#rv-act-sheet').hidden = !sheetMode;
-  for(const id of ['#rv-mod', '#rv-mod2']){
+  $('#rv-act-new').hidden = rowMode;
+  $('#rv-act-sheet').hidden = !rowMode;
+  $('#rv-backsheet').textContent = {search:'Înapoi la rezultate', hist:'Înapoi la istoric'}[S.rv.from] || 'Înapoi la stoc';
+  for(const id of ['#rv-mod']){
     const b = $(id); b.textContent = S.rv.modify ? 'Anulează' : 'Modifică'; b.classList.toggle('active', S.rv.modify);
   }
   const del = $('#rv-del');
@@ -977,13 +1452,328 @@ function renderReview(){
   rvStatus();
 }
 
+/* ---------- quantity: add / subtract pieces ---------- */
+const qyInp = $('#qy-input');
+S.qy = {id:'', mode:'', cur:0, step:'pick', err:''};
+function openQty(){
+  const r = S.draft && getRow(S.draft.id); if(!r) return;
+  S.qy = {id:r.id, mode:'', cur:parseInt(r.buc, 10) || 0, step:'pick', err:''};
+  $('#qy-ser').textContent = r.seria || '';
+  $('#qy-ctx').textContent = [r.brand || 'fără brand', r.loc || 'fără locație'].join(' · ');
+  qyShow('pick');
+  go('qty');
+}
+function qyShow(step){
+  const amt = step === 'amt', scr = $('#scr-qty');
+  S.qy.step = step; S.qy.err = '';
+  $('#qy-pick').hidden = amt; $('#qy-amt').hidden = !amt; $('#qy-ok').hidden = !amt;
+  $('#qy-cur').textContent = fmt(S.qy.cur);
+  scr.classList.toggle('add', amt && S.qy.mode === 'add');
+  scr.classList.toggle('sub', amt && S.qy.mode === 'sub');
+  if(amt){
+    $('#qy-q').textContent = S.qy.mode === 'add' ? 'Câte bucăți adaugi?' : 'Câte bucăți scazi?';
+    qyInp.value = '';
+    qyCalc();
+  }
+}
+function qyCalc(){
+  const el = $('#qy-calc'), sign = S.qy.mode === 'add' ? '+' : '−';
+  if(S.qy.err){ el.className = 'qy-calc err'; el.textContent = S.qy.err; return; }
+  const r = qtyResult(qyInp.value, '');
+  el.className = 'qy-calc';
+  if(r.empty){ el.innerHTML = `${fmt(S.qy.cur)} ${sign} <span class="dim">?</span>`; return; }
+  if(r.err){ el.className = 'qy-calc err'; el.textContent = r.err; return; }
+  const n = parseInt(r.value, 10), res = S.qy.mode === 'add' ? S.qy.cur + n : S.qy.cur - n;
+  if(res < 0){ el.className = 'qy-calc err'; el.textContent = `Nu poți scădea ${fmt(n)} buc: în stoc sunt ${fmt(S.qy.cur)}.`; return; }
+  el.innerHTML = `${fmt(S.qy.cur)} ${sign} ${fmt(n)} = <b>${fmt(res)}</b> buc`;
+}
+function qyErr(msg){
+  S.qy.err = msg; qyCalc();
+  if(msg){ const b = $('#qy-form'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); }
+}
+function pressQty(k){
+  let v = qyInp.value;
+  if(k === 'BS') v = v.slice(0, -1); else if(/\d/.test(k)) v += k;
+  qyInp.value = v; S.qy.err = ''; qyCalc();
+}
+function qyRefresh(){
+  const r = getRow(S.qy.id); if(!r) return;
+  S.qy.cur = parseInt(r.buc, 10) || 0;
+  $('#qy-cur').textContent = fmt(S.qy.cur);
+  if(S.qy.step === 'amt') qyCalc();
+}
+function qyOK(){
+  const r = qtyResult(qyInp.value, '');
+  const n = r.value ? parseInt(r.value, 10) : 0;
+  if(r.err){ qyErr(r.err); return; }
+  if(!(n > 0)){ qyErr('Scrie câte bucăți, apoi apasă OK.'); return; }
+  const row = getRow(S.qy.id); if(!row) return;
+  const before = parseInt(row.buc, 10) || 0, add = S.qy.mode === 'add', next = add ? before + n : before - n;
+  if(next < 0){ qyErr(`Nu poți scădea ${fmt(n)} buc: în stoc sunt ${fmt(before)}.`); return; }
+  const prev = Object.assign({}, row); delete prev.id;
+  addPieces(row.id, add ? n : -n);
+  qyInp.blur();
+  S.draft = getRow(row.id);
+  showReview();
+  toast(`${add ? 'Am adăugat' : 'Am scăzut'} ${fmt(n)} buc. Acum: ${fmt(next)} buc.`, '', {label:'Anulează', fn:() => {
+    addPieces(row.id, add ? -n : n, {note:'anulare'});
+    if(S.screen === 'review' && S.draft && S.draft.id === row.id){ S.draft = getRow(row.id); renderReview(); }
+  }});
+}
+
+/* ---------- search in stock ---------- */
+const qinp = $('#q-input');
+const coll = new Intl.Collator('ro', {numeric:true, sensitivity:'base'});
+const normSame = s => up(s).replace(/\s+/g, ' ').trim();
+S.q = {brands:new Set(), locs:new Set(), kb:true, dict:false, eq:'', pendingEq:'', facets:null};
+let qIndex = null, qBlurT = null;
+function searchIndex(){
+  const rows = sortedRows();
+  if(qIndex && qIndex.rows === rows) return qIndex;
+  const items = rows.map(r => {
+    const p = splitSer(r.seria);
+    return {r, k:{ser:compact(r.seria), core:p ? p.core.replace(/\D/g, '') : '', rest:p ? compact(p.core + p.suf) : '',
+      suf:p ? compact(p.suf) : '', brand:compact(r.brand), loc:compact(r.loc), obs:compact(r.obs)}};
+  });
+  const bc = new Map(), lc = new Map();
+  rows.forEach(r => {
+    const b = normSame(r.brand), l = normSame(r.loc);
+    if(b) bc.set(b, (bc.get(b) || 0) + 1);
+    if(l) lc.set(l, (lc.get(l) || 0) + 1);
+  });
+  qIndex = {rows, items,
+    brands:[...bc.keys()].sort((a, b) => bc.get(b) - bc.get(a) || coll.compare(a, b)),
+    locs:[...lc.keys()].sort(coll.compare)};
+  return qIndex;
+}
+function parseQuery(raw){ return normalize(FIELDS[0], raw).split(/\s+/).map(compact).filter(Boolean); }
+// how one word matches one row: 2 exact, 1 partial, 0 not at all
+function tokMatch(t, k){
+  if(/^\d+$/.test(t)) return k.core.startsWith(t) ? (k.core === t ? 2 : 1) : 0;   // a number is looked up only in the base of the series
+  if(k.ser.startsWith(t) || (k.rest && k.rest.startsWith(t))) return (k.ser === t || k.rest === t) ? 2 : 1;
+  if(t.length >= 2 && k.suf.includes(t)) return 1;
+  if(k.brand && k.brand.startsWith(t)) return k.brand === t ? 2 : 1;
+  if(k.loc && k.loc.startsWith(t)) return k.loc === t ? 2 : 1;
+  if(t.length >= 3 && k.obs.includes(t)) return 1;
+  return 0;
+}
+// one group per bearing (series + brand), with its locations and total pieces
+function groupRows(hits){
+  const m = new Map();
+  hits.forEach(({r, score}) => {
+    const key = normSame(r.seria) + '|' + normSame(r.brand);
+    let g = m.get(key);
+    if(!g){ g = {seria:r.seria, brand:r.brand, rows:[], pcs:0, score:0}; m.set(key, g); }
+    g.rows.push(r); g.pcs += parseInt(r.buc, 10) || 0; g.score = Math.max(g.score, score || 0);
+  });
+  const out = [...m.values()];
+  out.forEach(g => g.rows.sort((a, b) => coll.compare(a.loc || '', b.loc || '')));
+  return out.sort((a, b) => b.score - a.score || coll.compare(a.seria || '', b.seria || '') || coll.compare(a.brand || '', b.brand || ''));
+}
+function runSearch(){
+  const toks = parseQuery(qinp.value), fb = S.q.brands, fl = S.q.locs, idx = searchIndex();
+  if(!toks.length && !fb.size && !fl.size){ S.q.facets = {brands:idx.brands, locs:idx.locs}; return null; }
+  const hits = [];
+  for(const {r, k} of idx.items){
+    let score = 0;
+    for(const t of toks){ const m = tokMatch(t, k); if(!m){ score = -1; break; } score += m; }
+    if(score >= 0) hits.push({r, score});
+  }
+  const inB = h => !fb.size || fb.has(normSame(h.r.brand)), inL = h => !fl.size || fl.has(normSame(h.r.loc));
+  // the quick filters offer only the brands and locations found by this search
+  const bc = new Map(), lc = new Map();
+  hits.forEach(h => {
+    const b = normSame(h.r.brand), l = normSame(h.r.loc);
+    if(b && inL(h)) bc.set(b, (bc.get(b) || 0) + 1);
+    if(l && inB(h)) lc.set(l, (lc.get(l) || 0) + 1);
+  });
+  S.q.facets = {brands:[...bc.keys()].sort((a, b) => bc.get(b) - bc.get(a) || coll.compare(a, b)), locs:[...lc.keys()].sort(coll.compare)};
+  return groupRows(hits.filter(h => inB(h) && inL(h)));
+}
+
+/* equivalent seal, shield, clearance and snap ring codes, from the manufacturers' catalogues (EQ_SRC) */
+const EQ_FEAT = {
+  S2C:{d:'etanșări de contact pe ambele părți', c:[['SKF', '2RSH, 2RS1'], ['Schaeffler (FAG)', '2RSR, 2HRS'], ['NSK', 'DDU'], ['NTN', 'LLU'], ['Koyo', '2RS, 2RK'], ['NACHI', '2NSE']]},
+  S1C:{d:'etanșare de contact pe o parte', c:[['SKF', 'RSH, RS1'], ['Schaeffler (FAG)', 'RSR, HRS'], ['NSK', 'DU'], ['NTN', 'LU'], ['Koyo', 'RS, RK'], ['NACHI', 'NSE']]},
+  S2N:{d:'etanșări fără contact pe ambele părți', c:[['Schaeffler (FAG)', '2BRS'], ['NSK', 'VV'], ['NTN', 'LLB'], ['Koyo', '2RU'], ['NACHI', '2NKE']]},
+  S1N:{d:'etanșare fără contact pe o parte', c:[['Schaeffler (FAG)', 'BRS'], ['NSK', 'V'], ['NTN', 'LB'], ['Koyo', 'RU'], ['NACHI', 'NKE']]},
+  Z2:{d:'capace metalice pe ambele părți', c:[['SKF', '2Z'], ['Schaeffler (FAG)', '2Z, 2ZR'], ['NSK', 'ZZ'], ['NTN', 'ZZ'], ['Koyo', 'ZZ'], ['NACHI', 'ZZE']]},
+  Z1:{d:'capac metalic pe o parte', c:[['SKF', 'Z'], ['Schaeffler (FAG)', 'Z, ZR'], ['NSK', 'Z'], ['NTN', 'Z'], ['Koyo', 'Z'], ['NACHI', 'ZE']]},
+  C2:{d:'joc radial C2'}, C3:{d:'joc radial C3'}, C4:{d:'joc radial C4'}, C5:{d:'joc radial C5'},
+  N:{d:'canal pentru segment'}, NR:{d:'canal și segment de siguranță'},
+};
+const EQ_TOK = [
+  ['2NSE9', 'S2C'], ['2NKE9', 'S2N'], ['2RSH', 'S2C'], ['2RS1', 'S2C'], ['2RSR', 'S2C'], ['2HRS', 'S2C'], ['2NSE', 'S2C'],
+  ['2NKE', 'S2N'], ['2BRS', 'S2N'], ['NSE9', 'S1C'], ['NKE9', 'S1N'], ['DDU', 'S2C'], ['LLU', 'S2C'], ['LLB', 'S2N'],
+  ['2RS', 'S2C'], ['2RK', 'S2C'], ['2RU', 'S2N'], ['RSH', 'S1C'], ['RS1', 'S1C'], ['RSR', 'S1C'], ['HRS', 'S1C'],
+  ['NSE', 'S1C'], ['NKE', 'S1N'], ['BRS', 'S1N'], ['ZZE', 'Z2'], ['2ZR', 'Z2'], ['DU', 'S1C'], ['LU', 'S1C'],
+  ['LB', 'S1N'], ['VV', 'S2N'], ['RS', 'S1C'], ['RK', 'S1C'], ['RU', 'S1N'], ['ZZ', 'Z2'], ['2Z', 'Z2'], ['ZE', 'Z1'],
+  ['ZR', 'Z1'], ['C2', 'C2'], ['C3', 'C3'], ['C4', 'C4'], ['C5', 'C5'], ['CN', ''], ['NR', 'NR'], ['V', 'S1N'], ['Z', 'Z1'], ['N', 'N'],
+].sort((a, b) => b[0].length - a[0].length);
+const EQ_SRC = [
+  ['SKF – Bearing Handbook for Electric Motors (RSH, RS1, Z, C3, C4, NR)', 'https://cdn.skfmediahub.skf.com/api/public/0901d19680056c36/pdf_preview_medium/0901d19680056c36_pdf_preview_medium.pdf'],
+  ['Schaeffler – TPI 165, FAG Generation C (2HRS, 2RSR, 2Z, 2BRS, C3)', 'https://www.schaeffler.com/remotemedien/media/_shared_media/08_media_library/01_publications/schaeffler_2/tpi/downloads_8/tpi_165_de_en.pdf'],
+  ['Schaeffler – WL 43163, rulmenți radiali cu bile FAG (2RSR, 2ZR, C3)', 'https://www.schaeffler.com/remotemedien/media/_shared_media/08_media_library/01_publications/schaeffler_2/publication/downloads_18/wl_43163_de_en.pdf'],
+  ['NSK – P_TI-0111 (Z, ZZ, DU, DDU, V, VV, C2–C5, N, NR)', 'https://nsk.com/content/dam/nsk/eu/en_gb/documents/bearings-europe/P_TI-0111_EN.pdf'],
+  ['NTN – Ball bearings, shield and seal types (Z, ZZ, LU, LLU, LB, LLB)', 'https://ntn-snr.com/sites/default/files/2025-03/EN_NTN_Ball_bearings-Shield-and-Seal-types.pdf'],
+  ['JTEKT / Koyo – Bearing number (Z, ZZ, RS, 2RS, RK, 2RK, RU, 2RU, C2–C4, N, NR)', 'https://www.jtekt.co.jp/products/bearing/en/support/bearing-knowledge/6-3000.html'],
+  ['NACHI – catalog B3402E (ZE, ZZE, NSE, 2NSE, NKE, 2NKE)', 'https://www.nachi-fujikoshi.co.jp/dcms_media/other/B3402E-2.pdf'],
+];
+// suffix -> sorted list of features, or null when it holds a code we have no verified match for
+function sufFeatures(suf){
+  const parts = up(suf).split(/[-\/.\s]+/).map(compact).filter(Boolean), feats = [];
+  for(const part of parts){
+    if(part === 'C') continue;                                   // Schaeffler "Generation C" marker, not a feature
+    let i = 0;
+    while(i < part.length){
+      const hit = EQ_TOK.find(([t]) => part.startsWith(t, i));
+      if(!hit) return null;
+      if(hit[1]) feats.push(hit[1]);
+      i += hit[0].length;
+    }
+  }
+  feats.sort();
+  return {key:feats.join('+'), feats};
+}
+function featDesc(f){ return f.feats.length ? f.feats.map(x => EQ_FEAT[x].d).join(', ') : 'deschis, fără etanșări, joc normal'; }
+function eqCodes(f){
+  return f.feats.filter(x => EQ_FEAT[x].c).map(x => EQ_FEAT[x].c.map(([b, c]) => b + ' ' + c).join(' = ')).join('; ');
+}
+function findEquivalents(raw){
+  const idx = searchIndex();
+  const known = new Set(BRANDS.concat(idx.brands, idx.locs).map(compact));
+  const series = normalize(FIELDS[0], raw).split(/\s+/).filter(w => w && !known.has(compact(w))).join(' ');
+  const p = splitSer(series);
+  if(!p) return {series, err:'base'};
+  const f = sufFeatures(p.suf);
+  if(!f) return {series, err:'suf', suf:p.suf.trim()};
+  const core = p.core.replace(/\D/g, ''), pre = compact(p.pre), hits = [];
+  for(const {r, k} of idx.items){
+    if(k.core !== core) continue;
+    const rp = splitSer(r.seria);
+    if(!rp || compact(rp.pre) !== pre) continue;
+    const rf = sufFeatures(rp.suf);
+    if(rf && rf.key === f.key) hits.push({r, score:0});
+  }
+  return {series, feat:f, groups:groupRows(hits)};
+}
+
+const RL_CHEV = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+function groupHtml(g){
+  return '<div class="rg"><div class="rg-h">' +
+    `<span class="rg-s">${esc(g.seria)}</span>` +
+    (g.brand ? `<span class="rg-b">${esc(g.brand)}</span>` : '<span class="rg-b none">fără brand</span>') +
+    `<span class="rg-t"><small>total</small>${fmt(g.pcs)} buc</span></div>` +
+    g.rows.map(r => `<button type="button" class="rl" data-id="${esc(r.id)}">` +
+      (r.loc ? `<span class="rl-l">${esc(r.loc)}</span>` : '<span class="rl-l none">fără locație</span>') +
+      `<span class="rl-o">${esc(r.obs || '')}</span><span class="rl-q">${r.buc ? esc(r.buc) + ' buc' : '–'}</span>${RL_CHEV}</button>`).join('') +
+    '</div>';
+}
+function renderFilters(){
+  const box = $('#q-filters');
+  if(S.q.eq){ box.hidden = true; return; }
+  const idx = searchIndex(), fc = S.q.facets || {brands:idx.brands, locs:idx.locs};
+  const chip = (f, v, on) => `<button type="button" class="sg${on ? ' on' : ''}" data-f="${f}" data-v="${esc(v)}">${esc(v)}</button>`;
+  const row = (label, f, list, set) => {
+    const all = list.concat([...set].filter(v => list.indexOf(v) < 0));
+    return all.length ? `<div class="qf-row"><span class="qf-l">${label}</span><div class="qf-chips">${all.map(v => chip(f, v, set.has(v))).join('')}</div></div>` : '';
+  };
+  const html = row('Brand', 'b', fc.brands, S.q.brands) + row('Loc', 'l', fc.locs, S.q.locs);
+  box.innerHTML = html; box.hidden = !html;
+}
+function renderSearch(){ renderResults(); renderFilters(); }
+function renderResults(){
+  const box = $('#q-res'), st = $('#q-status');
+  if(S.q.eq){
+    const e = findEquivalents(S.q.eq);
+    if(e.groups){
+      const n = e.groups.length, pcs = e.groups.reduce((a, g) => a + g.pcs, 0), codes = eqCodes(e.feat);
+      st.className = 'q-status eq';
+      st.textContent = n ? `Echivalente în stoc: ${n} ${n === 1 ? 'rulment' : 'rulmenți'} · ${fmt(pcs)} buc` : 'Nu mai există echivalente în stoc.';
+      box.innerHTML = `<div class="eqh"><div><b>Echivalente pentru ${esc(e.series)}</b><span>${esc(featDesc(e.feat))}</span></div>` +
+        '<button type="button" class="btn ghost" id="eq-x">Închide</button></div>' +
+        e.groups.map(groupHtml).join('') +
+        `<p class="eqn">${codes ? 'Coduri echivalente: ' + esc(codes) + '. ' : ''}Corespondența e făcută după codurile de sufix din cataloagele producătorilor. ` +
+        'Alte detalii (colivie, unsoare, toleranțe) pot diferi, așa că verifică fișa tehnică înainte de înlocuire.</p>' +
+        '<details class="eqs"><summary>Surse</summary><ul>' +
+        EQ_SRC.map(([t, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join('') + '</ul></details>';
+      return;
+    }
+    S.q.eq = '';
+  }
+  const res = runSearch();
+  if(res === null){
+    st.className = 'q-status';
+    st.textContent = sortedRows().length ? 'Scrie sau dictează seria (de exemplu 6208) ori alege un brand sau un loc.' : 'Stocul e gol.';
+    box.innerHTML = '';
+    return;
+  }
+  if(!res.length){
+    st.className = 'q-status none';
+    st.textContent = (S.q.brands.size || S.q.locs.size) ? 'Nu există în stoc cu filtrele alese.' : 'Nu există în stoc.';
+    box.innerHTML = '';
+    return;
+  }
+  const pcs = res.reduce((a, g) => a + g.pcs, 0), locs = res.reduce((a, g) => a + g.rows.length, 0), n = res.length;
+  st.className = 'q-status';
+  st.textContent = `${n} ${n === 1 ? 'rulment' : 'rulmenți'} · ${locs} ${locs === 1 ? 'loc' : 'locuri'} · ${fmt(pcs)} buc`;
+  const MAX = 150;
+  box.innerHTML = res.slice(0, MAX).map(groupHtml).join('') +
+    (n > MAX ? `<p class="q-more">… și încă ${fmt(n - MAX)}. Scrie mai mult ca să restrângi căutarea.</p>` : '');
+}
+function setQKb(on){
+  S.q.kb = on;
+  $('#scr-search').classList.toggle('nokb', !on);
+  $('#q-kb').textContent = on ? 'Ascunde tastatura' : 'Arată tastatura';
+}
+function setQDict(on){ S.q.dict = on; $('#scr-search').classList.toggle('dict', on); }
+function onSearchInput(){ S.q.eq = ''; renderSearch(); }
+function pressSearch(k){
+  let v = qinp.value;
+  if(k === 'BS') v = v.slice(0, -1);
+  else if(k === 'SP'){ if(v && !v.endsWith(' ')) v += ' '; }
+  else v += k;
+  qinp.value = up(v);
+  onSearchInput();
+}
+function openSearch(){
+  qinp.value = ''; S.q.brands.clear(); S.q.locs.clear(); S.q.eq = '';
+  setQKb(true); setQDict(false);
+  go('search');
+}
+function searchGo(){
+  qinp.blur(); setQKb(false);
+  const raw = qinp.value;
+  if(normalize(FIELDS[0], raw) !== raw) qinp.value = normalize(FIELDS[0], raw);
+  S.q.eq = '';
+  renderSearch();
+  const res = runSearch();
+  if(!parseQuery(raw).length || (res && res.length) || S.q.brands.size || S.q.locs.size) return;
+  // nothing in stock: say so and offer the equivalents
+  const e = findEquivalents(raw), shown = `<b>${esc(e.series || normalize(FIELDS[0], raw))}</b>`;
+  let msg, canEq = false;
+  if(e.err === 'base') msg = `${shown} nu există în stoc.`;
+  else if(e.err === 'suf') msg = `${shown} nu există în stoc. Pentru sufixul <b>${esc(e.suf)}</b> nu am corespondențe verificate între producători, așa că nu pot căuta echivalente.`;
+  else if(!e.groups.length) msg = `${shown} nu există în stoc și nici echivalente ale lui (${esc(featDesc(e.feat))}).`;
+  else {
+    const n = e.groups.length;
+    canEq = true;
+    msg = `${shown} nu există în stoc. Am găsit ${n} ${n === 1 ? 'echivalent' : 'echivalente'} în stoc (${esc(featDesc(e.feat))}). Vrei să le vezi?`;
+  }
+  $('#nf-msg').innerHTML = msg;
+  $('#nf-eq').hidden = !canEq;
+  $('#nf-close').textContent = canEq ? 'Nu' : 'Închide';
+  S.q.pendingEq = canEq ? raw : '';
+  $('#nf').hidden = false;
+}
+
 /* ---------- sheet ---------- */
 function renderSheet(){
-  const all = sortedRows(), q = compact($('#sh-search').value);
+  const all = sortedRows(), toks = parseQuery($('#sh-search').value), q = toks.length, items = searchIndex().items;
   const pcs = all.reduce((a, r) => a + (parseInt(r.buc, 10) || 0), 0);
   let html = '', shown = 0;
-  all.forEach((r, i) => {
-    if(q && !compact([r.seria, r.brand, r.buc, r.loc, r.obs].join(' ')).includes(q)) return;
+  items.forEach(({r, k}, i) => {
+    if(q && !toks.every(t => tokMatch(t, k))) return;
     shown++;
     html += `<tr data-id="${esc(r.id)}"><td class="n">${i + 1}</td>` +
       `<td class="mono b">${esc(r.seria)}</td><td>${esc(r.brand)}</td><td class="num">${esc(r.buc)}</td>` +
@@ -1060,7 +1850,7 @@ function readImport(file){
       });
       if(!out.length){ toast('Nu am găsit rânduri în fișier. Seria trebuie să fie în coloana A.', 'err'); return; }
       pendingImport = out; repArm = false;
-      const n = Object.keys(rowsMap).length;
+      const n = sortedRows().length;
       $('#imp-msg').textContent = `Am găsit ${fmt(out.length)} ${out.length === 1 ? 'rând' : 'rânduri'} în „${file.name}”.` +
         (n ? ` În aplicație ai acum ${fmt(n)} ${n === 1 ? 'rând' : 'rânduri'}.` : '');
       $('#imp-add').textContent = n ? 'Adaugă la stoc' : 'Importă';
@@ -1075,15 +1865,10 @@ function readImport(file){
 }
 function applyImport(replace){
   if(!pendingImport) return;
-  if(replace) rowsMap = {};
-  const now = Date.now();
-  pendingImport.forEach((r, i) => {
-    rowsMap[newId(i)] = Object.assign({}, r, {t:now + i, u:now});
-  });
   const n = pendingImport.length;
+  importRows(pendingImport.map((r, i) => ({id:newId(i), row:r})), replace, replace ? 'stoc înlocuit din Excel' : 'importat din Excel');
   pendingImport = null; $('#imp').hidden = true;
-  invalidate(); saveRows(); onData();
-  toast(`Am importat ${fmt(n)} ${n === 1 ? 'rând' : 'rânduri'}.`);
+  toast(`Am importat ${fmt(n)} ${n === 1 ? 'rând' : 'rânduri'} în stocul comun.`);
 }
 
 /* ---------- install & offline ---------- */
@@ -1106,6 +1891,61 @@ if('serviceWorker' in navigator && (location.protocol === 'https:' || location.h
 /* ---------- events ---------- */
 function bind(){
   $('#hm-start').addEventListener('click', startInventory);
+  // quantity: add / subtract
+  $('#qy-add').addEventListener('click', () => { S.qy.mode = 'add'; qyShow('amt'); });
+  $('#qy-sub').addEventListener('click', () => { S.qy.mode = 'sub'; qyShow('amt'); });
+  $('#qy-back').addEventListener('click', () => { qyInp.blur(); if(S.qy.step === 'amt') qyShow('pick'); else showReview(); });
+  $('#qy-ok').addEventListener('click', qyOK);
+  $('#qy-form').addEventListener('submit', e => { e.preventDefault(); qyOK(); });
+  $('#kb-qy').addEventListener('click', e => { const k = e.target.closest('[data-k]'); if(k) pressQty(k.dataset.k); });
+  qyInp.addEventListener('input', () => { S.qy.err = ''; qyCalc(); });
+  qyInp.addEventListener('focus', () => $('#scr-qty').classList.add('dict'));
+  qyInp.addEventListener('blur', () => setTimeout(() => { if(document.activeElement !== qyInp) $('#scr-qty').classList.remove('dict'); }, 150));
+  $('#qy-mic').addEventListener('click', () => qyInp.focus());
+  $('#qy-clear').addEventListener('click', () => { qyInp.value = ''; S.qy.err = ''; qyCalc(); });
+  $('#scr-qty').addEventListener('mousedown', e => { if($('#scr-qty').classList.contains('dict') && e.target.closest('#qy-clear')) e.preventDefault(); });
+
+  // search in stock
+  $('#hm-search').addEventListener('click', openSearch);
+  ['#kb-q2', '#kb-n2'].forEach(sel => $(sel).addEventListener('click', e => { const k = e.target.closest('[data-k]'); if(k) pressSearch(k.dataset.k); }));
+  $('#scr-search').addEventListener('mousedown', e => { if(S.q.dict && e.target.closest('.sg, #q-clear')) e.preventDefault(); });
+  qinp.addEventListener('input', onSearchInput);
+  qinp.addEventListener('focus', () => { clearTimeout(qBlurT); setQDict(true); });
+  qinp.addEventListener('blur', () => {
+    clearTimeout(qBlurT);
+    qBlurT = setTimeout(() => {
+      if(document.activeElement === qinp) return;
+      setQDict(false);
+      const v = normalize(FIELDS[0], qinp.value);
+      if(v !== qinp.value){ qinp.value = v; if(S.screen === 'search') renderSearch(); }
+    }, 150);
+  });
+  $('#q-form').addEventListener('submit', e => { e.preventDefault(); searchGo(); });
+  $('#q-mic').addEventListener('click', () => { qinp.focus(); try{ if(qinp.value) qinp.setSelectionRange(0, qinp.value.length); }catch(e){} });
+  $('#q-clear').addEventListener('click', () => { qinp.value = ''; onSearchInput(); if(S.q.dict) qinp.focus(); });
+  $('#q-go').addEventListener('click', searchGo);
+  $('#q-kb').addEventListener('click', () => { qinp.blur(); setQKb(!S.q.kb); });
+  $('#q-back').addEventListener('click', () => { qinp.blur(); go('home'); });
+  $('#q-filters').addEventListener('click', e => {
+    const b = e.target.closest('.sg[data-f]'); if(!b) return;
+    const set = b.dataset.f === 'b' ? S.q.brands : S.q.locs, v = b.dataset.v;
+    if(set.has(v)) set.delete(v); else set.add(v);
+    S.q.eq = ''; renderFilters(); renderSearch();
+  });
+  $('#q-res').addEventListener('click', e => {
+    if(e.target.closest('#eq-x')){ S.q.eq = ''; renderSearch(); return; }
+    const b = e.target.closest('.rl[data-id]'); if(!b) return;
+    const r = getRow(b.dataset.id); if(!r) return;
+    qinp.blur();
+    S.draft = r;
+    S.rv = {mode:'row', from:'search', modify:false, delArm:false};
+    showReview();
+  });
+  $('#q-res').addEventListener('touchmove', () => { if(S.q.kb) setQKb(false); }, {passive:true});
+  $('#q-res').addEventListener('wheel', () => { if(S.q.kb) setQKb(false); }, {passive:true});
+  $('#nf-eq').addEventListener('click', () => { $('#nf').hidden = true; S.q.eq = S.q.pendingEq; renderSearch(); });
+  $('#nf-close').addEventListener('click', () => { $('#nf').hidden = true; });
+
   $('#hm-sheet').addEventListener('click', () => go('sheet'));
   $('#hm-export').addEventListener('click', exportXlsx);
   $('#hm-unhide').addEventListener('click', () => { hiddenChips = {}; lsSet(LS_HID, null); renderHome(); toast('Am reafișat toate chenarele ascunse.'); });
@@ -1114,7 +1954,7 @@ function bind(){
   $('#imp-file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if(f) readImport(f); e.target.value = ''; });
   $('#imp-add').addEventListener('click', () => applyImport(false));
   $('#imp-rep').addEventListener('click', () => {
-    if(!repArm){ repArm = true; const b = $('#imp-rep'); b.classList.add('armed'); b.textContent = `Confirm: șterg cele ${fmt(Object.keys(rowsMap).length)} rânduri și import`; return; }
+    if(!repArm){ repArm = true; const b = $('#imp-rep'); b.classList.add('armed'); b.textContent = `Confirm: șterg cele ${fmt(sortedRows().length)} rânduri și import`; return; }
     applyImport(true);
   });
   $('#imp-cancel').addEventListener('click', () => { pendingImport = null; $('#imp').hidden = true; });
@@ -1129,7 +1969,7 @@ function bind(){
   // keep the phone keyboard open while tapping app buttons during dictation
   field.addEventListener('mousedown', e => { if(S.dict && e.target.closest('button') && !e.target.closest('#f-closekb')) e.preventDefault(); });
   $('#kb-q').addEventListener('click', e => { const k = e.target.closest('[data-k]'); if(k) press(k.dataset.k); });
-  ['#kb-q', '#kb-n'].forEach(sel => {
+  ['#kb-q', '#kb-n', '#kb-q2', '#kb-n2', '#kb-qy'].forEach(sel => {
     const el = $(sel);
     el.addEventListener('pointerdown', e => { const b = e.target.closest('.key'); if(b) keyPreview(b); });
     ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => el.addEventListener(ev, keyPreviewEnd));
@@ -1182,18 +2022,19 @@ function bind(){
   $('#rv-stop').addEventListener('click', () => { S.draft = null; lsSet(LS_DRAFT, null); go('home'); });
   const toggleMod = () => { S.rv.modify = !S.rv.modify; S.rv.delArm = false; renderReview(); };
   $('#rv-mod').addEventListener('click', toggleMod);
-  $('#rv-mod2').addEventListener('click', toggleMod);
   $('#rv-cards').addEventListener('click', e => {
     const c = e.target.closest('[data-i]'); if(!c) return;
-    if(!S.rv.modify){
-      const b = $(S.rv.mode === 'sheet' ? '#rv-mod2' : '#rv-mod');
+    const rowMode = S.rv.mode === 'row';
+    if(!rowMode && !S.rv.modify){
+      const b = $('#rv-mod');
       b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); return;
     }
     S.fi = +c.dataset.i;
-    S.ctx = S.rv.mode === 'sheet' ? 'sheet' : 'review';
+    if(rowMode && FIELDS[S.fi].k === 'buc'){ openQty(); return; }
+    S.ctx = rowMode ? 'sheet' : 'review';
     openField();
   });
-  $('#rv-backsheet').addEventListener('click', () => { S.draft = null; go('sheet'); });
+  $('#rv-backsheet').addEventListener('click', () => { S.draft = null; go(rvBack()); });
   $('#rv-dup').addEventListener('click', e => { if(e.target.closest('#rv-merge')) mergeRow(); });
   $('#rv-del').addEventListener('click', () => {
     if(!S.rv.delArm){
@@ -1202,7 +2043,7 @@ function bind(){
       return;
     }
     const id = S.draft.id; S.rv.delArm = false;
-    delRow(id); S.draft = null; go('sheet'); toast('Rândul a fost șters.');
+    delRow(id); S.draft = null; go(rvBack()); toast('Rândul a fost șters.');
   });
 
   $('#sh-back').addEventListener('click', () => go('home'));
@@ -1212,18 +2053,279 @@ function bind(){
     const tr = e.target.closest('tr[data-id]'); if(!tr) return;
     const r = getRow(tr.dataset.id); if(!r) return;
     S.draft = r;
-    S.rv = {mode:'sheet', modify:false, delArm:false};
+    S.rv = {mode:'row', from:'sheet', modify:false, delArm:false};
     showReview();
+  });
+}
+
+/* ---------- accounts ---------- */
+const LG = {mode:'wait'}, AC = {mode:'main', outArm:false}, CF = {fn:null};
+function lgErr(msg){ const e = $('#lg-err'); e.hidden = !msg; e.textContent = msg || ''; }
+function showLogin(mode, msg){
+  LG.mode = mode;
+  const login = mode === 'login', name = mode === 'name', fail = mode === 'fail';
+  $('#lg-title').textContent = name ? 'Cum te numești?' : fail ? 'Fără conexiune' : login ? 'Intră în cont' : 'Se pornește…';
+  $('#lg-hint').textContent = name ? 'Numele apare în istoric, lângă fiecare modificare pe care o faci.'
+    : login ? 'Folosește emailul și parola primite de la administrator.' : fail ? '' : 'Pregătesc legătura cu stocul comun.';
+  $('#lg-hint').hidden = fail;
+  $('#lg-f-email').hidden = !login; $('#lg-f-pass').hidden = !login; $('#lg-f-name').hidden = !name;
+  $('#lg-go').hidden = !(login || name || fail);
+  $('#lg-go').textContent = name ? 'Salvează' : fail ? 'Reîncearcă' : 'Intră';
+  $('#lg-forgot').hidden = !login;
+  lgErr(msg || '');
+  go('login');
+}
+function authMsg(e){
+  const c = (e && e.code) || '';
+  if(/invalid-credential|wrong-password|user-not-found|invalid-email|invalid-login/.test(c)) return 'Email sau parolă greșite.';
+  if(/too-many-requests/.test(c)) return 'Prea multe încercări. Așteaptă câteva minute și încearcă din nou.';
+  if(/network-request-failed/.test(c)) return 'Nu ai internet. Pentru asta e nevoie de conexiune.';
+  if(/user-disabled/.test(c)) return 'Contul acesta a fost dezactivat.';
+  if(/requires-recent-login/.test(c)) return 'Din motive de siguranță, ieși din cont, intră din nou și reîncearcă.';
+  if(/weak-password/.test(c)) return 'Parola nouă e prea scurtă: minimum 6 caractere.';
+  if(/missing-password/.test(c)) return 'Scrie parola.';
+  return 'Nu a mers' + (c ? ' (' + c + ')' : '') + '. Încearcă din nou.';
+}
+async function lgSubmit(){
+  const go_ = $('#lg-go');
+  if(LG.mode === 'fail'){ location.reload(); return; }
+  if(LG.mode === 'login'){
+    const em = $('#lg-email').value.trim(), pw = $('#lg-pass').value;
+    if(!em || !pw){ lgErr('Scrie emailul și parola.'); return; }
+    go_.disabled = true; lgErr('');
+    try{ await FB.signIn(em, pw); $('#lg-pass').value = ''; }
+    catch(e){ lgErr(authMsg(e)); }
+    go_.disabled = false;
+  } else if(LG.mode === 'name'){
+    const nm = $('#lg-name').value.trim().replace(/\s+/g, ' ');
+    if(nm.length < 2){ lgErr('Scrie numele tău (cel puțin 2 litere).'); return; }
+    go_.disabled = true;
+    try{ await FB.setName(nm); C.user = FB.currentUser(); go('home'); }
+    catch(e){ lgErr(authMsg(e)); }
+    go_.disabled = false;
+  }
+}
+async function startCloud(){
+  try{ await FB.init(FB_CONFIG); }
+  catch(e){ showLogin('fail', 'Nu pot porni legătura cu stocul comun. La prima deschidere, aplicația are nevoie de internet.'); return; }
+  FB.onAuth(user => {
+    C.user = user;
+    if(!user){ stopRows(); docsMap = {}; invalidate(); showLogin('login'); return; }
+    startRows();
+    if(!user.displayName) showLogin('name'); else go('home');
+  });
+}
+function acErr(msg){ const e = $('#ac-err'); e.hidden = !msg; e.textContent = msg || ''; }
+function openAcct(){ AC.mode = 'main'; AC.outArm = false; renderAcct(); $('#acct').hidden = false; }
+function renderAcct(){
+  const m = me(), main = AC.mode === 'main', name = AC.mode === 'name';
+  $('#ac-who').textContent = (m.nm && m.nm !== m.em ? m.nm + ' · ' : '') + m.em;
+  $('#ac-main').hidden = !main; $('#ac-form').hidden = main;
+  $('#ac-out').textContent = AC.outArm ? 'Confirmă ieșirea din cont' : 'Ieși din cont';
+  $('#ac-out').classList.toggle('armed', AC.outArm);
+  if(!main){
+    const i1 = $('#ac-i1'), i2 = $('#ac-i2');
+    $('#ac-l1').textContent = name ? 'Numele tău' : 'Parola actuală';
+    i1.type = name ? 'text' : 'password'; i1.value = name ? (m.nm !== m.em ? m.nm : '') : '';
+    i1.setAttribute('autocomplete', name ? 'name' : 'current-password');
+    $('#ac-f2').hidden = name; $('#ac-l2').textContent = 'Parola nouă (minimum 6 caractere)'; i2.value = '';
+  }
+  acErr('');
+}
+async function acSave(){
+  const v1 = $('#ac-i1').value, v2 = $('#ac-i2').value;
+  try{
+    if(AC.mode === 'name'){
+      const nm = v1.trim().replace(/\s+/g, ' ');
+      if(nm.length < 2){ acErr('Scrie numele tău (cel puțin 2 litere).'); return; }
+      await FB.setName(nm); C.user = FB.currentUser(); toast('Numele a fost schimbat.');
+    } else {
+      if(!v1){ acErr('Scrie parola actuală.'); return; }
+      if(v2.length < 6){ acErr('Parola nouă trebuie să aibă minimum 6 caractere.'); return; }
+      await FB.changePassword(v1, v2); toast('Parola a fost schimbată.');
+    }
+    $('#acct').hidden = true; renderHome();
+  }catch(e){ acErr(authMsg(e)); }
+}
+async function acOut(){
+  if(C.pending > 0){
+    acErr(`Ai ${C.pending} ${C.pending === 1 ? 'modificare care nu a ajuns' : 'modificări care nu au ajuns'} încă în stocul comun. Conectează-te la internet, așteaptă să se trimită, apoi ieși din cont.`);
+    return;
+  }
+  if(!AC.outArm){ AC.outArm = true; renderAcct(); return; }
+  $('#acct').hidden = true;
+  try{ await FB.signOut(); }catch(e){ toast(authMsg(e), 'err'); }
+}
+function confirmDlg(title, msg, okLabel, fn){
+  $('#cf-t').textContent = title; $('#cf-msg').textContent = msg; $('#cf-ok').textContent = okLabel;
+  CF.fn = fn; $('#cf').hidden = false;
+}
+
+/* ---------- rows saved on this phone by the version without accounts ---------- */
+let migHide = false;
+function oldRows(){
+  const o = lsGet(LS_ROWS);
+  return o && typeof o === 'object' ? Object.keys(o).map(id => ({id, row:o[id]})) : [];
+}
+function renderMigrate(){
+  const list = (!lsGet(LS_MIG) && !migHide && C.user) ? oldRows() : [];
+  $('#hm-migrate').hidden = !list.length;
+  if(list.length) $('#hm-mig-t').textContent = `Pe acest telefon ai ${fmt(list.length)} ${list.length === 1 ? 'rând salvat' : 'rânduri salvate'} în versiunea fără cont. Le muți în stocul comun, ca să le vadă toată echipa?`;
+}
+function migrate(){
+  const list = oldRows(); if(!list.length) return;
+  importRows(list, false, 'mutat din telefon');
+  lsSet(LS_MIG, Date.now()); renderMigrate();
+  toast(`Am mutat ${fmt(list.length)} ${list.length === 1 ? 'rând' : 'rânduri'} în stocul comun.`);
+}
+
+/* ---------- history ---------- */
+const ACT = {add:['Adăugat', 'k-add'], edit:['Modificat', 'k-edit'], qty:['Bucăți', 'k-qty'], del:['Șters', 'k-del'],
+  merge:['Unit', 'k-merge'], import:['Import', 'k-import'], restore:['Restaurat', 'k-restore']};
+const FLABEL = {seria:'Seria', brand:'Brand', buc:'Bucăți', loc:'Localizare', obs:'Observații'};
+const HS = {range:'azi', seria:'', items:[], last:null, more:false, users:new Set(), loading:false, err:'', cache:false};
+function dayStart(back){ const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - back); return d.getTime(); }
+function openHist(){ HS.range = 'azi'; HS.seria = ''; HS.users.clear(); $('#hs-ser').value = ''; HS.items = []; go('hist'); loadHist(false); }
+async function loadHist(more){
+  HS.loading = true; HS.err = ''; renderHist();
+  const from = dayStart(HS.range === '30' ? 29 : HS.range === '7' ? 6 : 0);
+  try{
+    const r = await FB.history({from, seria:HS.seria, after:more ? HS.last : null, max:300});
+    HS.items = more ? HS.items.concat(r.items) : r.items;
+    HS.last = r.last; HS.more = !HS.seria && r.items.length === 300; HS.cache = !!r.fromCache;
+    HS.items.sort((a, b) => (b.t || 0) - (a.t || 0));
+  }catch(e){
+    if(!more) HS.items = [];
+    HS.err = e && e.code === 'permission-denied' ? 'Contul tău nu are acces la istoric.' : 'Nu pot încărca istoricul. Verifică internetul și încearcă din nou.';
+  }
+  HS.loading = false; renderHist();
+}
+function hsVisible(){ return HS.users.size ? HS.items.filter(x => HS.users.has(x.nm || x.em)) : HS.items; }
+const p2 = n => String(n).padStart(2, '0');
+function hTime(t){ const d = new Date(t || 0); return p2(d.getHours()) + ':' + p2(d.getMinutes()); }
+function hDate(t){ const d = new Date(t || 0); return p2(d.getDate()) + '.' + p2(d.getMonth() + 1) + '.' + d.getFullYear(); }
+function hDay(t){ return new Date(t || 0).toLocaleDateString('ro-RO', {weekday:'long', day:'numeric', month:'long', year:'numeric'}); }
+function renderHist(){
+  $('#hs-range').innerHTML = [['azi', 'Azi'], ['7', '7 zile'], ['30', '30 de zile']]
+    .map(([k, l]) => `<button type="button" class="sg${!HS.seria && HS.range === k ? ' on' : ''}" data-r="${k}">${l}</button>`).join('') +
+    (HS.seria ? `<button type="button" class="sg on" data-r="x">${esc(HS.seria)} ✕</button>` : '');
+  const users = [...new Set(HS.items.map(x => x.nm || x.em).filter(Boolean))].sort(coll.compare);
+  $('#hs-users').innerHTML = (users.length > 1 || HS.users.size)
+    ? `<div class="qf-row"><span class="qf-l">Cine</span><div class="qf-chips">${users.map(u => `<button type="button" class="sg${HS.users.has(u) ? ' on' : ''}" data-u="${esc(u)}">${esc(u)}</button>`).join('')}</div></div>` : '';
+  const list = hsVisible();
+  const lbl = HS.seria ? 'seria ' + HS.seria : HS.range === 'azi' ? 'azi' : 'ultimele ' + (HS.range === '7' ? '7 zile' : '30 de zile');
+  $('#hs-sum').textContent = HS.loading ? 'Se încarcă…' : `${fmt(list.length)} ${list.length === 1 ? 'modificare' : 'modificări'} · ${lbl}` + (HS.cache ? ' · fără conexiune' : '');
+  const box = $('#hs-list');
+  if(HS.err){ box.innerHTML = `<p class="sh-empty">${esc(HS.err)}</p>`; return; }
+  if(!list.length){ box.innerHTML = HS.loading ? '<p class="sh-empty">Se încarcă…</p>' : `<p class="sh-empty">Nicio modificare ${HS.seria ? 'pentru această serie' : 'în perioada aleasă'}.</p>`; return; }
+  let html = '', day = '';
+  list.forEach(x => {
+    const d = hDay(x.t);
+    if(d !== day){ day = d; html += `<p class="hs-day">${esc(d)}</p>`; }
+    const [al, ak] = ACT[x.act] || [x.act || '–', 'k-edit'];
+    const row = x.rid ? docsMap[x.rid] : null, canRestore = !!(row && row.del), canOpen = !!(row && !row.del);
+    const tag = canOpen || canRestore ? 'button' : 'div', del = x.act === 'del';
+    html += `<${tag}${tag === 'button' ? ' type="button"' : ''} class="he" data-rid="${esc(x.rid || '')}">` +
+      `<span class="he-h"><span class="he-a ${ak}">${esc(al)}</span><span class="he-u">${esc(x.nm || x.em || '')}</span><span class="he-t">${hTime(x.t)}</span></span>` +
+      (x.seria || x.brand || x.loc ? `<span class="he-r"><b>${esc(x.seria || '–')}</b>${x.brand ? ' · ' + esc(x.brand) : ''}${x.loc ? ' · ' + esc(x.loc) : ''}</span>` : '') +
+      (x.ch && x.ch.length ? '<span class="he-c">' + x.ch.map(c => `<span>${esc(FLABEL[c.f] || c.f)}: ` +
+        (del ? `<b>${esc(c.o)}</b>` : (c.o ? `<s>${esc(c.o)}</s> → ` : '') + `<b>${c.n ? esc(c.n) : '(gol)'}</b>`) + '</span>').join('') + '</span>' : '') +
+      (x.note ? `<span class="he-n">${esc(x.note)}</span>` : '') +
+      (canRestore ? '<span class="he-x">Rând șters · atinge ca să-l restaurezi</span>' : '') +
+      `</${tag}>`;
+  });
+  if(HS.more) html += '<button type="button" class="btn ghost" id="hs-more">Încarcă mai multe</button>';
+  box.innerHTML = html;
+}
+function exportHist(){
+  const list = hsVisible();
+  if(!list.length){ toast('Nu ai modificări de exportat în lista afișată.'); return; }
+  if(!window.XLSX){ toast('Modulul Excel nu s-a încărcat. Redeschide aplicația.', 'err'); return; }
+  const aoa = [['Data', 'Ora', 'Utilizator', 'Email', 'Acțiune', 'Seria', 'Brand', 'Localizare', 'Câmp', 'Valoare veche', 'Valoare nouă', 'Notă']];
+  list.slice().reverse().forEach(x => {
+    const base = [hDate(x.t), hTime(x.t), x.nm || '', x.em || '', (ACT[x.act] || [x.act || ''])[0], x.seria || '', x.brand || '', x.loc || ''];
+    (x.ch && x.ch.length ? x.ch : [null]).forEach(c => aoa.push(base.concat(c ? [FLABEL[c.f] || c.f, c.o || '', c.n || ''] : ['', '', ''], [x.note || ''])));
+  });
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols'] = [{wch:11}, {wch:6}, {wch:16}, {wch:26}, {wch:11}, {wch:20}, {wch:12}, {wch:12}, {wch:12}, {wch:16}, {wch:16}, {wch:26}];
+  ws['!autofilter'] = {ref:'A1:L' + aoa.length};
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Istoric');
+  deliverXlsx(XLSX.write(wb, {bookType:'xlsx', type:'array'}), 'istoric-rulmenti-' + ymd() + '.xlsx');
+}
+function deliverXlsx(buf, name){
+  const type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', blob = new Blob([buf], {type});
+  let file = null;
+  try{ file = new File([blob], name, {type}); }catch(e){}
+  if(isIOS() && file && navigator.canShare && navigator.canShare({files:[file]})){
+    navigator.share({files:[file], title:name}).then(() => toast('Fișierul ' + name + ' a fost trimis.'))
+      .catch(e => { if(e && e.name === 'AbortError') toast('Export anulat.'); else downloadBlob(blob, name); });
+    return;
+  }
+  downloadBlob(blob, name);
+  toast('Am descărcat ' + name + ' (în Descărcări).');
+}
+
+function bindCloud(){
+  $('#lg-form').addEventListener('submit', e => { e.preventDefault(); lgSubmit(); });
+  $('#lg-forgot').addEventListener('click', async () => {
+    const em = $('#lg-email').value.trim();
+    if(!em){ lgErr('Scrie întâi emailul, apoi apasă „Am uitat parola”.'); return; }
+    try{ await FB.resetPassword(em); lgErr(''); toast('Ți-am trimis pe email un link pentru o parolă nouă.'); }
+    catch(e){ lgErr(authMsg(e)); }
+  });
+  $('#hm-acct').addEventListener('click', openAcct);
+  $('#ac-close').addEventListener('click', () => { $('#acct').hidden = true; });
+  $('#ac-name').addEventListener('click', () => { AC.mode = 'name'; renderAcct(); $('#ac-i1').focus(); });
+  $('#ac-pass').addEventListener('click', () => { AC.mode = 'pass'; renderAcct(); $('#ac-i1').focus(); });
+  $('#ac-cancel').addEventListener('click', () => { AC.mode = 'main'; renderAcct(); });
+  $('#ac-form').addEventListener('submit', e => { e.preventDefault(); acSave(); });
+  $('#ac-out').addEventListener('click', acOut);
+  $('#cf-ok').addEventListener('click', () => { $('#cf').hidden = true; const f = CF.fn; CF.fn = null; if(f) f(); });
+  $('#cf-no').addEventListener('click', () => { $('#cf').hidden = true; CF.fn = null; });
+  $('#hm-mig-go').addEventListener('click', migrate);
+  $('#hm-mig-no').addEventListener('click', () => { migHide = true; renderMigrate(); });
+  $('#hm-hist').addEventListener('click', openHist);
+  $('#hs-back').addEventListener('click', () => go('home'));
+  $('#hs-export').addEventListener('click', exportHist);
+  $('#hs-range').addEventListener('click', e => {
+    const b = e.target.closest('[data-r]'); if(!b) return;
+    if(b.dataset.r !== 'x') HS.range = b.dataset.r;
+    HS.seria = ''; $('#hs-ser').value = ''; HS.users.clear(); loadHist(false);
+  });
+  $('#hs-users').addEventListener('click', e => {
+    const b = e.target.closest('[data-u]'); if(!b) return;
+    const u = b.dataset.u; if(HS.users.has(u)) HS.users.delete(u); else HS.users.add(u);
+    renderHist();
+  });
+  $('#hs-sform').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = normalize(FIELDS[0], $('#hs-ser').value); $('#hs-ser').value = v; $('#hs-ser').blur();
+    if(!v) return;
+    HS.seria = v; HS.users.clear(); loadHist(false);
+  });
+  $('#hs-list').addEventListener('click', e => {
+    if(e.target.closest('#hs-more')){ loadHist(true); return; }
+    const b = e.target.closest('button.he[data-rid]'); if(!b) return;
+    const id = b.dataset.rid, row = docsMap[id]; if(!row) return;
+    if(row.del){
+      confirmDlg('Restaurezi rândul?', `${row.seria || '–'} · ${row.brand || 'fără brand'} · ${row.loc || 'fără locație'}${row.buc ? ' · ' + row.buc + ' buc' : ''} a fost șters. Îl pui înapoi în stoc?`,
+        'Restaurează', () => { putRow(id, row); toast('Rândul a fost restaurat.'); renderHist(); });
+      return;
+    }
+    S.draft = getRow(id); S.rv = {mode:'row', from:'hist', modify:false, delArm:false}; showReview();
   });
 }
 
 /* ---------- start ---------- */
 buildKeys();
 bind();
+bindCloud();
 const saved = lsGet(LS_DRAFT);
 if(saved && saved.d && hasContent(saved.d)){ S.draft = saved.d; S.fi = Math.min(Math.max(saved.fi | 0, 0), FIELDS.length - 1); S.ctx = 'new'; }
-go('home');
 renderInstall();
+showLogin('wait');
+startCloud();
 })();
 </script>
 </body>

@@ -1,63 +1,44 @@
-INVENTAR RULMENȚI - versiunea offline
+INVENTAR RULMENȚI - stoc comun pentru echipă (Firebase)
 
-Fișierele din arhivă (toate se urcă împreună, fără subfoldere):
-  index.html             aplicația (cu modulul Excel și fonturile incluse)
-  sw.js                  face aplicația să meargă fără internet
-  manifest.webmanifest   numele și iconița pentru ecranul principal
-  icon-192.png, icon-512.png, apple-touch-icon.png   iconițe
-  LICENTE.txt, CITESTE-MA.txt                        informații
+Ce e nou față de versiunea fără cont
+- Fiecare utilizator intră cu emailul și parola lui. La prima intrare își scrie numele.
+- Toți lucrează în același stoc. Ce introduce un coleg apare la ceilalți în câteva secunde.
+- În hale fără semnal se lucrează normal: modificările stau în telefon și se trimit singure
+  când revine semnalul. Pe pagina principală vezi câte modificări așteaptă.
+- Butonul ISTORIC: fiecare modificare, cu data, ora, utilizatorul și valoarea veche → nouă.
+  Filtre: Azi / 7 zile / 30 de zile, după utilizator, după serie. Export în Excel.
+  Un rând șters se poate restaura atingându-l în istoric.
+- Butonul cu numele tău (sus, în dreapta): schimbi numele sau parola, ieși din cont.
 
-================================================================
-INSTALARE DOAR DE PE TELEFON (GitHub Pages, gratuit, permanent)
-================================================================
-A. Dezarhivează
-   Android: Files by Google -> atinge arhiva .zip -> „Extrage”.
-   iPhone:  aplicația Fișiere -> atinge arhiva .zip -> se creează un folder.
+ÎNAINTE DE ACTUALIZARE (o singură dată)
+1. În aplicația pe care o ai acum: Exportă Excel, ca rezervă.
+2. În Firebase: Security → Authentication → Settings → Authorized domains → Add domain
+   și adaugă adresa site-ului tău, de forma NUMELE-TĂU.github.io (fără https://).
+3. Verifică în Firestore → Rules că emailurile tuturor colegilor sunt în listă, cu litere mici.
 
-B. Cont GitHub
-   În browser deschide github.com și creează un cont gratuit (Sign up).
-   Dacă pe telefon nu vezi un buton din pașii de mai jos, activează în meniul
-   browserului „Site pentru desktop”.
+ACTUALIZAREA PE GITHUB
+În depozit: „Add file” → „Upload files” → selectezi toate cele 8 fișiere din această arhivă
+(le înlocuiesc pe cele vechi) → „Commit changes”. Așteaptă 1–2 minute.
 
-C. Depozit nou
-   Butonul „+” (sus) -> „New repository”.
-   Nume: inventar  ·  vizibilitate: Public  ·  bifează „Add README” -> „Create repository”.
+PRIMA DESCHIDERE (pe fiecare telefon, cu internet)
+1. Deschide aplicația de două ori: prima dată descarcă versiunea nouă, a doua oară o afișează.
+2. Intră cu emailul și parola, apoi scrie-ți numele.
+3. Dacă pe telefon ai rânduri din versiunea veche, pe pagina principală apare
+   „Mută-le în stocul comun”. Apasă o singură dată. Fiecare rând mutat apare în istoric.
+4. Pentru colegi: deschid linkul site-ului, îl adaugă pe ecranul principal
+   (iPhone: Safari → Partajare → Adaugă pe ecranul principal; Android: Chrome → ⋮ → Instalează aplicația),
+   apoi intră cu contul lor.
 
-D. Urcă fișierele
-   În depozit: „Add file” -> „Upload files” -> „choose your files”.
-   Selectează TOATE fișierele din folderul dezarhivat (8 fișiere).
-   Jos: „Commit changes”.
-
-E. Pornește site-ul
-   „Settings” -> „Pages” (în meniul din stânga).
-   La „Build and deployment”: Source = „Deploy from a branch”,
-   Branch = „main”, folder = „/ (root)” -> „Save”.
-   În câteva minute (până la 10) apare linkul: https://NUMELE-TĂU.github.io/inventar/
-
-F. Instalează aplicația
-   Android: deschide linkul în Chrome -> meniul ⋮ -> „Instalează aplicația”.
-   iPhone:  deschide linkul în Safari -> Partajare -> „Adaugă pe ecranul principal”.
-   Deschide aplicația de pe iconiță. Trebuie să scrie „Pregătită pentru lucru fără internet”.
-   Test: modul avion -> deschide aplicația -> trebuie să pornească normal.
-
-================================================================
-VARIANTA CU CALCULATOR (Netlify Drop)
-================================================================
-Pe calculator deschide https://app.netlify.com/drop, trage în pagină folderul dezarhivat,
-apoi revendică site-ul („claim”) cu un cont gratuit. Pe telefon continui de la pasul F.
-
-================================================================
 DE ȘTIUT
-================================================================
-- Datele stau doar în telefonul pe care lucrezi. Nu se sincronizează între telefoane.
-- Exportă Excel des (aplicația îți amintește). Dacă dezinstalezi aplicația sau ștergi
-  datele browserului, stocul neexportat se pierde.
-- „Importă din Excel” (pe ecranul principal) readuce un export salvat anterior.
-- Dictarea folosește microfonul tastaturii telefonului. Fără internet merge doar dacă
-  tastatura ta suportă dictare offline în română. Verifică în modul avion.
-- Linkul e public, dar fiecare telefon își vede doar datele proprii.
+- Prima intrare în cont pe un telefon are nevoie de internet. După aceea aplicația pornește
+  și fără semnal.
+- Nu ieși din cont cât timp ai modificări netrimise. Aplicația te oprește și îți spune câte sunt.
+- Colegi noi: îi adaugi în Firebase (Authentication → Users → Add user) și le pui emailul
+  în lista din Firestore → Rules → Publish.
+- Planul gratuit Firebase ajunge pentru echipă. Aplicația descarcă doar ce s-a schimbat de la
+  ultima deschidere. Consumul îl vezi în Firebase → Firestore → Usage.
+  Nu trece proiectul pe planul Blaze și nu adăuga card dacă nu vrei costuri.
+- Istoricul nu poate fi modificat sau șters de nimeni.
 
-ACTUALIZĂRI
-Când primești o versiune nouă: în depozit „Add file” -> „Upload files”, urci din nou
-fișierele (le înlocuiesc pe cele vechi) -> „Commit changes”. Telefonul preia versiunea
-nouă automat, la a doua deschidere cu internet. Datele introduse rămân.
+Licențe: vezi LICENTE.txt (fonturi SIL OFL 1.1, modulul Excel SheetJS Apache 2.0).
+Biblioteca Firebase se încarcă de la Google (gstatic.com) și e păstrată în telefon pentru lucru fără semnal.
