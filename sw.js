@@ -2,7 +2,7 @@
 // Păstrează aplicația și biblioteca Firebase în memoria telefonului. Când ai internet,
 // descarcă în fundal versiunea nouă a aplicației, care apare la următoarea deschidere.
 // Datele stocului nu trec prin acest fișier: le păstrează și le sincronizează Firebase.
-const CACHE = 'inventar-rulmenti-cloud-v1';
+const CACHE = 'inventar-rulmenti-cloud-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 const FB_VER = '13.4.0';
 const LIBS = ['firebase-app.js', 'firebase-auth.js', 'firebase-firestore.js']

@@ -10,6 +10,16 @@ Ce e nou față de versiunea fără cont
   Un rând șters se poate restaura atingându-l în istoric.
 - Butonul cu numele tău (sus, în dreapta): schimbi numele sau parola, ieși din cont.
 
+VERSIUNEA PC / TABLETĂ
+- Pe ecrane late (calculator, tabletă ținută orizontal) aplicația se deschide singură în
+  versiunea PC: meniu sus (Stoc, Caută, Inventariere, Istoric), tabel cu tot stocul,
+  ordonat prin clic pe capul de coloană, iar la clic pe un rând se deschide un panou în dreapta.
+- Inventarierea se face pe un singur rând: scrii Seria, Brand, Bucăți, Localizare, Observații,
+  treci cu Tab și salvezi cu Enter. Localizarea rămâne pentru rulmentul următor.
+- Butonul „Versiune telefon” (sus) trece la interfața de telefon. Pe tabletă, pe pagina
+  principală apare butonul „Versiune PC”. Aplicația ține minte alegerea pe acel aparat.
+- Pe calculator: deschizi linkul site-ului în Chrome sau Edge și intri cu același cont.
+
 ÎNAINTE DE ACTUALIZARE (o singură dată)
 1. În aplicația pe care o ai acum: Exportă Excel, ca rezervă.
 2. În Firebase: Security → Authentication → Settings → Authorized domains → Add domain
