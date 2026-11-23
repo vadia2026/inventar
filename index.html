@@ -1131,6 +1131,15 @@ function firebaseAdapter(){
     waitPending(){ return fs.waitForPendingWrites(db); },
     async history(o){
       const col = fs.collection(db, 'istoric');
+      if(o.rids && o.rids.length){
+        // every change of the stock rows that match the search; Firestore takes at most 30 values per query
+        const parts = [];
+        for(let i = 0; i < o.rids.length; i += 30) parts.push(o.rids.slice(i, i + 30));
+        const snaps = await Promise.all(parts.map(p => fs.getDocs(fs.query(col, fs.where('rid', 'in', p), fs.limit(o.max)))));
+        const seen = new Set(), items = [];
+        snaps.forEach(s => s.docs.forEach(d => { if(!seen.has(d.id)){ seen.add(d.id); items.push(Object.assign({id:d.id}, data(d))); } }));
+        return {items, last:null, fromCache:snaps.some(s => s.metadata.fromCache)};
+      }
       const q = o.seria ? fs.query(col, fs.where('seria', '==', o.seria), fs.limit(o.max))
         : fs.query(col, ...[fs.where('t', '>=', o.from), fs.orderBy('t', 'desc')].concat(o.after ? [fs.startAfter(o.after)] : [], [fs.limit(o.max)]));
       const s = await fs.getDocs(q);
@@ -1748,14 +1757,16 @@ const coll = new Intl.Collator('ro', {numeric:true, sensitivity:'base'});
 const normSame = s => up(s).replace(/\s+/g, ' ').trim();
 S.q = {brands:new Set(), locs:new Set(), kb:true, dict:false, eq:'', pendingEq:'', facets:null};
 let qIndex = null, qBlurT = null;
+// what a search word is compared with: the series, its base digits, suffix, brand, location, observations
+function qKeys(r){
+  const p = splitSer(r.seria);
+  return {ser:compact(r.seria), core:p ? p.core.replace(/\D/g, '') : '', rest:p ? compact(p.core + p.suf) : '',
+    suf:p ? compact(p.suf) : '', brand:compact(r.brand), loc:compact(r.loc), obs:compact(r.obs)};
+}
 function searchIndex(){
   const rows = sortedRows();
   if(qIndex && qIndex.rows === rows) return qIndex;
-  const items = rows.map(r => {
-    const p = splitSer(r.seria);
-    return {r, k:{ser:compact(r.seria), core:p ? p.core.replace(/\D/g, '') : '', rest:p ? compact(p.core + p.suf) : '',
-      suf:p ? compact(p.suf) : '', brand:compact(r.brand), loc:compact(r.loc), obs:compact(r.obs)}};
-  });
+  const items = rows.map(r => ({r, k:qKeys(r)}));
   const bc = new Map(), lc = new Map();
   rows.forEach(r => {
     const b = normSame(r.brand), l = normSame(r.loc);
@@ -2408,11 +2419,25 @@ const FLABEL = {seria:'Seria', brand:'Brand', buc:'Bucăți', loc:'Localizare', 
 const HS = {range:'azi', seria:'', items:[], last:null, more:false, users:new Set(), loading:false, err:'', cache:false};
 function dayStart(back){ const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - back); return d.getTime(); }
 function openHist(){ HS.range = 'azi'; HS.seria = ''; HS.users.clear(); $('#hs-ser').value = ''; HS.items = []; go('hist'); loadHist(false); }
+// the stock rows (deleted ones too) that the history search finds, with the same rules as "Caută în stoc":
+// a number is looked up in the base of the series, so 6205 also finds 6205-2RS or 6205 ZZ C3
+const HIST_MAX_ROWS = 300;
+function histRids(q){
+  const toks = parseQuery(q);
+  if(!toks.length) return [];
+  return Object.keys(docsMap).filter(id => { const k = qKeys(docsMap[id]); return toks.every(t => tokMatch(t, k)); });
+}
 async function loadHist(more){
   HS.loading = true; HS.err = ''; renderHist();
   const from = dayStart(HS.range === '30' ? 29 : HS.range === '7' ? 6 : 0);
+  const rids = HS.seria ? histRids(HS.seria) : null;
+  if(rids && rids.length > HIST_MAX_ROWS){
+    HS.items = []; HS.loading = false;
+    HS.err = `„${HS.seria}” se potrivește cu ${fmt(rids.length)} rânduri din stoc. Scrie seria mai exact.`;
+    renderHist(); return;
+  }
   try{
-    const r = await FB.history({from, seria:HS.seria, after:more ? HS.last : null, max:300});
+    const r = await FB.history({from, seria:HS.seria, rids, after:more ? HS.last : null, max:300});
     HS.items = more ? HS.items.concat(r.items) : r.items;
     HS.last = r.last; HS.more = !HS.seria && r.items.length === 300; HS.cache = !!r.fromCache;
     HS.items.sort((a, b) => (b.t || 0) - (a.t || 0));
