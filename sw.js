@@ -2,7 +2,8 @@
 // Păstrează aplicația și biblioteca Firebase în memoria telefonului. Când ai internet,
 // descarcă în fundal versiunea nouă a aplicației, care apare la următoarea deschidere.
 // Datele stocului nu trec prin acest fișier: le păstrează și le sincronizează Firebase.
-const CACHE = 'inventar-rulmenti-cloud-v3';
+const VERSION = '1.0';   // același număr ca APP_VER din index.html; la fiecare actualizare crește cu 1
+const CACHE = 'inventar-rulmenti-' + VERSION;
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 const FB_VER = '13.4.0';
 const LIBS = ['firebase-app.js', 'firebase-auth.js', 'firebase-firestore.js']
@@ -10,7 +11,7 @@ const LIBS = ['firebase-app.js', 'firebase-auth.js', 'firebase-firestore.js']
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(async c => {
-    await c.addAll(FILES);
+    await c.addAll(FILES.map(f => new Request(f, { cache: 'reload' })));   // straight from the site, not an old copy
     await Promise.all(LIBS.map(u => fetch(u, { mode: 'cors' })
       .then(r => (r && r.ok ? c.put(u, r) : null)).catch(() => null)));
   }).then(() => self.skipWaiting()));
@@ -42,6 +43,7 @@ self.addEventListener('fetch', e => {
   }
 
   if (url.origin !== self.location.origin) return;   // Firebase servers: never intercepted
+  if (url.pathname.endsWith('/sw.js')) return;        // the version check always asks the site
   const key = req.mode === 'navigate' ? './index.html' : req;
   e.respondWith(caches.open(CACHE).then(async cache => {
     const hit = await cache.match(key, { ignoreSearch: true });

@@ -326,6 +326,8 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 .acct .av{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--steel-soft);color:var(--steel);font:700 15px/1 var(--f-display)}
 .acct .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .dlg-box .who{color:var(--muted)}
+.btn.ver{background:var(--tray);border-color:var(--tray);font-family:var(--f-mono);font-weight:700;font-size:17px;letter-spacing:.02em}
+.ac-vmsg{margin:-2px 0 2px;text-align:center;font-size:14px}
 .chip.warn{background:var(--warn-soft);color:var(--warn)}
 /* ---------- History ---------- */
 .hist{display:flex;flex-direction:column;gap:10px;padding-block:12px}
@@ -895,6 +897,8 @@ body.is-desk{padding-left:0;padding-right:0}
       <button type="button" class="btn" id="ac-name">Schimbă numele</button>
       <button type="button" class="btn" id="ac-pass">Schimbă parola</button>
       <button type="button" class="btn danger" id="ac-out">Ieși din cont</button>
+      <button type="button" class="btn ver" id="ac-ver">Versiunea</button>
+      <p class="who ac-vmsg" id="ac-vmsg" hidden></p>
       <button type="button" class="btn ghost" id="ac-close">Închide</button>
     </div>
     <form class="dlg-act" id="ac-form" novalidate hidden>
@@ -2356,6 +2360,7 @@ function renderAcct(){
   $('#ac-main').hidden = !main; $('#ac-form').hidden = main;
   $('#ac-out').textContent = AC.outArm ? 'Confirmă ieșirea din cont' : 'Ieși din cont';
   $('#ac-out').classList.toggle('armed', AC.outArm);
+  if(!verBusy){ verIdle(); verMsg(''); }
   if(!main){
     const i1 = $('#ac-i1'), i2 = $('#ac-i2');
     $('#ac-l1').textContent = name ? 'Numele tău' : 'Parola actuală';
@@ -2388,6 +2393,56 @@ async function acOut(){
   if(!AC.outArm){ AC.outArm = true; renderAcct(); return; }
   $('#acct').hidden = true;
   try{ await FB.signOut(); }catch(e){ toast(authMsg(e), 'err'); }
+}
+
+/* ---------- app version: shown in the account window; a tap checks the site for a newer one and restarts into it ---------- */
+// keep the same number in sw.js (const VERSION); every update goes up by one: 1.0, 2.0, 3.0 ...
+const APP_VER = '1.0', LS_VER = 'app_ver_from';
+let verBusy = false;
+const verNum = v => parseFloat(v) || 0;
+function verMsg(msg){ const e = $('#ac-vmsg'); e.hidden = !msg; e.textContent = msg || ''; }
+function verIdle(){ const b = $('#ac-ver'); b.textContent = 'Versiunea ' + APP_VER; b.disabled = false; }
+async function latestVer(){
+  const r = await fetch('sw.js', {cache:'no-store'});
+  if(!r.ok) throw new Error('http ' + r.status);
+  const m = /const VERSION = '([\d.]+)'/.exec(await r.text());
+  if(!m) throw new Error('no version');
+  return m[1];
+}
+function untilActive(w){
+  return new Promise(res => {
+    if(!w || w.state === 'activated' || w.state === 'redundant'){ res(); return; }
+    const t = setTimeout(res, 60000);
+    w.addEventListener('statechange', () => { if(w.state === 'activated' || w.state === 'redundant'){ clearTimeout(t); res(); } });
+  });
+}
+async function checkUpdate(){
+  const b = $('#ac-ver');
+  if(b.disabled) return;
+  acErr(''); verMsg('');
+  if(!navigator.onLine){ acErr('Fără internet nu pot verifica dacă a apărut o versiune nouă.'); return; }
+  b.disabled = true; b.textContent = 'Verific…';
+  let nv;
+  try{ nv = await latestVer(); }
+  catch(e){ verIdle(); acErr('Nu am putut verifica versiunea. Încearcă din nou peste câteva minute.'); return; }
+  if(verNum(nv) <= verNum(APP_VER)){ verIdle(); verMsg('Ai ultima versiune.'); return; }
+  verBusy = true;
+  b.textContent = 'Se instalează versiunea ' + nv + '…';
+  verMsg('Aplicația repornește singură.');
+  try{
+    const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
+    if(reg){ await reg.update().catch(() => {}); await untilActive(reg.installing || reg.waiting); }
+    // changes not yet sent stay saved in the phone anyway; give them a moment to leave first
+    if(C.pending > 0) await Promise.race([FB.waitPending(), new Promise(r => setTimeout(r, 15000))]).catch(() => {});
+  }catch(e){}
+  lsSet(LS_VER, APP_VER);
+  location.reload();
+}
+function verAfterRestart(){
+  const from = lsGet(LS_VER); if(!from) return;
+  lsSet(LS_VER, null);
+  if(verNum(APP_VER) > verNum(from)) toast('Aplicația a fost actualizată la versiunea ' + APP_VER + '.');
+  else toast('Versiunea nouă nu s-a încărcat încă. Încearcă din nou peste un minut.', 'err');
 }
 function confirmDlg(title, msg, okLabel, fn){
   $('#cf-t').textContent = title; $('#cf-msg').textContent = msg; $('#cf-ok').textContent = okLabel;
@@ -2529,6 +2584,8 @@ function bindCloud(){
   $('#ac-cancel').addEventListener('click', () => { AC.mode = 'main'; renderAcct(); });
   $('#ac-form').addEventListener('submit', e => { e.preventDefault(); acSave(); });
   $('#ac-out').addEventListener('click', acOut);
+  $('#ac-ver').addEventListener('click', checkUpdate);
+  verAfterRestart();
   $('#cf-ok').addEventListener('click', () => { $('#cf').hidden = true; const f = CF.fn; CF.fn = null; if(f) f(); });
   $('#cf-no').addEventListener('click', () => { $('#cf').hidden = true; CF.fn = null; });
   $('#hm-mig-go').addEventListener('click', migrate);
