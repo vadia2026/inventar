@@ -1415,7 +1415,11 @@ function updateTag(){
   $('#f-tag').hidden = !(f.k === 'loc' && S.draft.locPrevVal && inp.value === S.draft.locPrevVal);
 }
 /* ---------- quick chips for the series: last series, learned prefixes and suffixes ---------- */
-const SER_RE = /^([A-Z]+ ?)?(\d+(?:\/\d+(?![A-Z]))?)(.*)$/;
+// prefix + base + suffix. The prefix is everything before the base: letters, also several groups joined by
+// space / . - ( ) (NU/NA 4922, RNA NA 4822, RNA (AJ) 303518, Z-522742), or a maker's prefix with digits (4T-, SL18 ).
+// The base is the first group of digits after it (with /2 kept for 6205/2), the rest is the suffix.
+const SER_RE = /^((?:\d[A-Z]+-|[A-Z]+\d{1,2} (?=\d{3}))?(?:[A-Z(][A-Z \/.\-()]*)?)(\d+(?:\/\d+(?![A-Z]))?)(.*)$/;
+const onlyPrefix = s => !/\d/.test(s) && /^[A-Z(]/.test(s);   // "NU/NA " typed, base not yet
 function splitSer(s){
   const m = SER_RE.exec(up(s).replace(/\s+/g, ' ').trim());
   return m ? {pre:m[1] || '', core:m[2], suf:(m[3] || '').replace(/\s+$/, '')} : null;
@@ -1462,8 +1466,9 @@ function learnedParts(){
 }
 function withPrefix(cur, p){
   const s = up(cur).replace(/^\s+/, '');
-  if(!s || /^[A-Z]+ ?$/.test(s)) return p;
-  return p + s.replace(/^[A-Z]+ ?(?=\d)/, '');
+  if(!s || onlyPrefix(s)) return p;
+  const sp = splitSer(s);
+  return sp ? p + sp.core + sp.suf : p + s;
 }
 function withSuffix(cur, x){
   let s = up(cur).replace(/\s+$/, '');
@@ -1479,7 +1484,7 @@ function lastCore(){
 }
 function withCore(cur, core){
   const s = up(cur).replace(/^\s+/, '');
-  return /^[A-Z]+ ?$/.test(s) ? s + core : core;      // keep a prefix already chosen: "NU " + "210"
+  return onlyPrefix(s) ? s + core : core;      // keep a prefix already chosen: "NU " + "210", "NU/NA " + "4922"
 }
 function seriaChips(){
   const cur = up(inp.value).replace(/\s+/g, ' ').trim();
@@ -1764,8 +1769,16 @@ let qIndex = null, qBlurT = null;
 // what a search word is compared with: the series, its base digits, suffix, brand, location, observations
 function qKeys(r){
   const p = splitSer(r.seria);
-  return {ser:compact(r.seria), core:p ? p.core.replace(/\D/g, '') : '', rest:p ? compact(p.core + p.suf) : '',
+  return {ser:compact(r.seria), core:p ? p.core.replace(/\D/g, '') : '', alt:p ? altCores(p.suf) : [], rest:p ? compact(p.core + p.suf) : '',
     suf:p ? compact(p.suf) : '', brand:compact(r.brand), loc:compact(r.loc), obs:compact(r.obs)};
+}
+// the base of a second designation written after the first one: in brackets, 6907 (61907), NU 2334 E (32634 E),
+// or after / or -, HM 924045/HM 924010, JL 819349-JL819310 (4+ digits, so /C3, /W33, /VA208 stay suffixes)
+function altCores(suf){
+  const out = [], add = v => { const a = splitSer(v.trim()); if(a) out.push(a.core.replace(/\D/g, '')); };
+  for(const m of suf.matchAll(/\(([^)]*)\)/g)) add(m[1]);
+  for(const m of suf.replace(/\([^)]*\)/g, ' ').matchAll(/[\/-] ?([A-Z]* ?\d{4,}[A-Z0-9 .]*)/g)) add(m[1]);
+  return out;
 }
 function searchIndex(){
   const rows = sortedRows();
@@ -1785,7 +1798,10 @@ function searchIndex(){
 function parseQuery(raw){ return normalize(FIELDS[0], raw).split(/\s+/).map(compact).filter(Boolean); }
 // how one word matches one row: 2 exact, 1 partial, 0 not at all
 function tokMatch(t, k){
-  if(/^\d+$/.test(t)) return k.core.startsWith(t) ? (k.core === t ? 2 : 1) : 0;   // a number is looked up only in the base of the series
+  if(/^\d+$/.test(t)){   // a number is looked up only in the base of the series (and of a second designation)
+    if(k.core.startsWith(t)) return k.core === t ? 2 : 1;
+    return k.alt && k.alt.some(a => a.startsWith(t)) ? (k.alt.includes(t) ? 2 : 1) : 0;
+  }
   if(k.ser.startsWith(t) || (k.rest && k.rest.startsWith(t))) return (k.ser === t || k.rest === t) ? 2 : 1;
   if(t.length >= 2 && k.suf.includes(t)) return 1;
   if(k.brand && k.brand.startsWith(t)) return k.brand === t ? 2 : 1;
@@ -2397,7 +2413,7 @@ async function acOut(){
 
 /* ---------- app version: shown in the account window; a tap checks the site for a newer one and restarts into it ---------- */
 // keep the same number in sw.js (const VERSION); every update goes up by one: 1.0, 2.0, 3.0 ...
-const APP_VER = '1.0', LS_VER = 'app_ver_from';
+const APP_VER = '3.0', LS_VER = 'app_ver_from';
 let verBusy = false;
 const verNum = v => parseFloat(v) || 0;
 function verMsg(msg){ const e = $('#ac-vmsg'); e.hidden = !msg; e.textContent = msg || ''; }
