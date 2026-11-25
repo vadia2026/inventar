@@ -1,8 +1,8 @@
 INVENTAR RULMENȚI - stoc comun pentru echipă (Firebase)
-Versiunea 6.0
+Versiunea 7.0
 
 VERSIUNEA APLICAȚIEI
-- O vezi apăsând butonul cu numele tău: în fereastra contului e butonul „Versiunea 6.0”.
+- O vezi apăsând butonul cu numele tău: în fereastra contului e butonul „Versiunea 7.0”.
 - Fiecare actualizare primește numărul următor: 2.0, 3.0, 4.0 ...
 - Apasă butonul ca să verifici dacă pe site a apărut o versiune nouă. Dacă da, aplicația
   o instalează și repornește singură. Dacă nu, scrie „Ai ultima versiune.”

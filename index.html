@@ -308,6 +308,11 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 .qy-act .btn{flex:1;min-height:0;font-size:22px}
 .qy-act .btn.primary{flex:1.7}
 
+/* ---------- Import: bearings repeated in the file ---------- */
+.imp-list{margin-top:8px;max-height:36vh;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:2px 10px}
+.imp-li{padding:7px 0;border-top:1px solid var(--line)}
+.imp-li:first-child{border-top:0}
+.imp-li span{color:var(--muted);font-size:14px}
 /* ---------- Login & account ---------- */
 .login{display:flex;flex-direction:column;gap:22px;padding-block:28px 16px;overflow-y:auto}
 .lg{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
@@ -2117,13 +2122,14 @@ function readImport(file){
     try{
       const wb = XLSX.read(new Uint8Array(fr.result), {type:'array'});
       const ws = wb.Sheets[wb.SheetNames[0]];
-      const aoa = XLSX.utils.sheet_to_json(ws, {header:1, blankrows:false, defval:''});
+      const aoa = XLSX.utils.sheet_to_json(ws, {header:1, blankrows:true, defval:''});
+      const r0 = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']).s.r : 0;   // empty rows kept, so i + r0 + 1 is the Excel row
       const out = [];
       aoa.forEach((r, i) => {
         const cell = j => up(String(r[j] == null ? '' : r[j])).replace(/\s+/g, ' ').trim();
         const seria = cell(0);
         if(i === 0 && compact(seria).startsWith('SERIA')) return;          // header row
-        const row = {seria, brand:cell(1), buc:cell(2).replace(/\.0+$/, ''), loc:cell(3), obs:cell(6)};
+        const row = {seria, brand:cell(1), buc:cell(2).replace(/\.0+$/, ''), loc:cell(3), obs:cell(6), line:r0 + i + 1};
         if(row.seria || row.brand || row.buc || row.loc || row.obs) out.push(row);
       });
       if(!out.length){ toast('Nu am găsit rânduri în fișier. Seria trebuie să fie în coloana A.', 'err'); return; }
@@ -2141,18 +2147,35 @@ const impKey = r => sameKey(r.seria) + '|' + sameKey(r.brand) + '|' + sameKey(r.
 function impPlanFor(list, withStock){
   const stock = new Map();
   if(withStock) sortedRows().forEach(r => { const k = impKey(r); if(!stock.has(k)) stock.set(k, r); });
-  const fresh = new Map(), adds = new Map();
-  let matched = 0, repeats = 0;
+  const groups = new Map(), adds = new Map();   // groups: the lines of the file for each bearing not in the stock
+  let matched = 0;
   list.forEach(r => {
-    const k = impKey(r), num = /^\d+$/.test(r.buc), n = num ? parseInt(r.buc, 10) : 0, t = stock.get(k);
-    if(t){ matched++; const a = adds.get(t.id) || {id:t.id, row:t, n:0}; a.n += n; adds.set(t.id, a); return; }
-    const f = fresh.get(k);
-    if(!f){ fresh.set(k, Object.assign({}, r)); return; }
-    repeats++;
-    if(num) f.buc = String((parseInt(f.buc, 10) || 0) + n);
-    if(r.obs && !f.obs.split('; ').includes(r.obs)) f.obs = f.obs ? f.obs + '; ' + r.obs : r.obs;
+    const k = impKey(r), t = stock.get(k);
+    if(t){ matched++; const a = adds.get(t.id) || {id:t.id, row:t, n:0}; a.n += /^\d+$/.test(r.buc) ? parseInt(r.buc, 10) : 0; adds.set(t.id, a); return; }
+    if(!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(r);
   });
-  return {fresh:[...fresh.values()], adds:[...adds.values()], matched, repeats};
+  const fresh = [], reps = [];
+  groups.forEach(lines => {
+    const row = Object.assign({}, lines[0]);
+    if(lines.length > 1){
+      const nums = lines.filter(l => /^\d+$/.test(l.buc));
+      if(nums.length) row.buc = String(nums.reduce((a, l) => a + parseInt(l.buc, 10), 0));
+      row.obs = [...new Set(lines.map(l => l.obs).filter(Boolean))].join('; ');
+      reps.push({row, lines});
+    }
+    fresh.push(row);
+  });
+  return {fresh, adds:[...adds.values()], matched, reps};
+}
+const andList = a => a.length < 2 ? String(a[0]) : a.slice(0, -1).join(', ') + ' și ' + a[a.length - 1];
+// one repeated bearing: every spelling used, the Excel rows it is on, and how the pieces add up
+function impRepLine({row, lines}){
+  const spell = f => esc([...new Set(lines.map(l => l[f]).filter(Boolean))].join(' / ') || (f === 'brand' ? 'fără brand' : 'fără locație'));
+  const parts = lines.map(l => /^\d+$/.test(l.buc) ? l.buc : '–');
+  const pcs = parts.some(x => x !== '–') ? `${parts.join(' + ')} = ${fmt(parseInt(row.buc, 10) || 0)} buc` : 'fără bucăți';
+  return `<div class="imp-li"><b>${spell('seria')}</b> ${spell('brand')} · ${spell('loc')}<br>` +
+    `<span>rândurile ${andList(lines.map(l => l.line))} din Excel: ${pcs}</span></div>`;
 }
 const rnd = n => fmt(n) + (n === 1 ? ' rând' : ' rânduri');
 function impShow(name){
@@ -2165,8 +2188,12 @@ function impShow(name){
       (P.adds.length > 5 ? `<br>… și încă ${fmt(P.adds.length - 5)}` : '') +
       `<br><br>${nf ? rnd(nf) + (nf === 1 ? ' e nou.' : ' sunt noi.') : 'Niciun rând nou.'}`;
   }
-  if(P.repeats) html += `<br><br>În fișier, ${rnd(P.repeats)} repetă un rulment de la același loc; ` +
-    `îl pun pe un singur rând, cu bucățile adunate.`;
+  if(P.reps.length){
+    const one = P.reps.length === 1;
+    html += `<br><br><b>În fișier, ${one ? 'un rulment apare' : fmt(P.reps.length) + ' rulmenți apar'} de mai multe ori la același loc.</b> ` +
+      `${one ? 'Îl pun' : 'Îi pun pe fiecare'} pe un singur rând, cu bucățile adunate:` +
+      '<div class="imp-list">' + P.reps.map(impRepLine).join('') + '</div>';
+  }
   $('#imp-msg').innerHTML = html;
   $('#imp-add').hidden = !!m;
   $('#imp-add').textContent = have ? 'Adaugă la stoc' : 'Importă';
@@ -2483,7 +2510,7 @@ async function acOut(){
 
 /* ---------- app version: shown in the account window; a tap checks the site for a newer one and restarts into it ---------- */
 // keep the same number in sw.js (const VERSION); every update goes up by one: 1.0, 2.0, 3.0 ...
-const APP_VER = '6.0', LS_VER = 'app_ver_from';
+const APP_VER = '7.0', LS_VER = 'app_ver_from';
 let verBusy = false;
 const verNum = v => parseFloat(v) || 0;
 function verMsg(msg){ const e = $('#ac-vmsg'); e.hidden = !msg; e.textContent = msg || ''; }
