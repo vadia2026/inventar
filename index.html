@@ -1656,8 +1656,8 @@ function renderReview(){
     return `<button type="button" class="card" data-i="${i}"><span class="colbadge">${f.col}</span><span class="c-label">${esc(f.label)}</span>` +
       (v ? `<span class="c-val">${esc(v)}</span>` : '<span class="c-val empty">necompletat</span>') + (rowMode ? '<svg class="c-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>' : '') + '</button>';
   }).join('');
-  // duplicate = same series AND same brand, written identically
-  const same = (a, b) => up(a).replace(/\s+/g, ' ').trim() === up(b).replace(/\s+/g, ' ').trim();
+  // duplicate = same series AND same brand; spaces, - . / _ and diacritics do not count (1213K = 1213 K)
+  const same = (a, b) => sameKey(a) === sameKey(b);
   const dups = d.seria ? rows.filter(r => r.id !== d.id && same(r.seria, d.seria) && same(r.brand, d.brand)) : [];
   const dup = $('#rv-dup');
   S.rv.mergeTarget = null;
@@ -1671,7 +1671,8 @@ function renderReview(){
       // same series, brand AND location: offer to add the pieces to the existing row
       const t = here[0], a = parseInt(t.buc, 10) || 0, b = parseInt(d.buc, 10) || 0;
       S.rv.mergeTarget = t.id;
-      html = `<span>${desc} există deja la <b>${esc(d.loc || 'fără locație')}</b>${t.buc ? ', ' + esc(t.buc) + ' buc' : ''}.</span>` +
+      const spelt = normSame(t.seria) !== normSame(d.seria) ? ` (scris <b>${esc(t.seria)}</b>)` : '';
+      html = `<span>${desc} există deja${spelt} la <b>${esc(t.loc || 'fără locație')}</b>${t.buc ? ', ' + esc(t.buc) + ' buc' : ''}.</span>` +
         `<button type="button" class="btn primary" id="rv-merge">${b ? `Adaugă la rândul existent: ${a} + ${b} = ${a + b} buc` : 'Unește cu rândul existent'}</button>` +
         (other.length ? `<span>Mai apare și la: ${list(other)}</span>` : '');
     } else {
@@ -1764,6 +1765,8 @@ function qyOK(){
 const qinp = $('#q-input');
 const coll = new Intl.Collator('ro', {numeric:true, sensitivity:'base'});
 const normSame = s => up(s).replace(/\s+/g, ' ').trim();
+// the same bearing or place written differently: 1213K = 1213 K, NUP 218 E = NUP218E, CAPUS HN C1 = CAPUS_HN_C1
+const sameKey = s => compact(s);
 S.q = {brands:new Set(), locs:new Set(), kb:true, dict:false, eq:'', pendingEq:'', facets:null};
 let qIndex = null, qBlurT = null;
 // what a search word is compared with: the series, its base digits, suffix, brand, location, observations
@@ -1813,7 +1816,7 @@ function tokMatch(t, k){
 function groupRows(hits){
   const m = new Map();
   hits.forEach(({r, score}) => {
-    const key = normSame(r.seria) + '|' + normSame(r.brand);
+    const key = sameKey(r.seria) + '|' + sameKey(r.brand);
     let g = m.get(key);
     if(!g){ g = {seria:r.seria, brand:r.brand, rows:[], pcs:0, score:0}; m.set(key, g); }
     g.rows.push(r); g.pcs += parseInt(r.buc, 10) || 0; g.score = Math.max(g.score, score || 0);
@@ -2413,7 +2416,7 @@ async function acOut(){
 
 /* ---------- app version: shown in the account window; a tap checks the site for a newer one and restarts into it ---------- */
 // keep the same number in sw.js (const VERSION); every update goes up by one: 1.0, 2.0, 3.0 ...
-const APP_VER = '3.0', LS_VER = 'app_ver_from';
+const APP_VER = '4.0', LS_VER = 'app_ver_from';
 let verBusy = false;
 const verNum = v => parseFloat(v) || 0;
 function verMsg(msg){ const e = $('#ac-vmsg'); e.hidden = !msg; e.textContent = msg || ''; }
@@ -2754,12 +2757,13 @@ function dkSubmitInv(){
   if(err){ dkMsg(esc(err), 'err'); $('#dk-f-buc').focus(); return; }
   v.buc = buc;
   $('#dk-f-seria').value = v.seria; $('#dk-f-brand').value = v.brand; $('#dk-f-loc').value = v.loc; $('#dk-f-obs').value = v.obs;
-  const same = (a, b) => normSame(a) === normSame(b);
+  const same = (a, b) => sameKey(a) === sameKey(b);
   const twin = sortedRows().find(r => same(r.seria, v.seria) && same(r.brand, v.brand) && same(r.loc, v.loc));
   if(twin){
     const a = parseInt(twin.buc, 10) || 0, b = parseInt(v.buc, 10) || 0;
     D.pend = {v, t:twin.id};
-    dkMsg(`<span><b>${esc(v.seria)}</b> ${v.brand ? 'de la ' + esc(v.brand) : 'fără brand'} există deja la <b>${esc(v.loc || 'fără locație')}</b>${twin.buc ? ', ' + esc(twin.buc) + ' buc' : ''}.</span>` +
+    const spelt = normSame(twin.seria) !== normSame(v.seria) ? ` (scris <b>${esc(twin.seria)}</b>)` : '';
+    dkMsg(`<span><b>${esc(v.seria)}</b> ${v.brand ? 'de la ' + esc(v.brand) : 'fără brand'} există deja${spelt} la <b>${esc(twin.loc || 'fără locație')}</b>${twin.buc ? ', ' + esc(twin.buc) + ' buc' : ''}.</span>` +
       `<button type="button" class="btn primary" id="dk-pm">${b ? `Adaugă la rândul existent: ${a} + ${b} = ${a + b}` : 'Folosește rândul existent'}</button>` +
       '<button type="button" class="btn" id="dk-pn">Salvează ca rând separat</button><button type="button" class="btn ghost" id="dk-px">Renunță</button>', 'dup');
     setTimeout(() => { const b1 = $('#dk-pm'); if(b1) b1.focus(); }, 0);
@@ -2826,7 +2830,7 @@ function dkRenderPanel(){
   $('#dp-cur').textContent = fmt(parseInt(r.buc, 10) || 0);
   $('#dp-save').disabled = !D.dirty;
   $('#dp-meta').textContent = r.nm ? `Ultima modificare: ${r.nm}${r.u ? ', ' + whenStr(r.u) : ''}` : '';
-  const same = (a, b) => normSame(a) === normSame(b);
+  const same = (a, b) => sameKey(a) === sameKey(b);
   const twin = sortedRows().find(x => x.id !== r.id && same(x.seria, r.seria) && same(x.brand, r.brand) && same(x.loc, r.loc));
   const dup = $('#dp-dup');
   if(twin){
