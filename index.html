@@ -1806,11 +1806,26 @@ function tokMatch(t, k){
     return k.alt && k.alt.some(a => a.startsWith(t)) ? (k.alt.includes(t) ? 2 : 1) : 0;
   }
   if(k.ser.startsWith(t) || (k.rest && k.rest.startsWith(t))) return (k.ser === t || k.rest === t) ? 2 : 1;
+  if(k.suf && k.suf.startsWith(t)) return k.suf === t ? 2 : 1;   // 1213 K finds 1213K, NU 2212 E finds NU2212E
   if(t.length >= 2 && k.suf.includes(t)) return 1;
   if(k.brand && k.brand.startsWith(t)) return k.brand === t ? 2 : 1;
   if(k.loc && k.loc.startsWith(t)) return k.loc === t ? 2 : 1;
   if(t.length >= 3 && k.obs.includes(t)) return 1;
   return 0;
+}
+// how the whole search matches one row: -1 not at all, else a score (higher = closer). Every word must match,
+// and the first words may also be the series typed in pieces: 1213 K, K 33 X 47 X 22, 6007 2 RS, NU 2212 E
+function rowScore(toks, k){
+  let best = 0;
+  for(const t of toks){ const m = tokMatch(t, k); if(!m){ best = -1; break; } best += m; }
+  for(let n = toks.length; n >= 2; n--){
+    const g = toks.slice(0, n).join('');
+    if(!(k.ser.startsWith(g) || (k.rest && k.rest.startsWith(g)))) continue;
+    let sc = (k.ser === g || k.rest === g) ? 2 * n : n;
+    for(const t of toks.slice(n)){ const m = tokMatch(t, k); if(!m){ sc = -1; break; } sc += m; }
+    if(sc >= 0) return Math.max(best, sc);
+  }
+  return best;
 }
 // one group per bearing (series + brand), with its locations and total pieces
 function groupRows(hits){
@@ -1830,8 +1845,7 @@ function runSearch(){
   if(!toks.length && !fb.size && !fl.size){ S.q.facets = {brands:idx.brands, locs:idx.locs}; return null; }
   const hits = [];
   for(const {r, k} of idx.items){
-    let score = 0;
-    for(const t of toks){ const m = tokMatch(t, k); if(!m){ score = -1; break; } score += m; }
+    const score = rowScore(toks, k);
     if(score >= 0) hits.push({r, score});
   }
   const inB = h => !fb.size || fb.has(normSame(h.r.brand)), inL = h => !fl.size || fl.has(normSame(h.r.loc));
@@ -2028,7 +2042,7 @@ function renderSheet(){
   const pcs = all.reduce((a, r) => a + (parseInt(r.buc, 10) || 0), 0);
   let html = '', shown = 0;
   items.forEach(({r, k}, i) => {
-    if(q && !toks.every(t => tokMatch(t, k))) return;
+    if(q && rowScore(toks, k) < 0) return;
     shown++;
     html += `<tr data-id="${esc(r.id)}"><td class="n">${i + 1}</td>` +
       `<td class="mono b">${esc(r.seria)}</td><td>${esc(r.brand)}</td><td class="num">${esc(r.buc)}</td>` +
@@ -2416,7 +2430,7 @@ async function acOut(){
 
 /* ---------- app version: shown in the account window; a tap checks the site for a newer one and restarts into it ---------- */
 // keep the same number in sw.js (const VERSION); every update goes up by one: 1.0, 2.0, 3.0 ...
-const APP_VER = '4.0', LS_VER = 'app_ver_from';
+const APP_VER = '5.0', LS_VER = 'app_ver_from';
 let verBusy = false;
 const verNum = v => parseFloat(v) || 0;
 function verMsg(msg){ const e = $('#ac-vmsg'); e.hidden = !msg; e.textContent = msg || ''; }
@@ -2499,7 +2513,7 @@ const HIST_MAX_ROWS = 300;
 function histRids(q){
   const toks = parseQuery(q);
   if(!toks.length) return [];
-  return Object.keys(docsMap).filter(id => { const k = qKeys(docsMap[id]); return toks.every(t => tokMatch(t, k)); });
+  return Object.keys(docsMap).filter(id => { const k = qKeys(docsMap[id]); return rowScore(toks, k) >= 0; });
 }
 async function loadHist(more){
   HS.loading = true; HS.err = ''; renderHist();
@@ -2683,7 +2697,7 @@ const whenStr = u => u ? hDate(u) + ' ' + hTime(u) : '';
 // stock table: every column visible, sorted by a click on its title
 function dkRenderTable(){
   const toks = parseQuery($('#dk-tq').value), all = searchIndex().items;
-  let list = all.map((x, i) => ({r:x.r, k:x.k, i})).filter(x => !toks.length || toks.every(t => tokMatch(t, x.k)));
+  let list = all.map((x, i) => ({r:x.r, k:x.k, i})).filter(x => !toks.length || rowScore(toks, x.k) >= 0);
   const s = D.sort;
   if(s.k){
     const num = k => x => k === 'n' ? x.i : k === 'u' ? (x.r.u || 0) : (parseInt(x.r.buc, 10) || 0);
