@@ -874,6 +874,8 @@ body.is-desk{padding-left:0;padding-right:0}
     <p id="imp-msg"></p>
     <div class="modal-act">
       <button type="button" class="btn primary" id="imp-add">Adaugă la stoc</button>
+      <button type="button" class="btn primary" id="imp-sum" hidden>Adună bucățile la cele existente</button>
+      <button type="button" class="btn" id="imp-new" hidden>Importă doar rândurile noi</button>
       <button type="button" class="btn danger" id="imp-rep">Înlocuiește stocul</button>
       <button type="button" class="btn ghost" id="imp-cancel">Anulează</button>
     </div>
@@ -1221,7 +1223,7 @@ function addPieces(id, delta, meta){
     () => { docsMap[id] = prev; invalidate(); onData(); });
 }
 // many rows at once (Excel import, rows moved from this phone); every row gets its own history entry
-function importRows(list, replace, note){
+function importRows(list, replace, note, adds){
   const ops = [], m = me(), now = Date.now();
   if(replace) sortedRows().forEach(r => {
     docsMap[r.id] = Object.assign({}, docsMap[r.id], {del:true});
@@ -1234,6 +1236,13 @@ function importRows(list, replace, note){
     docsMap[id] = Object.assign({}, r, {t, u:now, del:false, em:m.em, nm:m.nm});
     ops.push({col:'rulmenti', id, data:Object.assign({seria:r.seria, brand:r.brand, n:numOrNull(r.buc), loc:r.loc, obs:r.obs, t, del:false}, stamp())});
     ops.push(hist('import', id, r, ROW_F.filter(k => r[k]).map(k => ({f:k, o:'', n:r[k]})), note));
+  });
+  (adds || []).forEach(a => {   // pieces from the file added to a row that is already in the stock
+    const old = docsMap[a.id]; if(!old || old.del || !a.n) return;
+    const before = parseInt(old.buc, 10) || 0, after = before + a.n;
+    docsMap[a.id] = Object.assign({}, old, {buc:String(after)});
+    ops.push({col:'rulmenti', id:a.id, data:Object.assign({n:FB.inc(a.n)}, stamp()), merge:true});
+    ops.push(hist('qty', a.id, old, [{f:'buc', o:String(before), n:String(after)}], '+' + a.n + ' buc · ' + note));
   });
   invalidate(); onData();
   for(let i = 0; i < ops.length; i += 400) send(ops.slice(i, i + 400));
@@ -2119,25 +2128,67 @@ function readImport(file){
       });
       if(!out.length){ toast('Nu am găsit rânduri în fișier. Seria trebuie să fie în coloana A.', 'err'); return; }
       pendingImport = out; repArm = false;
-      const n = sortedRows().length;
-      $('#imp-msg').textContent = `Am găsit ${fmt(out.length)} ${out.length === 1 ? 'rând' : 'rânduri'} în „${file.name}”.` +
-        (n ? ` În aplicație ai acum ${fmt(n)} ${n === 1 ? 'rând' : 'rânduri'}.` : '');
-      $('#imp-add').textContent = n ? 'Adaugă la stoc' : 'Importă';
-      $('#imp-rep').hidden = !n;
-      $('#imp-rep').textContent = 'Înlocuiește stocul';
-      $('#imp-rep').classList.remove('armed');
-      $('#imp').hidden = false;
+      impShow(file.name);
     }catch(e){ toast('Fișierul nu poate fi citit ca Excel.', 'err'); }
   };
   fr.onerror = () => toast('Fișierul nu poate fi citit.', 'err');
   fr.readAsArrayBuffer(file);
 }
-function applyImport(replace){
+// rows of the file already in the stock: same series, brand and place (spaces, - . / _ do not count).
+// Lines of the file that repeat the same bearing at the same place go on one row, with their pieces added up.
+let impPlan = null;
+const impKey = r => sameKey(r.seria) + '|' + sameKey(r.brand) + '|' + sameKey(r.loc);
+function impPlanFor(list, withStock){
+  const stock = new Map();
+  if(withStock) sortedRows().forEach(r => { const k = impKey(r); if(!stock.has(k)) stock.set(k, r); });
+  const fresh = new Map(), adds = new Map();
+  let matched = 0, repeats = 0;
+  list.forEach(r => {
+    const k = impKey(r), num = /^\d+$/.test(r.buc), n = num ? parseInt(r.buc, 10) : 0, t = stock.get(k);
+    if(t){ matched++; const a = adds.get(t.id) || {id:t.id, row:t, n:0}; a.n += n; adds.set(t.id, a); return; }
+    const f = fresh.get(k);
+    if(!f){ fresh.set(k, Object.assign({}, r)); return; }
+    repeats++;
+    if(num) f.buc = String((parseInt(f.buc, 10) || 0) + n);
+    if(r.obs && !f.obs.split('; ').includes(r.obs)) f.obs = f.obs ? f.obs + '; ' + r.obs : r.obs;
+  });
+  return {fresh:[...fresh.values()], adds:[...adds.values()], matched, repeats};
+}
+const rnd = n => fmt(n) + (n === 1 ? ' rând' : ' rânduri');
+function impShow(name){
+  const list = pendingImport, have = sortedRows().length, P = impPlan = impPlanFor(list, true), m = P.matched, nf = P.fresh.length;
+  let html = `Am găsit <b>${rnd(list.length)}</b> în „${esc(name)}”.` + (have ? ` În aplicație ai acum ${rnd(have)}.` : '');
+  if(m){
+    html += `<br><br><b>${fmt(m)} există deja în stoc</b> (aceeași serie, brand și localizare):<br>` +
+      P.adds.slice(0, 5).map(a => `${esc(a.row.seria)} ${esc(a.row.brand)} · ${esc(a.row.loc || 'fără locație')} · ` +
+        `${fmt(parseInt(a.row.buc, 10) || 0)} buc în stoc, ${a.n ? '+' + fmt(a.n) : 'fără bucăți'} din Excel`).join('<br>') +
+      (P.adds.length > 5 ? `<br>… și încă ${fmt(P.adds.length - 5)}` : '') +
+      `<br><br>${nf ? rnd(nf) + (nf === 1 ? ' e nou.' : ' sunt noi.') : 'Niciun rând nou.'}`;
+  }
+  if(P.repeats) html += `<br><br>În fișier, ${rnd(P.repeats)} repetă un rulment de la același loc; ` +
+    `îl pun pe un singur rând, cu bucățile adunate.`;
+  $('#imp-msg').innerHTML = html;
+  $('#imp-add').hidden = !!m;
+  $('#imp-add').textContent = have ? 'Adaugă la stoc' : 'Importă';
+  $('#imp-sum').hidden = !m;
+  $('#imp-sum').textContent = nf ? `Adună bucățile la cele ${fmt(m)} existente și importă ${nf === 1 ? 'rândul nou' : 'cele ' + fmt(nf) + ' noi'}`
+                                  : `Adună bucățile la ${m === 1 ? 'rândul existent' : 'cele ' + fmt(m) + ' existente'}`;
+  $('#imp-new').hidden = !m || !nf;
+  $('#imp-new').textContent = `Importă doar ${nf === 1 ? 'rândul nou' : 'cele ' + fmt(nf) + ' noi'}, fără cele existente`;
+  $('#imp-rep').hidden = !have;
+  $('#imp-rep').textContent = 'Înlocuiește stocul';
+  $('#imp-rep').classList.remove('armed');
+  $('#imp').hidden = false;
+}
+function applyImport(replace, mode){
   if(!pendingImport) return;
-  const n = pendingImport.length;
-  importRows(pendingImport.map((r, i) => ({id:newId(i), row:r})), replace, replace ? 'stoc înlocuit din Excel' : 'importat din Excel');
-  pendingImport = null; $('#imp').hidden = true;
-  toast(`Am importat ${fmt(n)} ${n === 1 ? 'rând' : 'rânduri'} în stocul comun.`);
+  const P = replace ? impPlanFor(pendingImport, false) : impPlan, nf = P.fresh.length, note = replace ? 'stoc înlocuit din Excel' : 'importat din Excel';
+  const adds = mode === 'sum' ? P.adds.filter(a => a.n) : [];
+  importRows(P.fresh.map((r, i) => ({id:newId(i), row:r})), replace, note, adds);
+  pendingImport = null; impPlan = null; $('#imp').hidden = true;
+  if(mode === 'sum') toast(`Am adunat bucățile la ${rnd(P.adds.length)} existente` + (nf ? ` și am importat ${rnd(nf)} noi.` : '.'));
+  else if(mode === 'new') toast(`Am importat ${rnd(nf)} noi. Am lăsat neschimbate cele ${fmt(P.matched)} care există deja.`);
+  else toast(`Am importat ${rnd(nf)} în stocul comun.`);
 }
 
 /* ---------- install & offline ---------- */
@@ -2222,6 +2273,8 @@ function bind(){
   $('#hm-import').addEventListener('click', () => $('#imp-file').click());
   $('#imp-file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if(f) readImport(f); e.target.value = ''; });
   $('#imp-add').addEventListener('click', () => applyImport(false));
+  $('#imp-sum').addEventListener('click', () => applyImport(false, 'sum'));
+  $('#imp-new').addEventListener('click', () => applyImport(false, 'new'));
   $('#imp-rep').addEventListener('click', () => {
     if(!repArm){ repArm = true; const b = $('#imp-rep'); b.classList.add('armed'); b.textContent = `Confirm: șterg cele ${fmt(sortedRows().length)} rânduri și import`; return; }
     applyImport(true);
@@ -2430,7 +2483,7 @@ async function acOut(){
 
 /* ---------- app version: shown in the account window; a tap checks the site for a newer one and restarts into it ---------- */
 // keep the same number in sw.js (const VERSION); every update goes up by one: 1.0, 2.0, 3.0 ...
-const APP_VER = '5.0', LS_VER = 'app_ver_from';
+const APP_VER = '6.0', LS_VER = 'app_ver_from';
 let verBusy = false;
 const verNum = v => parseFloat(v) || 0;
 function verMsg(msg){ const e = $('#ac-vmsg'); e.hidden = !msg; e.textContent = msg || ''; }
