@@ -339,6 +339,11 @@ h1{margin:5px 0 0;font:700 40px/.95 var(--f-display);text-wrap:balance}
 .hs-tools{display:flex;flex-direction:column;gap:8px}
 .hs-range{display:flex;gap:6px;flex-wrap:wrap}
 .hs-tools .sg{font:600 15px/1 var(--f-body)}
+.hx-body{max-height:56vh;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.hx-y{margin:6px 0 0;font:700 13px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hx-m{display:flex;flex-wrap:wrap;gap:6px}
+.hx-m .sg{font:600 15px/1 var(--f-body)}
+.hx-err{margin:0;color:var(--err);font-weight:600}
 .hs-sform{display:flex;gap:8px}
 .hs-sform input{flex:1;min-width:0;height:44px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:600 16px var(--f-mono);padding:0 12px;text-transform:uppercase}
 .hs-sform input::placeholder{font:500 15px var(--f-body);text-transform:none;color:var(--muted)}
@@ -365,18 +370,19 @@ button.he:active{background:var(--steel-soft)}
 /* ---------- PC / tablet version ---------- */
 .vbtn{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 12px;font:600 14px/1 var(--f-display);letter-spacing:.05em;text-transform:uppercase;color:var(--steel)}
 body.is-desk{padding-left:0;padding-right:0}
-#desk{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--bg)}
-.dk-top{display:flex;align-items:center;flex-wrap:nowrap;gap:10px;padding:10px max(20px,env(safe-area-inset-right,0px)) 10px max(20px,env(safe-area-inset-left,0px));background:var(--surface);border-bottom:1px solid var(--line)}
+#desk{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr);grid-template-columns:minmax(0,1fr);background:var(--bg)}
+.dk-top{display:flex;align-items:center;flex-wrap:nowrap;gap:8px;min-width:0;padding:10px max(20px,env(safe-area-inset-right,0px)) 10px max(20px,env(safe-area-inset-left,0px));background:var(--surface);border-bottom:1px solid var(--line)}
 .dk-brand{display:flex;align-items:center;gap:10px;font:700 28px/1 var(--f-display)}
 .dk-brand svg{width:36px;height:36px;color:var(--ink)}
 .dk-nav{display:flex;gap:4px;flex-wrap:wrap}
-.dk-nav button{border:0;background:transparent;color:var(--muted);font:600 17px/1 var(--f-display);letter-spacing:.05em;text-transform:uppercase;padding:11px 11px;border-radius:8px}
+.dk-nav button{border:0;background:transparent;color:var(--muted);font:600 17px/1 var(--f-display);letter-spacing:.05em;text-transform:uppercase;padding:11px 9px;border-radius:8px}
 .dk-nav button:hover{background:var(--steel-soft);color:var(--ink)}
 .dk-nav button.on{background:var(--signal);color:var(--on-signal)}
 .dk-tot{font-size:14px;color:var(--muted);white-space:nowrap}
 .dk-tot b{font:700 20px/1 var(--f-display);color:var(--ink);font-variant-numeric:tabular-nums}
 .dk-sp{flex:1 1 0;min-width:0}
-#dk-sync{flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#dk-sync{flex:0 1 auto;min-width:0;display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#dk-sync::before{display:inline-block;margin-right:8px;vertical-align:1px}
 .dk-top .acct{max-width:180px}
 .dk-nav{flex-wrap:nowrap}
 .dk-tb{border:2px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 10px;font:600 15px/1 var(--f-display);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
@@ -459,6 +465,52 @@ body.is-desk{padding-left:0;padding-right:0}
   .dk-cols{grid-template-columns:minmax(0,1fr)}
   .dk-fl{position:static}
 }
+/* ---------- Inventariere: periodic count, shelf by shelf ---------- */
+.inv{display:flex;flex-direction:column;gap:10px;padding-block:12px;overflow-y:auto}
+.iv-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.iv-tabs .sg{font:600 15px/1 var(--f-body)}
+.iv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px;align-content:start}
+.iv-t{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:6px;padding:10px 11px;border-radius:12px;border:2px solid var(--line);background:var(--surface);text-align:left;min-height:66px;color:var(--ink)}
+.iv-t b{font:700 17px/1.1 var(--f-mono);overflow-wrap:anywhere}
+.iv-t span{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.iv-t.part{border-color:var(--steel)}
+.iv-t.part span{color:var(--steel);font-weight:600}
+.iv-t.done{border-color:var(--ok);background:var(--ok-soft)}
+.iv-t.done span{color:var(--ok);font-weight:700}
+.iv-t.sel{box-shadow:0 0 0 3px var(--signal)}
+.iv-hint{margin:0;color:var(--muted);font-size:14px;line-height:1.4}
+.iv-sform{display:flex;gap:8px}
+.iv-sform input{flex:1;min-width:0;height:48px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:600 17px var(--f-mono);padding:0 12px;text-transform:uppercase}
+.iv-sform input:focus{outline:none;border-color:var(--steel);box-shadow:0 0 0 3px var(--steel-soft)}
+.iv-list{display:flex;flex-direction:column;gap:6px}
+.iv-sec{margin:8px 0 0;font:700 13px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.iv-r{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:9px 10px 9px 12px;border-radius:12px;border:2px solid var(--line);background:var(--surface)}
+.iv-r .sr{font:700 18px/1.15 var(--f-mono);overflow-wrap:anywhere}
+.iv-r .mt{font-size:13px;line-height:1.3;color:var(--muted);overflow-wrap:anywhere}
+.iv-q{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 10px;font:700 17px/1 var(--f-mono);min-width:66px;white-space:nowrap}
+.iv-q small{font:600 12px var(--f-body);color:var(--muted)}
+.iv-ck{width:46px;height:46px;flex:none;border-radius:50%;border:2.5px solid var(--steel);background:var(--surface);display:grid;place-items:center;color:transparent}
+.iv-r.ok{border-color:var(--ok);background:var(--ok-soft)}
+.iv-r.ok .iv-ck{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.iv-r.fix{border-color:var(--warn);background:var(--warn-soft)}
+.iv-r.fix .iv-ck{background:var(--warn);border-color:var(--warn);color:var(--surface)}
+.iv-r.fix .iv-q{border-color:var(--warn);color:var(--warn)}
+.iv-acts{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.ivm-r{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:8px 0;border-top:1px solid var(--line)}
+.ivm-r:first-child{border-top:0}
+.ivm-r .btn{flex:none}
+.ivm-list{max-height:30vh;overflow:auto}
+#ivf .dlg-box,#ivm .dlg-box{max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow:auto}
+.iv-sform input::placeholder{text-transform:none;font-family:var(--f-body)}
+.ivc-in{height:56px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:700 26px var(--f-mono);padding:0 14px;width:100%}
+.ivc-in:focus{outline:none;border-color:var(--steel);box-shadow:0 0 0 3px var(--steel-soft)}
+.iv-err{margin:0;color:var(--err);font-weight:600}
+/* PC: shelves on the left, the shelf on the right */
+.dkv{display:grid;grid-template-columns:minmax(300px,420px) minmax(0,1fr);gap:18px;min-height:0;height:100%}
+.dkv-l,.dkv-r{min-height:0;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:16px 4px 16px 0}
+.dkv-r{padding-right:20px}
+.dkv-head h2{margin:0;font:700 26px/1 var(--f-display)}
+@media (max-width: 1100px){ .dkv{grid-template-columns:minmax(0,1fr)} .dkv-l{max-height:40vh} }
 /* ---------- Import dialog & toast ---------- */
 .modal{position:fixed;inset:0;z-index:30;background:var(--scrim);display:grid;place-items:end center;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .modal-box{width:100%;max-width:520px;background:var(--surface);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 40px var(--shadow)}
@@ -507,7 +559,7 @@ body.is-desk{padding-left:0;padding-right:0}
       <div class="stat"><b id="st-rows">0</b><span>rânduri</span></div>
       <div class="stat"><b id="st-pcs">0</b><span>bucăți</span></div>
     </div>
-    <p id="hm-last" class="hm-last">Niciun rulment inventariat încă. Apasă „Pornește inventarierea” pentru primul rând.</p>
+    <p id="hm-last" class="hm-last">Niciun rulment în stoc încă. Apasă „Adaugă” pentru primul rând.</p>
     <div id="hm-install" class="install" hidden>
       <p id="hm-install-t">Instalează aplicația pe ecranul principal ca să meargă și fără internet.</p>
       <button type="button" class="btn primary" id="hm-install-btn" hidden>Instalează pe telefon</button>
@@ -526,12 +578,17 @@ body.is-desk{padding-left:0;padding-right:0}
       <button type="button" id="hm-sheet" class="big">
         <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 4v16"/></svg></span>
         <span class="t">Vezi stocul</span>
-        <span class="s">Tabelul cu tot ce ai inventariat până acum</span>
+        <span class="s">Tabelul cu tot ce ai în stoc</span>
       </button>
       <button type="button" id="hm-start" class="big primary">
         <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M8.5 21h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-        <span class="t" id="hm-start-t">Pornește inventarierea</span>
+        <span class="t" id="hm-start-t">Adaugă</span>
         <span class="s" id="hm-start-s">Dictezi seria, brandul, bucățile, locul și observațiile</span>
+      </button>
+      <button type="button" id="hm-inv" class="big">
+        <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3v18M20 3v18M4 9h16M4 15h16"/><path d="M8 13.5l1.6 1.5L12.5 11.5" stroke-width="2.2"/></svg></span>
+        <span class="t">Inventariere</span>
+        <span class="s">Numeri raft cu raft și bifezi ce ai găsit</span>
       </button>
       <button type="button" id="hm-export" class="big">
         <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg></span>
@@ -582,6 +639,31 @@ body.is-desk{padding-left:0;padding-right:0}
   </section>
 
   <!-- HISTORY -->
+  <section id="scr-inv" class="screen inv" hidden>
+    <div class="sh-head">
+      <button type="button" class="iconbtn" id="iv-back" aria-label="Înapoi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Înapoi</button>
+      <div class="ttl">
+        <h2 id="iv-title">Inventariere</h2>
+        <p class="sh-sum" id="iv-sum"></p>
+      </div>
+    </div>
+    <div id="iv-pick" class="inv-pick" style="display:flex;flex-direction:column;gap:10px">
+      <div class="iv-tabs" id="iv-tabs"></div>
+      <div class="iv-grid" id="iv-grid"></div>
+    </div>
+    <div id="iv-shelf" hidden style="display:flex;flex-direction:column;gap:10px">
+      <form class="iv-sform" id="iv-sform" autocomplete="off" novalidate>
+        <input id="iv-q" type="search" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Caută seria pe raft" aria-label="Caută pe raft">
+        <button type="button" class="btn" id="iv-qx">Șterge</button>
+      </form>
+      <div class="iv-list" id="iv-list"></div>
+      <div class="iv-acts">
+        <button type="button" class="btn" id="iv-miss">Pe raft e ceva ce nu e în listă</button>
+        <button type="button" class="btn primary" id="iv-fin">Termină raftul</button>
+        <button type="button" class="btn ghost" id="iv-new">Numărare nouă pe acest raft</button>
+      </div>
+    </div>
+  </section>
   <section id="scr-hist" class="screen hist" hidden>
     <div class="sh-head">
       <button type="button" class="iconbtn" id="hs-back" aria-label="Înapoi la pagina principală"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Înapoi</button>
@@ -650,7 +732,7 @@ body.is-desk{padding-left:0;padding-right:0}
     <p class="dup" id="rv-dup" hidden></p>
     <div class="rv-actions" id="rv-act-new">
       <button type="button" class="btn" id="rv-mod">Modifică</button>
-      <button type="button" class="btn" id="rv-stop">Stop inventariere</button>
+      <button type="button" class="btn" id="rv-stop">Stop adăugare</button>
       <button type="button" class="btn primary wide" id="rv-ok">OK</button>
     </div>
     <div class="rv-actions" id="rv-act-sheet" hidden>
@@ -730,7 +812,7 @@ body.is-desk{padding-left:0;padding-right:0}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Înapoi
       </button>
       <div class="ttl">
-        <h2>Stoc inventariat</h2>
+        <h2>Stoc</h2>
         <p class="sh-sum" id="sh-sum">0 rânduri</p>
       </div>
       <button type="button" class="iconbtn primary" id="sh-export">Excel</button>
@@ -759,7 +841,8 @@ body.is-desk{padding-left:0;padding-right:0}
     <nav class="dk-nav" aria-label="Secțiuni">
       <button type="button" data-v="stoc">Stoc</button>
       <button type="button" data-v="caut">Caută</button>
-      <button type="button" data-v="inv">Inventariere</button>
+      <button type="button" data-v="inv">Adaugă</button>
+      <button type="button" data-v="nv">Inventariere</button>
       <button type="button" data-v="ist">Istoric</button>
     </nav>
     <span class="dk-tot"><b id="dk-rows">0</b> rânduri · <b id="dk-pcs">0</b> buc</span>
@@ -804,7 +887,7 @@ body.is-desk{padding-left:0;padding-right:0}
         </div>
       </section>
       <section class="dk-view" id="dk-inv" hidden>
-        <h2>Inventariere</h2>
+        <h2>Adaugă</h2>
         <p class="dk-hint">Tab trece la căsuța următoare, Enter salvează rândul. Localizarea rămâne pentru rulmentul următor. La Bucăți poți scrie și un calcul, de exemplu 3*12.</p>
         <form class="dk-form" id="dk-form" autocomplete="off" novalidate>
           <label><span><span class="colbadge">A</span>Seria</span><input id="dk-f-seria" list="dl-ser" spellcheck="false"></label>
@@ -824,6 +907,31 @@ body.is-desk{padding-left:0;padding-right:0}
         </div>
         <datalist id="dl-ser"></datalist><datalist id="dl-brand"></datalist><datalist id="dl-loc"></datalist>
       </section>
+      <section class="dk-view fill" id="dk-nv" hidden>
+        <div class="dkv">
+          <div class="dkv-l">
+            <div class="dkv-head"><h2>Inventariere</h2><p class="sh-sum" id="dkv-sum"></p></div>
+            <div class="iv-tabs" id="dkv-tabs"></div>
+            <div class="iv-grid" id="dkv-grid"></div>
+          </div>
+          <div class="dkv-r">
+            <p class="iv-hint" id="dkv-hint">Alege un raft din stânga. Bifează fiecare serie găsită pe raft; dacă ai numărat alt număr de bucăți, apasă pe bucăți și scrie câte ai găsit.</p>
+            <div id="dkv-shelf" hidden style="display:flex;flex-direction:column;gap:10px">
+              <div class="dkv-head"><h2 id="dkv-title"></h2><p class="sh-sum" id="dkv-ssum"></p></div>
+              <form class="iv-sform" id="dkv-sform" autocomplete="off" novalidate>
+                <input id="dkv-q" type="search" spellcheck="false" placeholder="Caută seria pe raft" aria-label="Caută pe raft">
+                <button type="button" class="btn" id="dkv-qx">Șterge</button>
+              </form>
+              <div class="iv-list" id="dkv-list"></div>
+              <div class="iv-acts" style="flex-direction:row;flex-wrap:wrap">
+                <button type="button" class="btn" id="dkv-miss">Pe raft e ceva ce nu e în listă</button>
+                <button type="button" class="btn primary" id="dkv-fin">Termină raftul</button>
+                <button type="button" class="btn ghost" id="dkv-new">Numărare nouă pe acest raft</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <section class="dk-view fill" id="dk-ist" hidden>
         <div class="dk-sbar">
           <div class="hs-range" id="dk-hr"></div>
@@ -841,7 +949,7 @@ body.is-desk{padding-left:0;padding-right:0}
             <tbody id="dk-hbody"></tbody>
           </table>
         </div>
-        <button type="button" class="btn ghost" id="dk-hmore" hidden>Încarcă mai multe</button>
+        <button type="button" class="btn ghost" id="dk-hmore" hidden>Arată mai multe</button>
       </section>
     </main>
     <aside class="dk-panel" id="dk-panel" hidden>
@@ -873,6 +981,43 @@ body.is-desk{padding-left:0;padding-right:0}
   </div>
 </div>
 
+<div id="ivc" class="dlg" role="dialog" aria-modal="true" aria-labelledby="ivc-t" hidden>
+  <form class="dlg-box" id="ivc-form" autocomplete="off" novalidate>
+    <h3 id="ivc-t">Câte bucăți ai numărat?</h3>
+    <p id="ivc-what"></p>
+    <input class="ivc-in" id="ivc-in" type="text" inputmode="numeric" enterkeyhint="done" aria-label="Bucăți numărate">
+    <p class="iv-err" id="ivc-err" hidden></p>
+    <div class="dlg-act">
+      <button type="submit" class="btn primary" id="ivc-ok">Salvează</button>
+      <button type="button" class="btn ghost" id="ivc-no">Renunță</button>
+    </div>
+  </form>
+</div>
+<div id="ivm" class="dlg" role="dialog" aria-modal="true" aria-labelledby="ivm-t" hidden>
+  <div class="dlg-box">
+    <h3 id="ivm-t">Pe raft e ceva ce nu e în listă</h3>
+    <p class="who" id="ivm-msg"></p>
+    <form class="iv-sform" id="ivm-form" autocomplete="off" novalidate>
+      <input id="ivm-in" type="search" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Seria, ex. 6205-2RS" aria-label="Seria găsită pe raft">
+    </form>
+    <div class="ivm-list" id="ivm-res"></div>
+    <div class="dlg-act">
+      <button type="button" class="btn primary" id="ivm-add">Adaugă rând nou pe acest raft</button>
+      <button type="button" class="btn ghost" id="ivm-no">Renunță</button>
+    </div>
+  </div>
+</div>
+<div id="ivf" class="dlg" role="dialog" aria-modal="true" aria-labelledby="ivf-t" hidden>
+  <div class="dlg-box">
+    <h3 id="ivf-t">Termină raftul</h3>
+    <div id="ivf-msg"></div>
+    <div class="dlg-act">
+      <button type="button" class="btn primary" id="ivf-keep">Le las așa</button>
+      <button type="button" class="btn danger" id="ivf-zero">Le pun 0 bucăți</button>
+      <button type="button" class="btn ghost" id="ivf-no">Înapoi la raft</button>
+    </div>
+  </div>
+</div>
 <div id="imp" class="modal" role="dialog" aria-modal="true" aria-labelledby="imp-t" hidden>
   <div class="modal-box">
     <h3 id="imp-t">Import din Excel</h3>
@@ -915,6 +1060,14 @@ body.is-desk{padding-left:0;padding-right:0}
       <button type="button" class="btn ghost" id="ac-cancel">Înapoi</button>
     </form>
     <p class="lg-err" id="ac-err" hidden></p>
+  </div>
+</div>
+<div id="hx" class="dlg" role="dialog" aria-modal="true" aria-labelledby="hx-t" hidden>
+  <div class="dlg-box">
+    <h3 id="hx-t"></h3>
+    <p id="hx-msg" class="who"></p>
+    <div class="hx-body" id="hx-body"></div>
+    <div class="dlg-act"><button type="button" class="btn ghost" id="hx-no">Renunță</button></div>
   </div>
 </div>
 <div id="cf" class="dlg" role="dialog" aria-modal="true" aria-labelledby="cf-t" hidden>
@@ -1152,9 +1305,20 @@ function firebaseAdapter(){
         return {items, last:null, fromCache:snaps.some(s => s.metadata.fromCache)};
       }
       const q = o.seria ? fs.query(col, fs.where('seria', '==', o.seria), fs.limit(o.max))
-        : fs.query(col, ...[fs.where('t', '>=', o.from), fs.orderBy('t', 'desc')].concat(o.after ? [fs.startAfter(o.after)] : [], [fs.limit(o.max)]));
+        : fs.query(col, ...[fs.where('t', '>=', o.from)].concat(o.to ? [fs.where('t', '<', o.to)] : [], [fs.orderBy('t', 'desc')],
+            o.after ? [fs.startAfter(o.after)] : [], [fs.limit(o.max)]));
       const s = await fs.getDocs(q);
       return {items:s.docs.map(d => Object.assign({id:d.id}, data(d))), last:s.docs.length ? s.docs[s.docs.length - 1] : null, fromCache:s.metadata.fromCache};
+    },
+    // how many changes a period has: costs one read per 1000 changes counted
+    async histCount(from, to){
+      const s = await fs.getCountFromServer(fs.query(fs.collection(db, 'istoric'), fs.where('t', '>=', from), fs.where('t', '<', to)));
+      return s.data().count;
+    },
+    async histFirst(){
+      const s = await fs.getDocs(fs.query(fs.collection(db, 'istoric'), fs.orderBy('t', 'asc'), fs.limit(1)));
+      if(s.metadata.fromCache) throw Object.assign(new Error('offline'), {offline:true});
+      return s.docs.length ? (data(s.docs[0]).t || null) : null;
     },
   };
 }
@@ -1170,7 +1334,8 @@ function me(){ const u = C.user; return {em:(u && u.email) || '', nm:(u && u.dis
 function numOrNull(v){ v = String(v == null ? '' : v).trim(); return /^\d+$/.test(v) ? parseInt(v, 10) : null; }
 function fromDoc(d){
   return {seria:d.seria || '', brand:d.brand || '', buc:(d.n == null || d.n === '') ? '' : String(d.n), loc:d.loc || '', obs:d.obs || '',
-    t:d.t || 0, u:d.u || 0, del:!!d.del, em:d.em || '', nm:d.nm || ''};
+    t:d.t || 0, u:d.u || 0, del:!!d.del, em:d.em || '', nm:d.nm || '',
+    vt:d.vt || 0, vn:d.vn || '', vq:d.vq == null ? '' : String(d.vq), vb:d.vb == null ? '' : String(d.vb)};
 }
 function stamp(){ const m = me(); return {em:m.em, nm:m.nm, u:Date.now(), su:FB.serverTime()}; }
 // one history entry: who, when, what changed (old -> new)
@@ -1266,7 +1431,7 @@ function syncState(){
 function syncUI(){
   const st = syncState(), el = $('#sync');
   el.className = 'sync ' + st.cls; el.textContent = st.txt;
-  const dk = $('#dk-sync'); if(dk){ dk.className = 'sync ' + st.cls; dk.textContent = st.txt; }
+  const dk = $('#dk-sync'); if(dk){ dk.className = 'sync ' + st.cls; dk.textContent = st.txt; dk.title = st.txt; }
   if(S.screen === 'review') rvStatus();
 }
 window.addEventListener('online', () => syncUI());
@@ -1313,7 +1478,7 @@ async function wakeOn(){
 }
 function wakeOff(){ try{ if(wake) wake.release(); }catch(e){} wake = null; }
 document.addEventListener('visibilitychange', () => {
-  if(document.visibilityState === 'visible' && (S.screen === 'field' || S.screen === 'review')) wakeOn();
+  if(document.visibilityState === 'visible' && (S.screen === 'field' || S.screen === 'review' || S.screen === 'inv')) wakeOn();
 });
 
 function go(name){
@@ -1322,6 +1487,8 @@ function go(name){
   if(name === 'home'){ renderHome(); wakeOff(); }
   if(name === 'sheet'){ renderSheet(); wakeOff(); }
   if(name === 'search'){ renderFilters(); renderSearch(); wakeOff(); }
+  if(name === 'inv'){ renderInv(); wakeOn(); }
+  if(name === 'home') IV.back = false;
   if(name === 'hist'){ renderHist(); wakeOff(); }
   syncUI();
 }
@@ -1330,6 +1497,7 @@ function onData(){
   if(S.screen === 'home') renderHome();
   else if(S.screen === 'sheet') renderSheet();
   else if(S.screen === 'search'){ renderFilters(); renderSearch(); }
+  else if(S.screen === 'inv') renderInv();
   else if(S.screen === 'qty') qyRefresh();
   else if(S.screen === 'hist') renderHist();
   else if(S.screen === 'review') renderReview();
@@ -1357,9 +1525,9 @@ function renderHome(){
   const last = rows[rows.length - 1];
   $('#hm-last').innerHTML = last
     ? 'Ultimul rând: <span class="mono">' + esc(last.seria) + '</span>' + [last.brand, last.buc ? last.buc + ' buc' : '', last.loc].filter(Boolean).map(x => ' · ' + esc(x)).join('')
-    : 'Niciun rulment inventariat încă. Apasă „Pornește inventarierea” pentru primul rând.';
+    : 'Niciun rulment în stoc încă. Apasă „Adaugă” pentru primul rând.';
   const resume = S.draft && !S.draft.id && hasContent(S.draft);
-  $('#hm-start-t').textContent = resume ? 'Continuă rândul' : 'Pornește inventarierea';
+  $('#hm-start-t').textContent = resume ? 'Continuă rândul' : 'Adaugă';
   $('#hm-start-s').textContent = resume ? 'Ai un rând început' + (S.draft.seria ? ' (' + S.draft.seria + ')' : '') + '. Continui de unde ai rămas.' : 'Dictezi seria, brandul, bucățile, locul și observațiile';
   $('#hm-discard').hidden = !resume;
   const hc = hiddenCount(), uh = $('#hm-unhide');
@@ -2065,7 +2233,7 @@ function renderSheet(){
   $('#sh-body').innerHTML = html;
   $('#sh-sum').textContent = `${fmt(all.length)} ${all.length === 1 ? 'rând' : 'rânduri'} · ${fmt(pcs)} bucăți` + (q ? ` · ${fmt(shown)} găsite` : '');
   const empty = $('#sh-empty');
-  if(!all.length){ empty.hidden = false; empty.textContent = 'Stocul e gol. Pornește inventarierea ca să adaugi primul rulment.'; }
+  if(!all.length){ empty.hidden = false; empty.textContent = 'Stocul e gol. Apasă „Adaugă” ca să pui primul rulment.'; }
   else if(!shown){ empty.hidden = false; empty.textContent = 'Nimic găsit pentru căutarea asta.'; }
   else empty.hidden = true;
 }
@@ -2368,7 +2536,7 @@ function bind(){
     newDraft();
     if(S.dictPref) inp.focus();
   });
-  $('#rv-stop').addEventListener('click', () => { S.draft = null; lsSet(LS_DRAFT, null); go('home'); });
+  $('#rv-stop').addEventListener('click', () => { S.draft = null; lsSet(LS_DRAFT, null); if(IV.back){ IV.back = false; go('inv'); } else go('home'); });
   const toggleMod = () => { S.rv.modify = !S.rv.modify; S.rv.delArm = false; renderReview(); };
   $('#rv-mod').addEventListener('click', toggleMod);
   $('#rv-cards').addEventListener('click', e => {
@@ -2510,7 +2678,7 @@ async function acOut(){
 
 /* ---------- app version: shown in the account window; a tap checks the site for a newer one and restarts into it ---------- */
 // keep the same number in sw.js (const VERSION); every update goes up by one: 1.0, 2.0, 3.0 ...
-const APP_VER = '7.0', LS_VER = 'app_ver_from';
+const APP_VER = '9.0', LS_VER = 'app_ver_from';
 let verBusy = false;
 const verNum = v => parseFloat(v) || 0;
 function verMsg(msg){ const e = $('#ac-vmsg'); e.hidden = !msg; e.textContent = msg || ''; }
@@ -2586,6 +2754,68 @@ const ACT = {add:['Adăugat', 'k-add'], edit:['Modificat', 'k-edit'], qty:['Buc�
 const FLABEL = {seria:'Seria', brand:'Brand', buc:'Bucăți', loc:'Localizare', obs:'Observații'};
 const HS = {range:'azi', seria:'', items:[], last:null, more:false, users:new Set(), loading:false, err:'', cache:false};
 function dayStart(back){ const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - back); return d.getTime(); }
+// periods: azi, 7, 30, a month ('m:2026-10') or the whole history ('tot')
+const MONTHS = ['ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie', 'iulie', 'august', 'septembrie', 'octombrie', 'noiembrie', 'decembrie'];
+const capF = s => s.charAt(0).toUpperCase() + s.slice(1);
+const ymOf = t => { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); };
+function monthRange(ym){ const [y, m] = ym.split('-').map(Number); return [new Date(y, m - 1, 1).getTime(), new Date(y, m, 1).getTime()]; }
+const monthName = ym => MONTHS[+ym.slice(5) - 1] + ' ' + ym.slice(0, 4);
+function hsBounds(){
+  if(HS.range === 'tot') return {from:0, to:null};
+  if(HS.range.startsWith('m:')){ const [a, b] = monthRange(HS.range.slice(2)); return {from:a, to:b}; }
+  return {from:dayStart(HS.range === '30' ? 29 : HS.range === '7' ? 6 : 0), to:null};
+}
+function hsLabel(){
+  if(HS.seria) return 'seria ' + HS.seria;
+  if(HS.range === 'azi') return 'azi';
+  if(HS.range === 'tot') return 'tot istoricul';
+  if(HS.range.startsWith('m:')) return monthName(HS.range.slice(2));
+  return 'ultimele ' + (HS.range === '7' ? '7 zile' : '30 de zile');
+}
+function hsRangeHtml(){
+  const on = k => !HS.seria && HS.range === k ? ' on' : '', mon = !HS.seria && HS.range.startsWith('m:');
+  return [['azi', 'Azi'], ['7', '7 zile'], ['30', '30 de zile']].map(([k, l]) => `<button type="button" class="sg${on(k)}" data-r="${k}">${l}</button>`).join('') +
+    `<button type="button" class="sg${mon ? ' on' : ''}" data-r="m">${mon ? capF(monthName(HS.range.slice(2))) : 'Luna…'}</button>` +
+    `<button type="button" class="sg${on('tot')}" data-r="tot">Tot</button>` +
+    (HS.seria ? `<button type="button" class="sg on" data-r="x">${esc(HS.seria)} ✕</button>` : '');
+}
+// the months that have history, from the first change to this month, newest first
+const LS_HFIRST = 'hist_first';
+async function histMonths(){
+  let first = lsGet(LS_HFIRST);
+  if(!first){ try{ first = await FB.histFirst(); if(first) lsSet(LS_HFIRST, first); }catch(e){} }
+  const out = [], end = ymOf(Date.now());
+  let ym = ymOf(first || Date.now());
+  for(;;){
+    out.push(ym);
+    if(ym >= end || out.length > 600) break;
+    const [y, m] = ym.split('-').map(Number);
+    ym = m === 12 ? (y + 1) + '-01' : y + '-' + String(m + 1).padStart(2, '0');
+  }
+  return out.reverse();
+}
+const HX = {mode:'', months:[], busy:false};
+async function openMonths(mode){
+  if(HX.busy) return;
+  HX.mode = mode;
+  $('#hx-t').textContent = mode === 'export' ? 'Exportă istoricul în Excel' : 'Alege luna';
+  $('#hx-msg').textContent = mode === 'export' ? 'Tot istoricul, cu câte o foaie pentru fiecare lună, sau doar o lună.' : 'Istoricul unei luni, de la prima modificare până azi.';
+  $('#hx-body').innerHTML = '<p class="who">Se încarcă lunile…</p>';
+  $('#hx').hidden = false;
+  const months = HX.months = await histMonths();
+  if(HX.mode !== mode || $('#hx').hidden) return;
+  const years = [...new Set(months.map(m => m.slice(0, 4)))];
+  $('#hx-body').innerHTML = (mode === 'export' ? '<button type="button" class="btn primary" data-m="all">Tot istoricul</button>' : '') +
+    years.map(y => `<p class="hx-y">${y}</p><div class="hx-m">` + months.filter(m => m.startsWith(y)).map(m =>
+      `<button type="button" class="sg${mode === 'view' && HS.range === 'm:' + m ? ' on' : ''}" data-m="${m}">${capF(MONTHS[+m.slice(5) - 1])}</button>`).join('') + '</div>').join('');
+}
+function pickMonth(m){
+  if(HX.mode === 'export'){ runExport(m); return; }
+  $('#hx').hidden = true;
+  HS.range = 'm:' + m; HS.seria = ''; HS.users.clear();
+  $('#hs-ser').value = ''; const dk = $('#dk-hser'); if(dk) dk.value = '';
+  loadHist(false);
+}
 function openHist(){ HS.range = 'azi'; HS.seria = ''; HS.users.clear(); $('#hs-ser').value = ''; HS.items = []; go('hist'); loadHist(false); }
 // the stock rows (deleted ones too) that the history search finds, with the same rules as "Caută în stoc":
 // a number is looked up in the base of the series, so 6205 also finds 6205-2RS or 6205 ZZ C3
@@ -2597,7 +2827,7 @@ function histRids(q){
 }
 async function loadHist(more){
   HS.loading = true; HS.err = ''; renderHist();
-  const from = dayStart(HS.range === '30' ? 29 : HS.range === '7' ? 6 : 0);
+  const {from, to} = hsBounds();
   const rids = HS.seria ? histRids(HS.seria) : null;
   if(rids && rids.length > HIST_MAX_ROWS){
     HS.items = []; HS.loading = false;
@@ -2605,7 +2835,7 @@ async function loadHist(more){
     renderHist(); return;
   }
   try{
-    const r = await FB.history({from, seria:HS.seria, rids, after:more ? HS.last : null, max:300});
+    const r = await FB.history({from, to, seria:HS.seria, rids, after:more ? HS.last : null, max:300});
     HS.items = more ? HS.items.concat(r.items) : r.items;
     HS.last = r.last; HS.more = !HS.seria && r.items.length === 300; HS.cache = !!r.fromCache;
     HS.items.sort((a, b) => (b.t || 0) - (a.t || 0));
@@ -2622,14 +2852,12 @@ function hDate(t){ const d = new Date(t || 0); return p2(d.getDate()) + '.' + p2
 function hDay(t){ return new Date(t || 0).toLocaleDateString('ro-RO', {weekday:'long', day:'numeric', month:'long', year:'numeric'}); }
 function renderHist(){
   if(D.on){ dkRenderHist(); return; }
-  $('#hs-range').innerHTML = [['azi', 'Azi'], ['7', '7 zile'], ['30', '30 de zile']]
-    .map(([k, l]) => `<button type="button" class="sg${!HS.seria && HS.range === k ? ' on' : ''}" data-r="${k}">${l}</button>`).join('') +
-    (HS.seria ? `<button type="button" class="sg on" data-r="x">${esc(HS.seria)} ✕</button>` : '');
+  $('#hs-range').innerHTML = hsRangeHtml();
   const users = [...new Set(HS.items.map(x => x.nm || x.em).filter(Boolean))].sort(coll.compare);
   $('#hs-users').innerHTML = (users.length > 1 || HS.users.size)
     ? `<div class="qf-row"><span class="qf-l">Cine</span><div class="qf-chips">${users.map(u => `<button type="button" class="sg${HS.users.has(u) ? ' on' : ''}" data-u="${esc(u)}">${esc(u)}</button>`).join('')}</div></div>` : '';
   const list = hsVisible();
-  const lbl = HS.seria ? 'seria ' + HS.seria : HS.range === 'azi' ? 'azi' : 'ultimele ' + (HS.range === '7' ? '7 zile' : '30 de zile');
+  const lbl = hsLabel();
   $('#hs-sum').textContent = HS.loading ? 'Se încarcă…' : `${fmt(list.length)} ${list.length === 1 ? 'modificare' : 'modificări'} · ${lbl}` + (HS.cache ? ' · fără conexiune' : '');
   const box = $('#hs-list');
   if(HS.err){ box.innerHTML = `<p class="sh-empty">${esc(HS.err)}</p>`; return; }
@@ -2650,13 +2878,78 @@ function renderHist(){
       (canRestore ? '<span class="he-x">Rând șters · atinge ca să-l restaurezi</span>' : '') +
       `</${tag}>`;
   });
-  if(HS.more) html += '<button type="button" class="btn ghost" id="hs-more">Încarcă mai multe</button>';
+  if(HS.more) html += '<button type="button" class="btn ghost" id="hs-more">Arată mai multe</button>';
   box.innerHTML = html;
 }
 function exportHist(){
-  const list = hsVisible();
-  if(!list.length){ toast('Nu ai modificări de exportat în lista afișată.'); return; }
   if(!window.XLSX){ toast('Modulul Excel nu s-a încărcat. Redeschide aplicația.', 'err'); return; }
+  openMonths('export');
+}
+// the copy of the history kept on this device, one entry per month (history never changes once written)
+const HDB = {
+  open(){
+    return this.p || (this.p = new Promise((res, rej) => {
+      const r = indexedDB.open('istoric-copie', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('luni');
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    }));
+  },
+  async get(k){ const d = await this.open(); return new Promise(res => { const q = d.transaction('luni').objectStore('luni').get(k); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); }); },
+  async put(k, v){ const d = await this.open(); return new Promise(res => { const t = d.transaction('luni', 'readwrite'); t.objectStore('luni').put(v, k); t.oncomplete = t.onerror = () => res(); }); },
+};
+async function fetchRange(from, to){
+  const out = []; let after = null;
+  for(;;){
+    const r = await FB.history({from, to, after, max:1000});
+    if(r.fromCache) throw Object.assign(new Error('offline'), {offline:true});
+    out.push(...r.items);
+    if(r.items.length < 1000) return out;
+    after = r.last;
+  }
+}
+// all the changes of one month. A month already on this device is checked at most once a day: only newer changes are
+// downloaded, and the whole month again only if the count on the server differs (a phone that was offline sent old changes late)
+async function monthItems(ym, st){
+  const [a, b] = monthRange(ym), today = ymd();
+  let copy = null;
+  try{ copy = await HDB.get(ym); }catch(e){}
+  if(copy && copy.day === today && b <= Date.now()){ st.local += copy.items.length; return copy.items; }
+  let items;
+  if(copy){
+    const maxT = copy.items.reduce((m, x) => Math.max(m, x.t || 0), a);
+    const add = await fetchRange(maxT, b), seen = new Set(copy.items.map(x => x.id));
+    items = copy.items.concat(add.filter(x => !seen.has(x.id)));
+    st.net += add.length; st.local += copy.items.length;
+    if(copy.day !== today && await FB.histCount(a, b) !== items.length){ items = await fetchRange(a, b); st.net += items.length; st.local -= copy.items.length; }
+  } else { items = await fetchRange(a, b); st.net += items.length; }
+  try{ await HDB.put(ym, {items, day:today}); }catch(e){}
+  return items;
+}
+async function runExport(which){
+  if(HX.busy) return;
+  const months = which === 'all' ? HX.months : [which], st = {net:0, local:0};
+  HX.busy = true;
+  $('#hx-body').innerHTML = '<p class="who" id="hx-prog">Se pregătește…</p>';
+  try{
+    const wb = XLSX.utils.book_new(); let total = 0;
+    for(let i = 0; i < months.length; i++){
+      $('#hx-prog').textContent = `Se pregătește ${monthName(months[i])}` + (months.length > 1 ? ` (${i + 1} din ${months.length})…` : '…');
+      const items = await monthItems(months[i], st);
+      if(!items.length) continue;
+      total += items.length;
+      XLSX.utils.book_append_sheet(wb, histSheet(items.slice().sort((x, y) => (y.t || 0) - (x.t || 0))), months[i]);
+    }
+    HX.busy = false; $('#hx').hidden = true;
+    if(!total){ toast(which === 'all' ? 'Istoricul e gol.' : `Nicio modificare în ${monthName(which)}.`); return; }
+    deliverXlsx(XLSX.write(wb, {bookType:'xlsx', type:'array'}), which === 'all' ? 'istoric-rulmenti-complet-' + ymd() + '.xlsx' : 'istoric-rulmenti-' + which + '.xlsx',
+      ` ${fmt(total)} ${total === 1 ? 'modificare' : 'modificări'}; aduse acum de pe server: ${fmt(st.net)}.`);
+  }catch(e){
+    HX.busy = false;
+    $('#hx-body').innerHTML = `<p class="hx-err">${e && e.offline ? 'Exportul are nevoie de internet pentru lunile care nu sunt încă în telefon.' : 'Nu am putut pregăti exportul. Încearcă din nou.'}</p>`;
+  }
+}
+// one sheet: newest first in, oldest first out, the same columns as before
+function histSheet(list){
   const aoa = [['Data', 'Ora', 'Utilizator', 'Email', 'Acțiune', 'Seria', 'Brand', 'Localizare', 'Câmp', 'Valoare veche', 'Valoare nouă', 'Notă']];
   list.slice().reverse().forEach(x => {
     const base = [hDate(x.t), hTime(x.t), x.nm || '', x.em || '', (ACT[x.act] || [x.act || ''])[0], x.seria || '', x.brand || '', x.loc || ''];
@@ -2665,21 +2958,20 @@ function exportHist(){
   const ws = XLSX.utils.aoa_to_sheet(aoa);
   ws['!cols'] = [{wch:11}, {wch:6}, {wch:16}, {wch:26}, {wch:11}, {wch:20}, {wch:12}, {wch:12}, {wch:12}, {wch:16}, {wch:16}, {wch:26}];
   ws['!autofilter'] = {ref:'A1:L' + aoa.length};
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Istoric');
-  deliverXlsx(XLSX.write(wb, {bookType:'xlsx', type:'array'}), 'istoric-rulmenti-' + ymd() + '.xlsx');
+  return ws;
 }
-function deliverXlsx(buf, name){
+function deliverXlsx(buf, name, extra){
+  extra = extra || '';
   const type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', blob = new Blob([buf], {type});
   let file = null;
   try{ file = new File([blob], name, {type}); }catch(e){}
   if(isIOS() && file && navigator.canShare && navigator.canShare({files:[file]})){
-    navigator.share({files:[file], title:name}).then(() => toast('Fișierul ' + name + ' a fost trimis.'))
+    navigator.share({files:[file], title:name}).then(() => toast('Fișierul ' + name + ' a fost trimis.' + extra))
       .catch(e => { if(e && e.name === 'AbortError') toast('Export anulat.'); else downloadBlob(blob, name); });
     return;
   }
   downloadBlob(blob, name);
-  toast('Am descărcat ' + name + ' (în Descărcări).');
+  toast('Am descărcat ' + name + ' (în Descărcări).' + extra);
 }
 
 function bindCloud(){
@@ -2706,8 +2998,11 @@ function bindCloud(){
   $('#hm-hist').addEventListener('click', openHist);
   $('#hs-back').addEventListener('click', () => go('home'));
   $('#hs-export').addEventListener('click', exportHist);
+  $('#hx-no').addEventListener('click', () => { if(!HX.busy) $('#hx').hidden = true; });
+  $('#hx-body').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if(b) pickMonth(b.dataset.m); });
   $('#hs-range').addEventListener('click', e => {
     const b = e.target.closest('[data-r]'); if(!b) return;
+    if(b.dataset.r === 'm'){ openMonths('view'); return; }
     if(b.dataset.r !== 'x') HS.range = b.dataset.r;
     HS.seria = ''; $('#hs-ser').value = ''; HS.users.clear(); loadHist(false);
   });
@@ -2750,7 +3045,7 @@ function enterApp(){
 function toggleView(){ lsSet(LS_VIEW, D.on ? 'tel' : 'pc'); enterApp(); }
 function dkShow(v){
   D.view = v;
-  ['stoc', 'caut', 'inv', 'ist'].forEach(x => { $('#dk-' + x).hidden = x !== v; });
+  ['stoc', 'caut', 'inv', 'nv', 'ist'].forEach(x => { $('#dk-' + x).hidden = x !== v; });
   document.querySelectorAll('.dk-nav [data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   if(v === 'ist'){ HS.range = 'azi'; HS.seria = ''; HS.users.clear(); $('#dk-hser').value = ''; HS.items = []; loadHist(false); }
   dkRender();
@@ -2763,6 +3058,7 @@ function dkRender(){
   else if(D.view === 'caut') dkRenderSearch();
   else if(D.view === 'inv') dkRenderInv();
   else if(D.view === 'ist') dkRenderHist();
+  else if(D.view === 'nv') renderInv();
   dkRenderPanel();
 }
 function dkRenderTop(){
@@ -2794,7 +3090,7 @@ function dkRenderTable(){
     return `<tr data-id="${esc(r.id)}"${r.id === D.sel ? ' class="sel"' : ''}><td class="n">${x.i + 1}</td><td class="b">${esc(r.seria)}</td><td>${esc(r.brand)}</td>` +
       `<td class="num">${esc(r.buc)}</td><td class="mono">${esc(r.loc)}</td><td class="obs">${esc(r.obs)}</td><td class="mut">${esc(r.nm || '')}${r.u ? ' · ' + whenStr(r.u) : ''}</td></tr>`; }).join('') +
     (list.length > MAX ? `<tr><td colspan="7" class="sh-empty">… și încă ${fmt(list.length - MAX)} rânduri. Filtrează ca să le vezi.</td></tr>` : '')
-    : `<tr><td colspan="7" class="sh-empty">${all.length ? 'Nimic găsit pentru acest filtru.' : 'Stocul e gol. Începe din Inventariere.'}</td></tr>`;
+    : `<tr><td colspan="7" class="sh-empty">${all.length ? 'Nimic găsit pentru acest filtru.' : 'Stocul e gol. Începe din Adaugă.'}</td></tr>`;
 }
 
 // search: same rules as on the phone; filters on the left, results in columns
@@ -2875,7 +3171,7 @@ function dkMergePending(){
   const p = D.pend; if(!p) return;
   const t = getRow(p.t); if(!t){ dkSaveNew(p.v); return; }
   const b = parseInt(p.v.buc, 10) || 0;
-  if(b) addPieces(t.id, b, {note:'adăugat la inventariere'});
+  if(b) addPieces(t.id, b, {note:'adăugat la rândul existent'});
   if(p.v.obs && (t.obs || '') !== p.v.obs) putRow(t.id, Object.assign({}, getRow(t.id), {obs:[t.obs, p.v.obs].filter(Boolean).join('; ')}));
   D.session = [t.id].concat(D.session.filter(x => x !== t.id));
   dkSaved(`Am adăugat la rândul existent: <b>${esc(t.seria)}</b> · ${esc(t.loc || 'fără locație')} · acum ${fmt((parseInt(t.buc, 10) || 0) + b)} buc`);
@@ -2883,14 +3179,12 @@ function dkMergePending(){
 
 // history as a wide table
 function dkRenderHist(){
-  $('#dk-hr').innerHTML = [['azi', 'Azi'], ['7', '7 zile'], ['30', '30 de zile']]
-    .map(([k, l]) => `<button type="button" class="sg${!HS.seria && HS.range === k ? ' on' : ''}" data-r="${k}">${l}</button>`).join('') +
-    (HS.seria ? `<button type="button" class="sg on" data-r="x">${esc(HS.seria)} ✕</button>` : '');
+  $('#dk-hr').innerHTML = hsRangeHtml();
   const users = [...new Set(HS.items.map(x => x.nm || x.em).filter(Boolean))].sort(coll.compare);
   $('#dk-hu').innerHTML = (users.length > 1 || HS.users.size)
     ? `<div class="qf-row"><span class="qf-l">Cine</span><div class="qf-chips">${users.map(u => `<button type="button" class="sg${HS.users.has(u) ? ' on' : ''}" data-u="${esc(u)}">${esc(u)}</button>`).join('')}</div></div>` : '';
   const list = hsVisible();
-  const lbl = HS.seria ? 'seria ' + HS.seria : HS.range === 'azi' ? 'azi' : 'ultimele ' + (HS.range === '7' ? '7 zile' : '30 de zile');
+  const lbl = hsLabel();
   $('#dk-hsum').textContent = HS.loading ? 'Se încarcă…' : `${fmt(list.length)} ${list.length === 1 ? 'modificare' : 'modificări'} · ${lbl}` + (HS.cache ? ' · fără conexiune' : '');
   $('#dk-hmore').hidden = !HS.more;
   const body = $('#dk-hbody');
@@ -2989,6 +3283,7 @@ function bindDesk(){
   // history
   $('#dk-hr').addEventListener('click', e => {
     const b = e.target.closest('[data-r]'); if(!b) return;
+    if(b.dataset.r === 'm'){ openMonths('view'); return; }
     if(b.dataset.r !== 'x') HS.range = b.dataset.r;
     HS.seria = ''; $('#dk-hser').value = ''; HS.users.clear(); loadHist(false);
   });
@@ -3060,11 +3355,234 @@ function bindDesk(){
   });
 }
 
+/* ---------- Inventariere: periodic count, shelf by shelf ---------- */
+// A shelf is one place in the stock (spaces, _ - . do not count). Its depot is the first word: CAPUS, PLOIESTI.
+// A tick lives on the row: vt (when), vn / ve (who), vq (pieces counted), vb (pieces in stock before, when they differed).
+const IV = {depot:null, shelf:'', q:'', back:false, ask:'', fin:null};
+const LS_IVDEP = 'inv_depot';
+const ivDepotOf = loc => up(loc).trim().split(/[\s_\-.\/]+/)[0] || '';
+const ivChecked = r => !!r.vt;
+const ivKey = loc => sameKey(loc) || '-';   // '-' = rows without a place
+const ivFixed = r => !!r.vt && r.vb !== '' && r.vb !== r.vq;
+function ivShelves(){
+  const m = new Map();
+  sortedRows().forEach(r => {
+    const k = ivKey(r.loc);
+    let sh = m.get(k);
+    if(!sh){ sh = {key:k, names:new Map(), rows:[]}; m.set(k, sh); }
+    sh.rows.push(r); sh.names.set(r.loc, (sh.names.get(r.loc) || 0) + 1);
+  });
+  m.forEach(sh => {
+    sh.name = [...sh.names].sort((a, b) => b[1] - a[1])[0][0] || '';
+    sh.depot = sh.name ? ivDepotOf(sh.name) : '';
+    const rest = up(sh.name).trim().slice(sh.depot.length).replace(/^[\s_\-.\/]+/, '');
+    sh.label = sh.name ? (rest || sh.name) : 'Fără locație';
+    sh.done = sh.rows.filter(ivChecked).length;
+  });
+  return m;
+}
+function ivEls(){
+  const p = D.on ? 'dkv' : 'iv';
+  return {tabs:$('#' + p + '-tabs'), grid:$('#' + p + '-grid'), list:$('#' + p + '-list'), q:$('#' + p + '-q'),
+    shelf:$('#' + p + '-shelf'), sum:$(D.on ? '#dkv-sum' : '#iv-sum'), ssum:$(D.on ? '#dkv-ssum' : '#iv-sum'),
+    title:$(D.on ? '#dkv-title' : '#iv-title'), pick:D.on ? null : $('#iv-pick'), hint:D.on ? $('#dkv-hint') : null,
+    newb:$('#' + p + '-new')};
+}
+function openInv(){ IV.shelf = ''; IV.q = ''; if(D.on) dkShow('nv'); else go('inv'); }
+function renderInv(){
+  const E = ivEls(), all = ivShelves();
+  const depots = [...new Set([...all.values()].map(x => x.depot))].sort((a, b) => (a === '') - (b === '') || coll.compare(a, b));
+  if(IV.depot == null || !depots.includes(IV.depot)) IV.depot = depots.includes(lsGet(LS_IVDEP)) ? lsGet(LS_IVDEP) : (depots[0] || '');
+  const cur = IV.shelf ? all.get(IV.shelf) : null;
+  if(IV.shelf && !cur) IV.shelf = '';
+  // shelves
+  const shelves = [...all.values()].filter(x => x.depot === IV.depot)
+    .sort((a, b) => coll.compare(sameKey(a.label), sameKey(b.label)) || coll.compare(a.label, b.label));
+  const doneN = [...all.values()].filter(x => x.done === x.rows.length).length;
+  E.tabs.innerHTML = depots.map(d => `<button type="button" class="sg${d === IV.depot ? ' on' : ''}" data-dep="${esc(d)}">${esc(d || 'Fără locație')}</button>`).join('');
+  E.grid.innerHTML = shelves.map(x => {
+    const cls = x.done === x.rows.length ? ' done' : x.done ? ' part' : '';
+    return `<button type="button" class="iv-t${cls}${x.key === IV.shelf ? ' sel' : ''}" data-sh="${esc(x.key)}"><b>${esc(x.label)}</b><span>${fmt(x.done)}/${fmt(x.rows.length)}</span></button>`;
+  }).join('') || '<p class="iv-hint">Niciun raft.</p>';
+  const pickSum = `${fmt(all.size)} ${all.size === 1 ? 'raft' : 'rafturi'} · ${fmt(doneN)} ${doneN === 1 ? 'gata' : 'gata'}`;
+  if(D.on){ E.sum.textContent = pickSum; E.hint.hidden = !!cur; E.shelf.hidden = !cur; }
+  else { E.pick.hidden = !!cur; E.shelf.hidden = !cur; E.title.textContent = cur ? (cur.name || 'Fără locație') : 'Inventariere'; if(!cur) E.sum.textContent = pickSum; }
+  if(!cur) return;
+  // the shelf
+  if(D.on) E.title.textContent = cur.name || 'Fără locație';
+  E.ssum.textContent = `${fmt(cur.done)} din ${fmt(cur.rows.length)} numărate`;
+  if(E.q.value !== IV.q && document.activeElement !== E.q) E.q.value = IV.q;
+  E.newb.hidden = !cur.done;
+  $(D.on ? '#dkv-qx' : '#iv-qx').hidden = !IV.q;
+  const toks = parseQuery(IV.q);
+  const shown = toks.length ? cur.rows.filter(r => rowScore(toks, qKeys(r)) >= 0) : cur.rows;
+  const todo = shown.filter(r => !ivChecked(r)).sort((a, b) => coll.compare(a.seria, b.seria) || coll.compare(a.brand, b.brand));
+  const done = shown.filter(ivChecked).sort((a, b) => (b.vt || 0) - (a.vt || 0));
+  const line = r => {
+    const fixed = ivFixed(r), cls = ivChecked(r) ? (fixed ? ' fix' : ' ok') : '';
+    const q = fixed ? `${esc(r.vb || '0')} → ${esc(r.vq || '0')}` : esc(r.buc || '0');
+    const who = ivChecked(r) ? `${esc(r.vn || '')} · ${hDate(r.vt).slice(0, 5)} ${hTime(r.vt)}` : '';
+    const meta = [r.brand || 'fără brand', r.obs].filter(Boolean).map(esc).join(' · ');
+    return `<div class="iv-r${cls}" data-id="${esc(r.id)}"><div><div class="sr">${esc(r.seria || '–')}</div><div class="mt">${meta}${who ? '<br>' + who : ''}</div></div>` +
+      `<button type="button" class="iv-q" data-q="${esc(r.id)}" aria-label="Bucăți numărate">${q} <small>buc</small></button>` +
+      `<button type="button" class="iv-ck" data-ck="${esc(r.id)}" aria-label="${ivChecked(r) ? 'Scoate bifa' : 'Bifează: găsit, bucăți corecte'}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>`;
+  };
+  let html = '';
+  if(toks.length && !shown.length) html = `<p class="iv-hint">Nicio serie „${esc(IV.q)}” pe acest raft. Dacă e pe raft, apasă „Pe raft e ceva ce nu e în listă”.</p>`;
+  if(todo.length || !toks.length) html += `<p class="iv-sec">De numărat (${fmt(todo.length)})</p>` + (todo.map(line).join('') || '<p class="iv-hint">Ai numărat tot raftul.</p>');
+  if(done.length) html += `<p class="iv-sec">Numărate (${fmt(done.length)})</p>` + done.map(line).join('');
+  E.list.innerHTML = html;
+}
+// writes ticks (and counted quantities that differ from the stock) for one or more rows, in batches
+function setChecks(list, note){
+  const ops = [], prev = {}, m = me(), now = Date.now();
+  list.forEach(({id, vt, vq, vb, buc}) => {
+    const old = docsMap[id]; if(!old || old.del) return;
+    prev[id] = Object.assign({}, old);
+    const patch = vt ? {vt:now, vn:m.nm, ve:m.em, vq:String(vq == null ? '' : vq), vb:vb == null ? '' : String(vb)} : {vt:0, vn:'', ve:'', vq:'', vb:''};
+    const doc = Object.assign({}, stamp(), {vt:patch.vt || null, vn:patch.vn || null, ve:patch.ve || null, vq:patch.vq === '' ? null : patch.vq, vb:patch.vb === '' ? null : patch.vb});
+    docsMap[id] = Object.assign({}, old, patch);
+    ops.push({col:'rulmenti', id, data:doc, merge:true});
+    if(buc != null && String(buc) !== String(old.buc || '')){
+      docsMap[id].buc = String(buc); doc.n = numOrNull(buc);
+      ops.push(hist('qty', id, old, [{f:'buc', o:old.buc || '', n:String(buc)}], note || 'inventariere'));
+    }
+  });
+  invalidate(); onData();
+  const undo = () => { Object.keys(prev).forEach(id => { docsMap[id] = prev[id]; }); invalidate(); onData(); };
+  for(let i = 0; i < ops.length; i += 400) send(ops.slice(i, i + 400), i === 0 ? undo : null);
+}
+const ivShelf = () => ivShelves().get(IV.shelf);
+const ivNote = extra => 'inventariere ' + ((ivShelf() || {}).name || '') + (extra ? ' · ' + extra : '');
+function ivAfterTick(){
+  if(!IV.q) return;
+  IV.q = ''; const E = ivEls(); E.q.value = ''; renderInv();
+  if(D.on) E.q.focus();
+}
+function ivTick(id){
+  const r = getRow(id); if(!r) return;
+  if(ivChecked(r)){ setChecks([{id, vt:false}]); return; }
+  setChecks([{id, vt:true, vq:r.buc || '0'}]);
+  ivAfterTick();
+}
+function ivAsk(id){
+  const r = getRow(id); if(!r) return;
+  IV.ask = id;
+  $('#ivc-what').innerHTML = `<b>${esc(r.seria || '–')}</b> ${esc(r.brand || 'fără brand')} · în stoc <b>${esc(r.buc || '0')}</b> buc`;
+  $('#ivc-in').value = ivChecked(r) ? (r.vq || '') : '';
+  $('#ivc-err').hidden = true;
+  $('#ivc').hidden = false;
+  setTimeout(() => $('#ivc-in').focus(), 30);
+}
+function ivAskSave(){
+  const r = getRow(IV.ask); if(!r){ $('#ivc').hidden = true; return; }
+  const raw = $('#ivc-in').value.trim(), v = raw === '' ? null : calc(qtyPrep(raw));
+  if(v == null || !isFinite(v) || v < 0 || Math.round(v) !== v){ $('#ivc-err').textContent = 'Scrie câte bucăți ai găsit, de exemplu 8 sau 3*4.'; $('#ivc-err').hidden = false; return; }
+  $('#ivc').hidden = true;
+  const before = r.vb !== '' && ivChecked(r) ? r.vb : (r.buc || '0');   // a row corrected earlier keeps its first stock value
+  if(String(v) === String(parseInt(before, 10) || 0)) setChecks([{id:r.id, vt:true, vq:v, buc:before === (r.buc || '0') ? null : before}], ivNote());
+  else setChecks([{id:r.id, vt:true, vq:v, vb:before, buc:v}], ivNote());
+  ivAfterTick();
+}
+function ivMissing(){
+  const sh = ivShelf(); if(!sh) return;
+  $('#ivm-msg').textContent = `Scrie sau dictează seria găsită pe raftul ${sh.name || 'fără locație'}. Dacă e în stoc la alt raft, o poți muta aici.`;
+  $('#ivm-in').value = IV.q || ''; ivMissRender();
+  $('#ivm').hidden = false;
+  setTimeout(() => $('#ivm-in').focus(), 30);
+}
+function ivMissRender(){
+  const toks = parseQuery($('#ivm-in').value), box = $('#ivm-res');
+  if(!toks.length){ box.innerHTML = ''; return; }
+  const hits = searchIndex().items.filter(x => ivKey(x.r.loc) !== IV.shelf && rowScore(toks, x.k) >= 0)
+    .sort((a, b) => coll.compare(a.r.seria, b.r.seria)).slice(0, 15);
+  box.innerHTML = hits.length
+    ? hits.map(x => `<div class="ivm-r"><span><b>${esc(x.r.seria)}</b> ${esc(x.r.brand || 'fără brand')} · ${esc(x.r.loc || 'fără locație')} · ${esc(x.r.buc || '0')} buc</span>` +
+        `<button type="button" class="btn" data-mv="${esc(x.r.id)}">Mută aici</button></div>`).join('')
+    : '<p class="iv-hint">Seria nu e în stoc la alt raft. O poți adăuga ca rând nou pe acest raft.</p>';
+}
+function ivMove(id){
+  const r = getRow(id), sh = ivShelf(); if(!r || !sh) return;
+  putRow(id, Object.assign({}, r, {loc:sh.name}), {note:ivNote('mutat de la ' + (r.loc || 'fără locație'))});
+  $('#ivm').hidden = true;
+  IV.q = ''; ivEls().q.value = '';
+  toast(`Am mutat ${r.seria} aici. Numără-l și bifează-l.`);
+}
+function ivAddNew(){
+  const sh = ivShelf(); if(!sh) return;
+  const ser = normalize(FIELDS[0], $('#ivm-in').value);
+  $('#ivm').hidden = true;
+  if(D.on){
+    dkShow('inv');
+    $('#dk-f-loc').value = sh.name; $('#dk-f-seria').value = ser;
+    setTimeout(() => $(ser ? '#dk-f-brand' : '#dk-f-seria').focus(), 0);
+    return;
+  }
+  IV.back = true;
+  S.draft = {seria:ser, brand:'', buc:'', loc:sh.name, obs:'', locPrevVal:sh.name};
+  S.fi = 0; S.ctx = 'new';
+  openField(); wakeOn();
+}
+function ivFinish(){
+  const sh = ivShelf(); if(!sh) return;
+  const miss = sh.rows.filter(r => !ivChecked(r)), fixed = sh.rows.filter(ivFixed).length, ok = sh.done - fixed;
+  IV.fin = miss.map(r => r.id);
+  $('#ivf-t').textContent = 'Termină raftul ' + (sh.name || 'fără locație');
+  $('#ivf-msg').innerHTML = `<p><b>${fmt(ok)}</b> ${ok === 1 ? 'corectă' : 'corecte'} · <b>${fmt(fixed)}</b> ${fixed === 1 ? 'corectată' : 'corectate'} · <b>${fmt(miss.length)}</b> ${miss.length === 1 ? 'negăsită' : 'negăsite'}</p>` +
+    (miss.length ? `<p class="who" style="margin-top:8px">Negăsite pe raft:</p><div class="ivm-list">` +
+      miss.slice().sort((x, y) => coll.compare(x.seria, y.seria)).map(r => `<div class="ivm-r"><span><b>${esc(r.seria || '–')}</b> ${esc(r.brand || 'fără brand')} · ${esc(r.buc || '0')} buc</span></div>`).join('') + '</div>' +
+      '<p class="who" style="margin-top:8px">Le lași așa sau le pui 0 bucăți? Cu 0 bucăți rămân în stoc, bifate ca numărate, iar schimbarea apare în Istoric.</p>' : '');
+  $('#ivf-keep').textContent = miss.length ? 'Le las așa' : 'Gata';
+  $('#ivf-zero').hidden = !miss.length;
+  $('#ivf').hidden = false;
+}
+function ivFinishDone(zero){
+  $('#ivf').hidden = true;
+  if(zero && IV.fin && IV.fin.length){
+    setChecks(IV.fin.map(id => { const r = getRow(id); return r ? {id, vt:true, vq:0, vb:r.buc || '0', buc:0} : null; }).filter(Boolean), ivNote('negăsit pe raft'));
+  }
+  IV.fin = null; IV.shelf = ''; IV.q = '';
+  renderInv();
+}
+function ivNewCount(){
+  const sh = ivShelf(); if(!sh || !sh.done) return;
+  confirmDlg('Numărare nouă pe ' + (sh.name || 'fără locație') + '?', `Șterg bifele de pe acest raft (${fmt(sh.done)} ${sh.done === 1 ? 'serie numărată' : 'serii numărate'}). Bucățile din stoc rămân cum sunt.`,
+    'Șterge bifele', () => setChecks(sh.rows.filter(ivChecked).map(r => ({id:r.id, vt:false}))));
+}
+function bindInv(){
+  const onTabs = e => { const b = e.target.closest('[data-dep]'); if(!b) return; IV.depot = b.dataset.dep; lsSet(LS_IVDEP, IV.depot); IV.shelf = ''; renderInv(); };
+  const onGrid = e => { const b = e.target.closest('[data-sh]'); if(!b) return; IV.shelf = b.dataset.sh; IV.q = ''; ivEls().q.value = ''; renderInv(); if(D.on) $('#dkv-q').focus(); else $('#scr-inv').scrollTop = 0; };
+  const onList = e => { const c = e.target.closest('[data-ck]'); if(c){ ivTick(c.dataset.ck); return; } const q = e.target.closest('[data-q]'); if(q) ivAsk(q.dataset.q); };
+  ['iv', 'dkv'].forEach(p => {
+    $('#' + p + '-tabs').addEventListener('click', onTabs);
+    $('#' + p + '-grid').addEventListener('click', onGrid);
+    $('#' + p + '-list').addEventListener('click', onList);
+    $('#' + p + '-q').addEventListener('input', e => { IV.q = e.target.value; renderInv(); });
+    $('#' + p + '-sform').addEventListener('submit', e => { e.preventDefault(); const el = $('#' + p + '-q'); el.value = normalize(FIELDS[0], el.value); IV.q = el.value; if(!D.on) el.blur(); renderInv(); });
+    $('#' + p + '-qx').addEventListener('click', () => { IV.q = ''; $('#' + p + '-q').value = ''; renderInv(); $('#' + p + '-q').focus(); });
+    $('#' + p + '-miss').addEventListener('click', ivMissing);
+    $('#' + p + '-fin').addEventListener('click', ivFinish);
+    $('#' + p + '-new').addEventListener('click', ivNewCount);
+  });
+  $('#iv-back').addEventListener('click', () => { if(IV.shelf){ IV.shelf = ''; IV.q = ''; renderInv(); } else go('home'); });
+  $('#hm-inv').addEventListener('click', openInv);
+  $('#ivc-form').addEventListener('submit', e => { e.preventDefault(); ivAskSave(); });
+  $('#ivc-no').addEventListener('click', () => { $('#ivc').hidden = true; });
+  $('#ivm-in').addEventListener('input', ivMissRender);
+  $('#ivm-form').addEventListener('submit', e => { e.preventDefault(); const el = $('#ivm-in'); el.value = normalize(FIELDS[0], el.value); el.blur(); ivMissRender(); });
+  $('#ivm-res').addEventListener('click', e => { const b = e.target.closest('[data-mv]'); if(b) ivMove(b.dataset.mv); });
+  $('#ivm-add').addEventListener('click', ivAddNew);
+  $('#ivm-no').addEventListener('click', () => { $('#ivm').hidden = true; });
+  $('#ivf-keep').addEventListener('click', () => ivFinishDone(false));
+  $('#ivf-zero').addEventListener('click', () => ivFinishDone(true));
+  $('#ivf-no').addEventListener('click', () => { $('#ivf').hidden = true; IV.fin = null; });
+}
 /* ---------- start ---------- */
 buildKeys();
 bind();
 bindCloud();
 bindDesk();
+bindInv();
 const saved = lsGet(LS_DRAFT);
 if(saved && saved.d && hasContent(saved.d)){ S.draft = saved.d; S.fi = Math.min(Math.max(saved.fi | 0, 0), FIELDS.length - 1); S.ctx = 'new'; }
 renderInstall();

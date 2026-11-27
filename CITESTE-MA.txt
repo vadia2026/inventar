@@ -1,8 +1,8 @@
 INVENTAR RULMENȚI - stoc comun pentru echipă (Firebase)
-Versiunea 7.0
+Versiunea 9.0
 
 VERSIUNEA APLICAȚIEI
-- O vezi apăsând butonul cu numele tău: în fereastra contului e butonul „Versiunea 7.0”.
+- O vezi apăsând butonul cu numele tău: în fereastra contului e butonul „Versiunea 9.0”.
 - Fiecare actualizare primește numărul următor: 2.0, 3.0, 4.0 ...
 - Apasă butonul ca să verifici dacă pe site a apărut o versiune nouă. Dacă da, aplicația
   o instalează și repornește singură. Dacă nu, scrie „Ai ultima versiune.”
@@ -19,6 +19,17 @@ Ce e nou față de versiunea fără cont
   Filtre: Azi / 7 zile / 30 de zile, după utilizator, după serie. Export în Excel.
   Un rând șters se poate restaura atingându-l în istoric.
 - Butonul cu numele tău (sus, în dreapta): schimbi numele sau parola, ieși din cont.
+
+INVENTARIERE (numărarea periodică, raft cu raft)
+- Butonul „Inventariere” (pe PC, fila „Inventariere”): alegi depozitul (CAPUS, PLOIESTI), apoi raftul.
+- Pe fiecare raft scrie cât s-a numărat, de ex. 12/38; raftul gata devine verde.
+- Bifa = am găsit seria și bucățile sunt corecte. Dacă ai numărat altceva, apasă pe bucăți și scrie
+  câte ai găsit: stocul se corectează și apare în Istoric cu nota „inventariere”.
+- „Caută seria pe raft”: dictezi seria pe care o ai în față; după bifă căutarea se golește.
+- „Pe raft e ceva ce nu e în listă”: o muți aici de la alt raft sau o adaugi ca rând nou.
+- „Termină raftul”: rezumat; pentru cele negăsite alegi să le lași așa sau să le pui 0 bucăți.
+- Bifele le văd toți colegii și rămân până apeși „Numărare nouă pe acest raft”.
+- Butonul „Adaugă” (fostul „Pornește inventarierea”) e pentru rulmenți noi în stoc.
 
 VERSIUNEA PC / TABLETĂ
 - Pe ecrane late (calculator, tabletă ținută orizontal) aplicația se deschide singură în
